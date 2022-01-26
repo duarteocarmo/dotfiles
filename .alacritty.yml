@@ -1,0 +1,58 @@
+colors:
+  bright:
+    black: "#727072"
+    blue: "#FC9867"
+    cyan: "#78DCE8"
+    green: "#A9DC76"
+    magenta: "#AB9DF2"
+    red: "#FF6188"
+    white: "#FCFCFA"
+    yellow: "#FFD866"
+  normal:
+    black: "#403E41"
+    blue: "#FC9867"
+    cyan: "#78DCE8"
+    green: "#A9DC76"
+    magenta: "#AB9DF2"
+    red: "#FF6188"
+    white: "#FCFCFA"
+    yellow: "#FFD866"
+  primary:
+    background: "#2D2A2E"
+    foreground: "#FCFCFA"
+font:
+  bold:
+    family: JetBrainsMono Nerd Font
+    style: Bold
+  bold_italic:
+    family: JetBrainsMono Nerd Font
+    style: Bold Italic
+  italic:
+    family: JetBrainsMono Nerd Font
+    style: Italic
+  normal:
+    family: JetBrainsMono Nerd Font
+    style: Regular
+  size: 12
+key_bindings:
+  - chars: b
+    key: Left
+    mods: Alt
+  - chars: f
+    key: Right
+    mods: Alt
+  - chars: OH
+    key: Left
+    mode: AppCursor
+    mods: Command
+  - chars: OF
+    key: Right
+    mode: AppCursor
+    mods: Command
+  - chars: 
+    key: Back
+    mods: Command
+  - chars: 
+    key: Back
+    mods: Alt
+live_config_reload: true
