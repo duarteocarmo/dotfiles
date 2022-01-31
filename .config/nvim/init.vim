@@ -76,7 +76,7 @@ let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 colorscheme monokai_pro
 
 " Set path to python
-let g:python3_host_prog = "/Users/durc1211/.asdf/installs/python/3.9.7/bin/python"
+let g:python3_host_prog = "/Users/doc/.asdf/installs/python/3.9.10/bin/python"
 
 " Configuration for vim-markdown plugin
 autocmd FileType markdown let g:vim_markdown_new_list_item_indent = 0
