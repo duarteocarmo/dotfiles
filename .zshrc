@@ -16,4 +16,5 @@ alias ta="tmux attach-session -t "
 alias tk="tmux kill-server"
 alias vi="nvim"
 alias tree="tree -I __pycache__"
+alias joplin="~/.joplin-bin/bin/joplin"
 
