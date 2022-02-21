@@ -1,0 +1,31 @@
+* Homebrew casks
+brave-browser 
+slack
+meetingbar
+raycast
+rectangle
+visual-studio-code
+spotify 
+stats 
+alacritty 
+bitwarden 
+hiddenbar
+ticktick
+telegram
+notion
+insomnia
+
+* homebrew
+tmux
+asdf
+neovim
+
+* Apps
+reeder
+textsniper
+dropbox
+
+* Terminal 
+- oh my zsh 
+- tldr
+- joplin
