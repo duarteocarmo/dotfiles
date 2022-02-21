@@ -1,10 +1,10 @@
-export ZSH="/Users/doc/.oh-my-zsh"
+export ZSH="/Users/duartecarmo/.oh-my-zsh"
 ZSH_THEME="mh"
 plugins=(asdf zsh-z zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
-alias brow='arch --x86_64 /usr/local/homebrew/bin/brew'
+alias brow='/usr/local/homebrew/bin/brew'
 alias vi="nvim"
 alias gst="git status"
 alias ga="git add "
