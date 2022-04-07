@@ -22,50 +22,42 @@ set termguicolors                   " tmux related
 " TODO cleanup configuration w/ lua files
 
 call plug#begin('~/.vim/plugged')                               " vim-plug plugins will be downloaded there
-Plug 'tpope/vim-fugitive'                                       " git versioning and bar 
-Plug 'jiangmiao/auto-pairs'                                     " auto close brackets
-" Plug 'sjl/badwolf'                                              " Badwolf colorscheme
-Plug 'psf/black', { 'branch': 'stable' }                        " black formatting for python
-" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }             " jump through files easily
-" Plug 'junegunn/fzf.vim'                                         " jump through files easily
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}     " We recommend updating the parsers on update
-Plug 'nathangrigg/vim-beancount'                                " beancount plugin
-Plug 'tpope/vim-commentary'                                     " comment using gcc
-" Plug 'projekt0n/github-nvim-theme'
-" Plug 'ervandew/supertab'                                        " tab autocomplete
+
+" Colorschemes
 Plug 'phanviet/vim-monokai-pro'
 Plug 'catppuccin/nvim'
+Plug 'sjl/badwolf' 
+Plug 'EdenEast/nightfox.nvim' 
+Plug 'projekt0n/github-nvim-theme'
 
+" LSP and syntax
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}     " We recommend updating the parsers on update
 Plug 'neovim/nvim-lspconfig'
-
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-cmdline'
-
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
-Plug 'kyazdani42/nvim-tree.lua'
-
 Plug 'onsails/lspkind-nvim'
-
-Plug 'nvim-lua/plenary.nvim'
+ 
+" Handy tools
 Plug 'nvim-telescope/telescope.nvim'
-
 Plug 'nvim-lualine/lualine.nvim'
+Plug 'tpope/vim-commentary'                                     " comment using gcc
+Plug 'tpope/vim-fugitive'                                       " git versioning and bar 
+Plug 'lewis6991/gitsigns.nvim'
+Plug 'jiangmiao/auto-pairs'                                     " auto close brackets
+Plug 'tpope/vim-surround'
 
-Plug 'plasticboy/vim-markdown'                                  " Markdown folding 
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-
+" Language specific
 Plug 'satabin/hocon-vim'
-
+Plug 'plasticboy/vim-markdown'                                  " Markdown folding 
+Plug 'nathangrigg/vim-beancount'                                " beancount plugin
+Plug 'psf/black', { 'branch': 'stable' }                        " black formatting for python
 Plug 'sbdchd/neoformat'
+Plug 'nvim-lua/plenary.nvim'
 
-" Plug 'morhetz/gruvbox'
-" Plug 'jaredgorski/fogbell.vim'
-" Plug 'rakr/vim-two-firewatch'
-" Plug 'preservim/nerdtree'
-"Plug 'dense-analysis/ale'                                      " In case you want linting and fixing            
 call plug#end()                                                 " vim-plugs should not be declared below this.
 
 " Fix tmux rendering, only necessary if you use 'set termguicolors'
@@ -76,7 +68,7 @@ let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 colorscheme monokai_pro
 
 " Set path to python
-let g:python3_host_prog = "/Users/doc/.asdf/installs/python/3.9.10/bin/python"
+let g:python3_host_prog = "/Users/duartecarmo/.asdf/installs/python/3.10.2/bin/python"
 
 " Configuration for vim-markdown plugin
 autocmd FileType markdown let g:vim_markdown_new_list_item_indent = 0
@@ -123,9 +115,6 @@ nnoremap <leader>n :NvimTreeFindFile<CR>
 lua <<EOF
 
 
-
-
-
 local nvim_lsp = require('lspconfig')
 
 -- Use an on_attach function to only map the following keys
@@ -159,8 +148,6 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
 end
-
-
 
 
 
@@ -223,9 +210,9 @@ formatting = {
     },
 })
 
--- Setup nvim-tree
-require'nvim-tree'.setup{}
 
 require'lualine'.setup {options={theme = 'modus-vivendi'}}
+require('gitsigns').setup()
+
 
 EOF
