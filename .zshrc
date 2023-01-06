@@ -17,6 +17,10 @@ alias tk="tmux kill-server"
 alias vi="nvim"
 alias tree="tree -I __pycache__"
 alias joplin="~/.joplin-bin/bin/joplin"
+alias vc="python3 -m venv .env"
+alias va=". .env/bin/activate"
+alias vd="deactivate"
+alias cat="bat"
 # alias docker="podman"
 
 
@@ -27,3 +31,17 @@ if [ -f '/Users/duartecarmo/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/dua
 if [ -f '/Users/duartecarmo/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/duartecarmo/google-cloud-sdk/completion.zsh.inc'; fi
 
 export PATH="$HOME/.poetry/bin:$PATH"
+export PATH="$HOME/.emacs.d/bin:$PATH"
+
+# bun completions
+[ -s "/Users/duartecarmo/.bun/_bun" ] && source "/Users/duartecarmo/.bun/_bun"
+
+# Bun
+export BUN_INSTALL="/Users/duartecarmo/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+
+export JAVA_HOME=/opt/homebrew/opt/openjdk/bin/java
+
+# Created by `pipx` on 2022-12-19 20:02:26
+export PATH="$PATH:/Users/duartecarmo/.local/bin"
