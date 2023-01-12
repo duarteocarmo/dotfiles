@@ -23,6 +23,8 @@ require('packer').startup(function(use)
     },
   }
 
+
+
   use { -- Autocompletion
     'hrsh7th/nvim-cmp',
     requires = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
@@ -54,6 +56,7 @@ require('packer').startup(function(use)
   use "EdenEast/nightfox.nvim" -- Nightfox theme
   use 'rose-pine/neovim' -- Rose pine
   use 'Lokaltog/vim-monotone'
+  use 'rebelot/kanagawa.nvim'
 
   -- Interface
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
@@ -146,6 +149,7 @@ vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 -- Set colorscheme
 vim.o.termguicolors = true
 vim.cmd [[colorscheme carbonfox]]
+-- vim.cmd [[colorscheme kanagawa]]
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -165,7 +169,7 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
--- nnoremap <C-k> :Neoformat<Cr> 
+-- nnoremap <C-k> :Neoformat<Cr>
 vim.keymap.set('n', '<C-k>', ':Neoformat<Cr>')
 
 -- [[ Highlight on yank ]]
@@ -247,10 +251,10 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'help', 'beancount'},
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'help', 'beancount' },
 
   highlight = { enable = true },
-  indent = { enable = true,  disable = {"python"}},
+  indent = { enable = true, disable = { "python" } },
   incremental_selection = {
     enable = true,
     keymaps = {
@@ -366,7 +370,7 @@ require('mason').setup()
 
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
-local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'sumneko_lua', 'beancount'}
+local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'sumneko_lua', 'beancount', 'ruff_lsp' }
 
 -- Ensure the servers above are installed
 require('mason-lspconfig').setup {
@@ -416,11 +420,11 @@ require('lspconfig').sumneko_lua.setup {
 }
 
 
-require('lspconfig').beancount.setup{
-    init_options = {
-        journal_file = "/Users/duartecarmo/Repos/accounting/duarte.beancount",
-        -- journal_file = "<path to journal file>",
-    };
+require('lspconfig').beancount.setup {
+  init_options = {
+    journal_file = "/Users/duartecarmo/Repos/accounting/duarte.beancount",
+    -- journal_file = "<path to journal file>",
+  };
 };
 
 -- require('lspconfig').beancount.setup {

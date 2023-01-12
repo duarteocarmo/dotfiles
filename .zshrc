@@ -45,3 +45,8 @@ export JAVA_HOME=/opt/homebrew/opt/openjdk/bin/java
 
 # Created by `pipx` on 2022-12-19 20:02:26
 export PATH="$PATH:/Users/duartecarmo/.local/bin"
+
+autoload -Uz compinit
+zstyle ':completion:*' menu select
+fpath+=~/.zfunc
+
