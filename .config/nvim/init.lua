@@ -67,6 +67,7 @@ require('packer').startup(function(use)
   use 'sbdchd/neoformat' -- Code formatting
   use 'tpope/vim-commentary' -- gcc for commenting
   use 'jiangmiao/auto-pairs' -- auto close brackets
+  use 'tpope/vim-surround' -- auto close brackets
 
   -- File support
   use 'Glench/Vim-Jinja2-Syntax' -- Jinja 2
@@ -77,6 +78,9 @@ require('packer').startup(function(use)
 
   -- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', cond = vim.fn.executable 'make' == 1 }
+
+  -- Linting
+  use 'mfussenegger/nvim-lint'
 
   -- Add custom plugins to packer from /nvim/lua/custom/plugins.lua
   local has_plugins, plugins = pcall(require, 'custom.plugins')
@@ -113,6 +117,26 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 -- [[ Setting options ]]
 -- See `:help vim.o`
 
+-- Copilot
+vim.g.copilot_no_tab_map = true
+vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+vim.g.copilot_filetypes = {
+  ["*"] = false,
+  ["javascript"] = true,
+  ["typescript"] = true,
+  ["lua"] = false,
+  ["rust"] = true,
+  ["c"] = true,
+  ["c#"] = true,
+  ["c++"] = true,
+  ["go"] = true,
+  ["python"] = true,
+}
+
+-- Background light
+-- vim.o.background = 'dark'
+vim.o.background = 'light'
+
 -- Set relative line numbers
 vim.o.relativenumber = true
 
@@ -148,8 +172,8 @@ vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 
 -- Set colorscheme
 vim.o.termguicolors = true
-vim.cmd [[colorscheme carbonfox]]
--- vim.cmd [[colorscheme kanagawa]]
+-- vim.cmd [[colorscheme badwolf]]
+vim.cmd [[colorscheme kanagawa]]
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -170,6 +194,7 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- nnoremap <C-k> :Neoformat<Cr>
+vim.g.neoformat_enabled_python = { 'black' }
 vim.keymap.set('n', '<C-k>', ':Neoformat<Cr>')
 
 -- [[ Highlight on yank ]]
@@ -370,7 +395,7 @@ require('mason').setup()
 
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
-local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'sumneko_lua', 'beancount', 'ruff_lsp' }
+local servers = { 'pyright', 'clangd', 'rust_analyzer', 'tsserver', 'sumneko_lua', 'beancount', }
 
 -- Ensure the servers above are installed
 require('mason-lspconfig').setup {
@@ -426,6 +451,17 @@ require('lspconfig').beancount.setup {
     -- journal_file = "<path to journal file>",
   };
 };
+
+
+require('lint').linters_by_ft = {
+  python = { 'ruff', }
+}
+
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+  callback = function()
+    require("lint").try_lint()
+  end,
+})
 
 -- require('lspconfig').beancount.setup {
 --     init_options = {

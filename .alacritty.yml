@@ -1,63 +1,63 @@
 
-# # Colors (Paper Theme)
-# colors:
-#   # Default colors
-#   primary:
-#     background: '#F2EEDE'
-#     foreground: '#000000'
-
-#   # Normal colors
-#   normal:
-#     black:   '#000000'
-#     red:     '#CC3E28'
-#     green:   '#216609'
-#     yellow:  '#B58900'
-#     blue:    '#1E6FCC'
-#     magenta: '#5C21A5'
-#     cyan:    '#158C86'
-#     white:   '#AAAAAA'
-
-#   # Bright colors
-#   bright:
-#     black:   '#555555'
-#     red:     '#CC3E28'
-#     green:   '#216609'
-#     yellow:  '#B58900'
-#     blue:    '#1E6FCC'
-#     magenta: '#5C21A5'
-#     cyan:    '#158C86'
-#     white:   '#AAAAAA'
-# Colors (Hyper)
+# Colors (Paper Theme)
 colors:
   # Default colors
   primary:
-    background: '0x000000'
-    foreground: '0xffffff'
-  cursor:
-    text: '0xF81CE5'
-    cursor: '0xffffff'
+    background: '#F2EEDE'
+    foreground: '#000000'
 
   # Normal colors
   normal:
-    black:   '0x000000'
-    red:     '0xfe0100'
-    green:   '0x33ff00'
-    yellow:  '0xfeff00'
-    blue:    '0x0066ff'
-    magenta: '0xcc00ff'
-    cyan:    '0x00ffff'
-    white:   '0xd0d0d0'
+    black:   '#000000'
+    red:     '#CC3E28'
+    green:   '#216609'
+    yellow:  '#B58900'
+    blue:    '#1E6FCC'
+    magenta: '#5C21A5'
+    cyan:    '#158C86'
+    white:   '#AAAAAA'
 
   # Bright colors
   bright:
-    black:   '0x808080'
-    red:     '0xfe0100'
-    green:   '0x33ff00'
-    yellow:  '0xfeff00'
-    blue:    '0x0066ff'
-    magenta: '0xcc00ff'
-    cyan:    '0x00ffff'
-    white:   '0xFFFFFF'
+    black:   '#555555'
+    red:     '#CC3E28'
+    green:   '#216609'
+    yellow:  '#B58900'
+    blue:    '#1E6FCC'
+    magenta: '#5C21A5'
+    cyan:    '#158C86'
+    white:   '#AAAAAA'
+# Colors (Hyper)
+# colors:
+#   # Default colors
+#   primary:
+#     background: '0x000000'
+#     foreground: '0xffffff'
+#   cursor:
+#     text: '0xF81CE5'
+#     cursor: '0xffffff'
+
+#   # Normal colors
+#   normal:
+#     black:   '0x000000'
+#     red:     '0xfe0100'
+#     green:   '0x33ff00'
+#     yellow:  '0xfeff00'
+#     blue:    '0x0066ff'
+#     magenta: '0xcc00ff'
+#     cyan:    '0x00ffff'
+#     white:   '0xd0d0d0'
+
+#   # Bright colors
+#   bright:
+#     black:   '0x808080'
+#     red:     '0xfe0100'
+#     green:   '0x33ff00'
+#     yellow:  '0xfeff00'
+#     blue:    '0x0066ff'
+#     magenta: '0xcc00ff'
+#     cyan:    '0x00ffff'
+#     white:   '0xFFFFFF'
 font:
   bold:
     family: JetBrainsMono NF
