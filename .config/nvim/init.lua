@@ -57,11 +57,15 @@ require('packer').startup(function(use)
   use 'rose-pine/neovim' -- Rose pine
   use 'Lokaltog/vim-monotone'
   use 'rebelot/kanagawa.nvim'
+  use 'rakr/vim-two-firewatch'
+  use 'sainnhe/sonokai'
+  use 'folke/tokyonight.nvim'
 
   -- Interface
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
   use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
+  use 'cormacrelf/dark-notify' -- Notifies dark mode
 
   -- Code related
   use 'sbdchd/neoformat' -- Code formatting
@@ -135,7 +139,7 @@ vim.g.copilot_filetypes = {
 
 -- Background light
 -- vim.o.background = 'dark'
-vim.o.background = 'light'
+-- vim.o.background = 'light'
 
 -- Set relative line numbers
 vim.o.relativenumber = true
@@ -172,8 +176,9 @@ vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 
 -- Set colorscheme
 vim.o.termguicolors = true
--- vim.cmd [[colorscheme badwolf]]
-vim.cmd [[colorscheme kanagawa]]
+vim.cmd [[colorscheme badwolf]]
+-- vim.cmd [[colorscheme kanagawa]]
+-- vim.cmd [[colorscheme rose-pine]]
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -267,7 +272,7 @@ vim.keymap.set('n', '<leader>/', function()
 end, { desc = '[/] Fuzzily search in current buffer]' })
 
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
-vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
+vim.keymap.set('n', '<leader>sg', require('telescope.builtin').git_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
@@ -463,12 +468,23 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   end,
 })
 
--- require('lspconfig').beancount.setup {
---     init_options = {
---         journalFile = "/Users/duartecarmo/Repos/accounting/duarte.beancount",
---         pythonPath = "/Users/duartecarmo/Repos/accounting/.env/bin/python",
---     }
--- }
+-- dark mode
+local dn = require('dark_notify')
+
+dn.run({
+    schemes = {
+      light = {
+        colorscheme = "kanagawa",
+        background = "light",
+      },
+      dark = {
+        colorscheme = "night-owl",
+        background = "dark",
+      }
+    }
+})
+
+
 
 
 -- nvim-cmp setup
