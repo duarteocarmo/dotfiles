@@ -1,32 +1,34 @@
-
 # Colors (Paper Theme)
 colors:
   # Default colors
   primary:
-    background: '#F2EEDE'
-    foreground: '#000000'
+    background: '#000000'
+    foreground: '#ffffff'
+  cursor:
+    text: '#F81CE5'
+    cursor: '#ffffff'
 
   # Normal colors
   normal:
-    black:   '#000000'
-    red:     '#CC3E28'
-    green:   '#216609'
-    yellow:  '#B58900'
-    blue:    '#1E6FCC'
-    magenta: '#5C21A5'
-    cyan:    '#158C86'
-    white:   '#AAAAAA'
+    black: '#000000'
+    red: '#fe0100'
+    green: '#33ff00'
+    yellow: '#feff00'
+    blue: '#0066ff'
+    magenta: '#cc00ff'
+    cyan: '#00ffff'
+    white: '#d0d0d0'
 
   # Bright colors
   bright:
-    black:   '#555555'
-    red:     '#CC3E28'
-    green:   '#216609'
-    yellow:  '#B58900'
-    blue:    '#1E6FCC'
-    magenta: '#5C21A5'
-    cyan:    '#158C86'
-    white:   '#AAAAAA'
+    black: '#808080'
+    red: '#fe0100'
+    green: '#33ff00'
+    yellow: '#feff00'
+    blue: '#0066ff'
+    magenta: '#cc00ff'
+    cyan: '#00ffff'
+    white: '#FFFFFF'
 # Colors (Hyper)
 # colors:
 #   # Default colors
@@ -36,7 +38,6 @@ colors:
 #   cursor:
 #     text: '0xF81CE5'
 #     cursor: '0xffffff'
-
 #   # Normal colors
 #   normal:
 #     black:   '0x000000'
@@ -47,7 +48,6 @@ colors:
 #     magenta: '0xcc00ff'
 #     cyan:    '0x00ffff'
 #     white:   '0xd0d0d0'
-
 #   # Bright colors
 #   bright:
 #     black:   '0x808080'
@@ -60,39 +60,38 @@ colors:
 #     white:   '0xFFFFFF'
 font:
   bold:
-    family: JetBrainsMono NF
+    family: Noto Sans Mono
     style: Bold
   bold_italic:
-    family: JetBrainsMono NF
+    family: Noto Sans Mono
     style: Bold Italic
   italic:
-    family: JetBrainsMono NF
+    family: Noto Sans Mono
     style: Italic
   normal:
-    family: JetBrainsMono NF
+    family: Noto Sans Mono
     style: Regular
   size: 12
 key_bindings:
-  - chars: b
+  - chars: "\eb"
     key: Left
     mods: Alt
-  - chars: f
+  - chars: "\ef"
     key: Right
     mods: Alt
-  - chars: OH
+  - chars: "\eOH"
     key: Left
     mode: AppCursor
     mods: Command
-  - chars: OF
+  - chars: "\eOF"
     key: Right
     mode: AppCursor
     mods: Command
-  - chars: 
+  - chars: "\x15"
     key: Back
     mods: Command
-  - chars: 
+  - chars: "\e"
     key: Back
     mods: Alt
 live_config_reload: true
-
-
+theme: hyper

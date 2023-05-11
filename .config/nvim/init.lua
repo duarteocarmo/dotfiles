@@ -76,6 +76,7 @@ require('packer').startup(function(use)
   -- File support
   use 'Glench/Vim-Jinja2-Syntax' -- Jinja 2
   use 'nathangrigg/vim-beancount' -- Beancount files
+  use 'fatih/vim-go' -- Go file support
 
   -- Fuzzy Finder (files, lsp, etc)
   use { 'nvim-telescope/telescope.nvim', branch = '0.1.x', requires = { 'nvim-lua/plenary.nvim' } }
@@ -135,7 +136,11 @@ vim.g.copilot_filetypes = {
   ["c++"] = true,
   ["go"] = true,
   ["python"] = true,
+  ["r"] = true,
+  ["gomod"] = true,
 }
+-- Go files indentation is stupid
+vim.api.nvim_command('autocmd FileType go setlocal shiftwidth=4 tabstop=4')
 
 -- Background light
 -- vim.o.background = 'dark'
@@ -176,7 +181,7 @@ vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 
 -- Set colorscheme
 vim.o.termguicolors = true
-vim.cmd [[colorscheme badwolf]]
+vim.cmd [[colorscheme night-owl]]
 -- vim.cmd [[colorscheme kanagawa]]
 -- vim.cmd [[colorscheme rose-pine]]
 
@@ -200,6 +205,7 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 
 -- nnoremap <C-k> :Neoformat<Cr>
 vim.g.neoformat_enabled_python = { 'black' }
+vim.g.neoformat_enabled_html = { 'prettierd' }
 vim.keymap.set('n', '<C-k>', ':Neoformat<Cr>')
 
 -- [[ Highlight on yank ]]
@@ -272,7 +278,7 @@ vim.keymap.set('n', '<leader>/', function()
 end, { desc = '[/] Fuzzily search in current buffer]' })
 
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
-vim.keymap.set('n', '<leader>sg', require('telescope.builtin').git_files, { desc = '[S]earch [F]iles' })
+vim.keymap.set('n', '<leader>sh', require('telescope.builtin').git_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
@@ -281,7 +287,7 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'help', 'beancount' },
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'help', 'beancount', 'r' },
 
   highlight = { enable = true },
   indent = { enable = true, disable = { "python" } },
@@ -400,7 +406,7 @@ require('mason').setup()
 
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
-local servers = { 'pyright', 'clangd', 'rust_analyzer', 'tsserver', 'sumneko_lua', 'beancount', }
+local servers = { 'pyright', 'clangd', 'rust_analyzer', 'tsserver', 'sumneko_lua', 'beancount', 'r_language_server', 'gopls', 'julials' }
 
 -- Ensure the servers above are installed
 require('mason-lspconfig').setup {
@@ -451,6 +457,7 @@ require('lspconfig').sumneko_lua.setup {
 
 
 require('lspconfig').beancount.setup {
+  cmd = { "beancount-language-server", "--stdio", "something" },
   init_options = {
     journal_file = "/Users/duartecarmo/Repos/accounting/duarte.beancount",
     -- journal_file = "<path to journal file>",
@@ -474,7 +481,8 @@ local dn = require('dark_notify')
 dn.run({
     schemes = {
       light = {
-        colorscheme = "kanagawa",
+        -- colorscheme = "kanagawa",
+        colorscheme = "tokyonight-day",
         background = "light",
       },
       dark = {
