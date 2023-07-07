@@ -1,6 +1,9 @@
-export ZSH="/Users/duartecarmo/.oh-my-zsh"
+export ZSH="/Users/duarteocarmo/.oh-my-zsh"
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
 ZSH_THEME="mh"
-plugins=(asdf zsh-z zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(asdf z zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -26,29 +29,39 @@ alias at="alacritty-themes"
 # alias docker="podman"
 
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/duartecarmo/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/duartecarmo/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/duartecarmo/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/duartecarmo/google-cloud-sdk/completion.zsh.inc'; fi
-
-export PATH="$HOME/.poetry/bin:$PATH"
-export PATH="$HOME/.emacs.d/bin:$PATH"
-
-# bun completions
-[ -s "/Users/duartecarmo/.bun/_bun" ] && source "/Users/duartecarmo/.bun/_bun"
-
-# Bun
-export BUN_INSTALL="/Users/duartecarmo/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-
-export JAVA_HOME=/opt/homebrew/opt/openjdk/bin/java
-
-# Created by `pipx` on 2022-12-19 20:02:26
-export PATH="$PATH:/Users/duartecarmo/.local/bin"
+. "$HOME/.asdf/asdf.sh"
+fpath=(${ASDF_DIR}/completions $fpath)
 
 autoload -Uz compinit
 zstyle ':completion:*' menu select
 fpath+=~/.zfunc
 
+# >>> juliaup initialize >>>
+
+# !! Contents within this block are managed by juliaup !!
+
+path=('/Users/duarteocarmo/.juliaup/bin' $path)
+export PATH
+
+# <<< juliaup initialize <<<
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/duarteocarmo/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/duarteocarmo/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/duarteocarmo/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/duarteocarmo/google-cloud-sdk/completion.zsh.inc'; fi
+
+# bun completions
+[ -s "/Users/duarteocarmo/.bun/_bun" ] && source "/Users/duarteocarmo/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# pnpm
+export PNPM_HOME="/Users/duarteocarmo/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

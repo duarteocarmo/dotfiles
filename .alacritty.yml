@@ -1,4 +1,6 @@
 # Colors (Paper Theme)
+# window:
+#   opacity: 0.85
 colors:
   # Default colors
   primary:
@@ -95,3 +97,6 @@ key_bindings:
     mods: Alt
 live_config_reload: true
 theme: hyper
+
+env:
+  TERM: xterm-256color

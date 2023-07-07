@@ -10,6 +10,8 @@ end
 require('packer').startup(function(use)
   -- Package manager
   use 'wbthomason/packer.nvim'
+  -- Useful status updates for LSP
+  use { 'j-hui/fidget.nvim', tag = 'legacy' }
 
   use { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
@@ -17,13 +19,8 @@ require('packer').startup(function(use)
       -- Automatically install LSPs to stdpath for neovim
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
-
-      -- Useful status updates for LSP
-      'j-hui/fidget.nvim',
     },
   }
-
-
 
   use { -- Autocompletion
     'hrsh7th/nvim-cmp',
@@ -48,13 +45,13 @@ require('packer').startup(function(use)
   use 'lewis6991/gitsigns.nvim'
 
   -- Color schemes
-  use 'sjl/badwolf' -- Badwolf theme
-  use 'navarasu/onedark.nvim' -- Theme inspired by Atom
-  use 'tanvirtin/monokai.nvim' -- Monokai Theme
+  use 'sjl/badwolf'                 -- Badwolf theme
+  use 'navarasu/onedark.nvim'       -- Theme inspired by Atom
+  use 'tanvirtin/monokai.nvim'      -- Monokai Theme
   use 'projekt0n/github-nvim-theme' -- Github theme
-  use 'haishanh/night-owl.vim' -- Nightowl theme
-  use "EdenEast/nightfox.nvim" -- Nightfox theme
-  use 'rose-pine/neovim' -- Rose pine
+  use 'haishanh/night-owl.vim'      -- Nightowl theme
+  use "EdenEast/nightfox.nvim"      -- Nightfox theme
+  use 'rose-pine/neovim'            -- Rose pine
   use 'Lokaltog/vim-monotone'
   use 'rebelot/kanagawa.nvim'
   use 'rakr/vim-two-firewatch'
@@ -62,21 +59,21 @@ require('packer').startup(function(use)
   use 'folke/tokyonight.nvim'
 
   -- Interface
-  use 'nvim-lualine/lualine.nvim' -- Fancier statusline
+  use 'nvim-lualine/lualine.nvim'           -- Fancier statusline
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-  use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
-  use 'cormacrelf/dark-notify' -- Notifies dark mode
+  use 'tpope/vim-sleuth'                    -- Detect tabstop and shiftwidth automatically
+  use 'cormacrelf/dark-notify'              -- Notifies dark mode
 
   -- Code related
-  use 'sbdchd/neoformat' -- Code formatting
+  use 'sbdchd/neoformat'     -- Code formatting
   use 'tpope/vim-commentary' -- gcc for commenting
   use 'jiangmiao/auto-pairs' -- auto close brackets
-  use 'tpope/vim-surround' -- auto close brackets
+  use 'tpope/vim-surround'   -- auto close brackets
 
   -- File support
-  use 'Glench/Vim-Jinja2-Syntax' -- Jinja 2
+  use 'Glench/Vim-Jinja2-Syntax'  -- Jinja 2
   use 'nathangrigg/vim-beancount' -- Beancount files
-  use 'fatih/vim-go' -- Go file support
+  use 'fatih/vim-go'              -- Go file support
 
   -- Fuzzy Finder (files, lsp, etc)
   use { 'nvim-telescope/telescope.nvim', branch = '0.1.x', requires = { 'nvim-lua/plenary.nvim' } }
@@ -86,6 +83,10 @@ require('packer').startup(function(use)
 
   -- Linting
   use 'mfussenegger/nvim-lint'
+
+  use { "akinsho/toggleterm.nvim", tag = '*', config = function()
+    require("toggleterm").setup()
+  end }
 
   -- Add custom plugins to packer from /nvim/lua/custom/plugins.lua
   local has_plugins, plugins = pcall(require, 'custom.plugins')
@@ -100,7 +101,6 @@ end)
 
 -- When we are bootstrapping a configuration, it doesn't
 -- make sense to execute the rest of the init.lua.
---
 -- You'll need to restart nvim, and then it will work.
 if is_bootstrap then
   print '=================================='
@@ -144,7 +144,6 @@ vim.api.nvim_command('autocmd FileType go setlocal shiftwidth=4 tabstop=4')
 
 -- Background light
 -- vim.o.background = 'dark'
--- vim.o.background = 'light'
 
 -- Set relative line numbers
 vim.o.relativenumber = true
@@ -185,6 +184,9 @@ vim.cmd [[colorscheme night-owl]]
 -- vim.cmd [[colorscheme kanagawa]]
 -- vim.cmd [[colorscheme rose-pine]]
 
+-- -- Respect transparency
+-- vim.cmd [[ highlight Normal guibg=none ]]
+
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 
@@ -204,9 +206,16 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- nnoremap <C-k> :Neoformat<Cr>
-vim.g.neoformat_enabled_python = { 'black' }
+vim.g.neoformat_enabled_python = { 'black', 'isort' }
 vim.g.neoformat_enabled_html = { 'prettierd' }
+vim.g.neoformat_enabled_htmldjango = { 'djlint' }
+vim.g.neoformat_enabled_jinja = { 'djlint' }
+vim.g.neoformat_try_node_exe = 1
+vim.g.neoformat_run_all_formatters = 1
+
+-- My keymaps
 vim.keymap.set('n', '<C-k>', ':Neoformat<Cr>')
+vim.keymap.set('n', '<C-t>', ':ToggleTerm<Cr>')
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -254,6 +263,10 @@ require('gitsigns').setup {
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
   defaults = {
+    file_ignore_patterns = {
+      "node_modules/*",
+      ".env/*",
+    },
     mappings = {
       i = {
         ['<C-u>'] = false,
@@ -281,13 +294,15 @@ vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { des
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').git_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
+-- vim.keymap.set('n', '<leader>sg', require('fzf-lua').live_grep, { desc = '[S]earch by [G]rep' })
+-- vim.keymap.set('n', '<leader>sg', require('fzf-lua').live_grep({ cmd = "git grep --line-number --column --color=always" }))
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'help', 'beancount', 'r' },
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'vimdoc', 'beancount', 'r' },
 
   highlight = { enable = true },
   indent = { enable = true, disable = { "python" } },
@@ -406,7 +421,7 @@ require('mason').setup()
 
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
-local servers = { 'pyright', 'clangd', 'rust_analyzer', 'tsserver', 'sumneko_lua', 'beancount', 'r_language_server', 'gopls', 'julials' }
+local servers = { 'pyright', 'clangd', 'rust_analyzer', 'tsserver', 'lua_ls', 'beancount', 'gopls', 'ruff_lsp' }
 
 -- Ensure the servers above are installed
 require('mason-lspconfig').setup {
@@ -434,7 +449,7 @@ local runtime_path = vim.split(package.path, ';')
 table.insert(runtime_path, 'lua/?.lua')
 table.insert(runtime_path, 'lua/?/init.lua')
 
-require('lspconfig').sumneko_lua.setup {
+require('lspconfig').lua_ls.setup {
   on_attach = on_attach,
   capabilities = capabilities,
   settings = {
@@ -457,11 +472,11 @@ require('lspconfig').sumneko_lua.setup {
 
 
 require('lspconfig').beancount.setup {
-  cmd = { "beancount-language-server", "--stdio", "something" },
+  cmd = { "beancount-language-server" },
   init_options = {
-    journal_file = "/Users/duartecarmo/Repos/accounting/duarte.beancount",
+    journal_file = "/Users/duarteocarmo/Repos/accounting/duarte.beancount",
     -- journal_file = "<path to journal file>",
-  };
+  },
 };
 
 
@@ -479,20 +494,34 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 local dn = require('dark_notify')
 
 dn.run({
-    schemes = {
-      light = {
-        -- colorscheme = "kanagawa",
-        colorscheme = "tokyonight-day",
-        background = "light",
-      },
-      dark = {
-        colorscheme = "night-owl",
-        background = "dark",
-      }
+  schemes = {
+    light = {
+      -- colorscheme = "kanagawa",
+      colorscheme = "github_light",
+      background = "light",
+    },
+    dark = {
+      colorscheme = "night-owl",
+      background = "dark",
     }
+  }
 })
 
 
+-- toggleterm
+function _G.set_terminal_keymaps()
+  local opts = { buffer = 0 }
+  vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
+  vim.keymap.set('t', 'jk', [[<C-\><C-n>]], opts)
+  vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
+  vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
+  vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
+  vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
+  vim.keymap.set('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
+end
+
+-- if you only want these mappings for toggle term use  instead
+vim.cmd('autocmd! TermOpen term://*toggleterm#*  lua set_terminal_keymaps()')
 
 
 -- nvim-cmp setup
