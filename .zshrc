@@ -24,8 +24,9 @@ alias vc="python3 -m venv .env"
 alias va=". .env/bin/activate"
 alias vd="deactivate"
 alias cat="bat"
-alias docker-clean="docker stop $(docker ps -a -q) && docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq)"
+# alias docker-clean="docker stop $(docker ps -a -q) && docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq)"
 alias at="alacritty-themes"
+alias mkdir="mkdir -p"
 # alias docker="podman"
 
 
@@ -65,3 +66,6 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+#
+#
+export PATH="/Users/duarteocarmo/.local/bin:$PATH"

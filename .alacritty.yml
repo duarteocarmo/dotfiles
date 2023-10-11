@@ -61,6 +61,31 @@ colors:
 #     cyan:    '0x00ffff'
 #     white:   '0xFFFFFF'
 font:
+  size: 12
+  # bold:
+  # family: Victor Mono
+  # style: Bold
+  # bold_italic:
+  # family: Victor Mono
+  # style: Bold Italic
+  # italic:
+  # family: Victor Mono
+  # style: Italic
+  # normal:
+  # family: Victor Mono
+  # style: Regular
+  # bold:
+  #   family: MonoLisa
+  #   style: Bold
+  # bold_italic:
+  #   family: MonoLisa
+  #   style: Bold Italic
+  # italic:
+  #   family: MonoLisa
+  #   style: Italic
+  # normal:
+  #   family: MonoLisa
+  #   style: Light
   bold:
     family: Noto Sans Mono
     style: Bold
@@ -73,7 +98,6 @@ font:
   normal:
     family: Noto Sans Mono
     style: Regular
-  size: 12
 key_bindings:
   - chars: "\eb"
     key: Left
