@@ -7,11 +7,22 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
 	vim.cmd([[packadd packer.nvim]])
 end
 
+local mykey
+
 require("packer").startup(function(use)
 	-- Package manager
 	use("wbthomason/packer.nvim")
 	-- Useful status updates for LSP
-	use({ "j-hui/fidget.nvim", tag = "legacy" })
+	--
+	use({
+		"j-hui/fidget.nvim",
+		tag = "legacy",
+		config = function()
+			require("fidget").setup({
+				-- options
+			})
+		end,
+	})
 
 	use({ -- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
@@ -38,6 +49,27 @@ require("packer").startup(function(use)
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		after = "nvim-treesitter",
 	})
+	use({
+		"folke/trouble.nvim",
+		config = function()
+			require("trouble").setup({
+				{
+					icons = false,
+					fold_open = "v", -- icon used for open folds
+					fold_closed = ">", -- icon used for closed folds
+					indent_lines = false, -- add an indent guide below the fold icons
+					signs = {
+						-- icons / text used for a diagnostic
+						error = "error",
+						warning = "warn",
+						hint = "hint",
+						information = "info",
+					},
+					use_diagnostic_signs = true, -- enabling this will use the signs defined in your lsp client
+				},
+			})
+		end,
+	})
 
 	-- Git related plugins
 	use("tpope/vim-fugitive")
@@ -56,7 +88,10 @@ require("packer").startup(function(use)
 	use("rebelot/kanagawa.nvim")
 	use("rakr/vim-two-firewatch")
 	use("sainnhe/sonokai")
+	use("habamax/vim-habamax")
+	use("sainnhe/gruvbox-material")
 	use("folke/tokyonight.nvim")
+	use("tomasr/molokai")
 	use({ "ellisonleao/gruvbox.nvim" })
 	use({
 		"loctvl842/monokai-pro.nvim",
@@ -69,23 +104,64 @@ require("packer").startup(function(use)
 
 	-- Interface
 	use("nvim-lualine/lualine.nvim") -- Fancier statusline
-	use("lukas-reineke/indent-blankline.nvim") -- Add indentation guides even on blank lines
+	use({
+		"lukas-reineke/indent-blankline.nvim",
+		tag = "v2.20.8",
+	}) -- Add indentation guides even on blank lines
 	use("tpope/vim-sleuth") -- Detect tabstop and shiftwidth automatically
 	use("cormacrelf/dark-notify") -- Notifies dark mode
+	use({
+		"folke/which-key.nvim",
+		config = function()
+			vim.o.timeout = true
+			vim.o.timeoutlen = 300
+			require("which-key").setup({
+				-- your configuration comes here
+				-- or leave it empty to use the default settings
+				-- refer to the configuration section below
+			})
+		end,
+	})
 
 	-- Code related
 	use("sbdchd/neoformat") -- Code formatting
+	use("stevearc/conform.nvim") -- Code formatting
 	use("tpope/vim-commentary") -- gcc for commenting
-	use("jiangmiao/auto-pairs") -- auto close brackets
+	-- use("jiangmiao/auto-pairs") -- auto close brackets
+	use({
+		"windwp/nvim-autopairs",
+		config = function()
+			require("nvim-autopairs").setup({})
+		end,
+	})
 	use("tpope/vim-surround") -- auto close brackets
 
 	-- AI
 	use("Exafunction/codeium.vim") -- codeium
+	use("David-Kunz/gen.nvim")
+	-- packer.nvim
+	use({
+		"robitx/gp.nvim",
+		config = function()
+			-- local file = io.open("/Users/duarteocarmo/.openai_api_key", "r")
+			-- if file then -- Check if the file was opened successfully
+			-- 	mykey = file:read() -- Read the first line
+			-- 	file:close() -- Close the file
+			-- else
+			-- 	print("Failed to open the file") -- Handle the case where the file couldn't be opened
+			-- end
+
+			require("gp").setup({
+				-- openai_api_key = mykey,
+				openai_api_key = { "cat", "/Users/duarteocarmo/.openai_api_key" },
+			})
+		end,
+	})
 
 	-- File support
 	use("Glench/Vim-Jinja2-Syntax") -- Jinja 2
 	use("nathangrigg/vim-beancount") -- Beancount files
-	use("fatih/vim-go") -- Go file support
+	use("NoahTheDuke/vim-just") -- Just file support
 
 	-- Fuzzy Finder (files, lsp, etc)
 	use({ "nvim-telescope/telescope.nvim", branch = "0.1.x", requires = { "nvim-lua/plenary.nvim" } })
@@ -95,14 +171,6 @@ require("packer").startup(function(use)
 
 	-- Linting
 	use("mfussenegger/nvim-lint")
-
-	use({
-		"akinsho/toggleterm.nvim",
-		tag = "*",
-		config = function()
-			require("toggleterm").setup()
-		end,
-	})
 
 	-- Add custom plugins to packer from /nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -194,9 +262,9 @@ vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 
 -- Set colorscheme
 vim.o.termguicolors = true
-vim.cmd([[colorscheme night-owl]])
--- vim.cmd [[colorscheme kanagawa]]
--- vim.cmd [[colorscheme rose-pine]]
+local my_theme_dark = "github_dark_tritanopia"
+local my_theme_light = "github_light_tritanopia"
+vim.g.colors_name = my_theme_dark
 
 -- -- Respect transparency
 -- vim.cmd [[ highlight Normal guibg=none ]]
@@ -219,7 +287,6 @@ vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
--- nnoremap <C-k> :Neoformat<Cr>
 vim.g.neoformat_enabled_python = { "black", "isort" }
 vim.g.neoformat_enabled_html = { "prettierd" }
 vim.g.neoformat_enabled_htmldjango = { "djlint" }
@@ -230,13 +297,39 @@ vim.g.neoformat_try_node_exe = 1
 vim.g.neoformat_run_all_formatters = 1
 
 -- My keymaps
-vim.keymap.set("n", "<C-k>", ":Neoformat<Cr>")
-vim.keymap.set("n", "<C-t>", ":ToggleTerm<Cr>")
+-- vim.keymap.set("n", "<C-k>", ":Neoformat<Cr>")
+
+-- Conform
+require("conform").setup({
+	formatters_by_ft = {
+		lua = { "stylua" },
+		python = { { "ruff_format", "black" } },
+		javascript = { { "prettierd", "prettier" } },
+		toml = { "taplo" },
+		rust = { "rustfmt", "leptosfmt" },
+		go = { "goimports", "gofmt" },
+	},
+})
+
+-- vim.keymap.set("n", "<C-k>", require("conform").format, { desc = "Conform" })
+vim.keymap.set("n", "<C-k>", function()
+	require("conform").format({ lsp_fallback = true })
+	-- vim.lsp.buf.format({ async = true })
+	if vim.bo.filetype == "python" then
+		vim.lsp.buf.code_action({
+			context = {
+				only = { "source.fixAll.ruff" },
+			},
+			apply = true,
+		})
+	end
+end, { desc = "FixStuff" })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
+
 	callback = function()
 		vim.highlight.on_yank()
 	end,
@@ -261,6 +354,33 @@ require("indent_blankline").setup({
 	char = "┊",
 	show_trailing_blankline_indent = false,
 })
+
+-- AI helpers config
+
+-- require("gp").setup({
+-- 	openai_api_key = openai_api_key,
+-- })
+
+vim.keymap.set({ "n", "v" }, "<leader>oo", ":Gen<CR>")
+vim.keymap.set({ "n", "v" }, "<leader>oa", ":Gen Ask<CR>")
+vim.keymap.set({ "n", "v" }, "<leader>oc", ":Gen Code<CR>")
+vim.keymap.set({ "n", "v" }, "<leader>ot", ":Gen Text<CR>")
+
+require("gen").prompts = {
+	Ask = { prompt = "$input", replace = false, model = "orca2" },
+	Code = {
+		prompt = "$input \n\n ```$filetype\n$text\n```",
+		model = "codellama:7b-instruct",
+		replace = false,
+	},
+	Text = {
+		prompt = "$input \n\n ```\n$text\n```",
+		model = "zephyr",
+		replace = false,
+	},
+}
+
+-- GpChat
 
 -- Gitsigns
 -- See `:help gitsigns.txt`
@@ -306,11 +426,11 @@ end, { desc = "[/] Fuzzily search in current buffer]" })
 
 vim.keymap.set("n", "<leader>sf", require("telescope.builtin").find_files, { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<leader>sh", require("telescope.builtin").git_files, { desc = "[S]earch [F]iles" })
-vim.keymap.set("n", "<leader>sw", require("telescope.builtin").grep_string, { desc = "[S]earch current [W]ord" })
 vim.keymap.set("n", "<leader>sg", require("telescope.builtin").live_grep, { desc = "[S]earch by [G]rep" })
+vim.keymap.set("n", "<leader>sd", require("telescope.builtin").diagnostics, { desc = "[S]earch [D]iagnostics" })
+-- vim.keymap.set("n", "<leader>sw", require("telescope.builtin").grep_string, { desc = "[S]earch current [W]ord" })
 -- vim.keymap.set('n', '<leader>sg', require('fzf-lua').live_grep, { desc = '[S]earch by [G]rep' })
 -- vim.keymap.set('n', '<leader>sg', require('fzf-lua').live_grep({ cmd = "git grep --line-number --column --color=always" }))
-vim.keymap.set("n", "<leader>sd", require("telescope.builtin").diagnostics, { desc = "[S]earch [D]iagnostics" })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -462,6 +582,7 @@ local servers = {
 	"ruff_lsp",
 	"tailwindcss",
 	"cssls",
+	"beancount",
 }
 
 -- Ensure the servers above are installed
@@ -479,9 +600,6 @@ for _, lsp in ipairs(servers) do
 		capabilities = capabilities,
 	})
 end
-
--- Turn on status information
-require("fidget").setup()
 
 -- Example custom configuration for lua
 --
@@ -508,14 +626,25 @@ require("lspconfig").lua_ls.setup({
 			-- Do not send telemetry data containing a randomized but unique identifier
 			telemetry = { enable = false },
 		},
+
+		["rust-analyzer"] = {
+			procMacro = {
+				ignored = {
+					leptos_macro = {
+						-- optional: --
+						-- "component",
+						"server",
+					},
+				},
+			},
+		},
 	},
 })
 
 require("lspconfig").beancount.setup({
-	cmd = { "beancount-language-server" },
+	{ "beancount-language-server", "--stdio" },
 	init_options = {
-		journal_file = "/Users/duarteocarmo/Repos/accounting/duarte.beancount",
-		-- journal_file = "<path to journal file>",
+		journalFile = "/Users/duarteocarmo/Repos/accounting/duarte.beancount",
 	},
 })
 
@@ -537,56 +666,35 @@ local dn = require("dark_notify")
 dn.run({
 	schemes = {
 		light = {
-			-- colorscheme = "kanagawa",
-			colorscheme = "github_light",
+			colorscheme = my_theme_light,
 			background = "light",
 		},
 		dark = {
-			-- colorscheme = "night-owl",
-			colorscheme = "tokyonight-night",
+			colorscheme = my_theme_dark,
 			background = "dark",
 		},
 	},
 })
-
--- toggleterm
-function _G.set_terminal_keymaps()
-	local opts = { buffer = 0 }
-	vim.keymap.set("t", "<esc>", [[<C-\><C-n>]], opts)
-	vim.keymap.set("t", "jk", [[<C-\><C-n>]], opts)
-	vim.keymap.set("t", "<C-h>", [[<Cmd>wincmd h<CR>]], opts)
-	vim.keymap.set("t", "<C-j>", [[<Cmd>wincmd j<CR>]], opts)
-	vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]], opts)
-	vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], opts)
-	vim.keymap.set("t", "<C-w>", [[<C-\><C-n><C-w>]], opts)
-end
 
 -- if you only want these mappings for toggle term use  instead
 vim.cmd("autocmd! TermOpen term://*toggleterm#*  lua set_terminal_keymaps()")
 
 -- nvim-cmp setup
 local cmp = require("cmp")
-local luasnip = require("luasnip")
 
 cmp.setup({
-	snippet = {
-		expand = function(args)
-			luasnip.lsp_expand(args.body)
-		end,
-	},
 	mapping = cmp.mapping.preset.insert({
 		["<C-d>"] = cmp.mapping.scroll_docs(-4),
 		["<C-f>"] = cmp.mapping.scroll_docs(4),
 		["<C-Space>"] = cmp.mapping.complete(),
 		["<CR>"] = cmp.mapping.confirm({
-			behavior = cmp.ConfirmBehavior.Replace,
+			-- behavior = cmp.ConfirmBehavior.Replace,
+			behavior = cmp.ConfirmBehavior.Insert,
 			select = true,
 		}),
 		["<Tab>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_next_item()
-			elseif luasnip.expand_or_jumpable() then
-				luasnip.expand_or_jump()
 			else
 				fallback()
 			end
@@ -594,8 +702,6 @@ cmp.setup({
 		["<S-Tab>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_prev_item()
-			elseif luasnip.jumpable(-1) then
-				luasnip.jump(-1)
 			else
 				fallback()
 			end
@@ -603,9 +709,6 @@ cmp.setup({
 	}),
 	sources = {
 		{ name = "nvim_lsp" },
-		{ name = "luasnip" },
 	},
+	snippet = { expand = function() end },
 })
-
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et

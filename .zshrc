@@ -27,6 +27,7 @@ alias cat="bat"
 # alias docker-clean="docker stop $(docker ps -a -q) && docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq)"
 alias at="alacritty-themes"
 alias mkdir="mkdir -p"
+alias gcm="bash /Users/duarteocarmo/commiter.sh"
 # alias docker="podman"
 
 
@@ -69,3 +70,6 @@ esac
 #
 #
 export PATH="/Users/duarteocarmo/.local/bin:$PATH"
+
+
+source /Users/duarteocarmo/.config/broot/launcher/bash/br

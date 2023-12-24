@@ -87,16 +87,16 @@ font:
   #   family: MonoLisa
   #   style: Light
   bold:
-    family: Noto Sans Mono
+    family: NotoSansM Nerd Font Mono
     style: Bold
   bold_italic:
-    family: Noto Sans Mono
+    family: NotoSansM Nerd Font Mono
     style: Bold Italic
   italic:
-    family: Noto Sans Mono
+    family: NotoSansM Nerd Font Mono
     style: Italic
   normal:
-    family: Noto Sans Mono
+    family: NotoSansM Nerd Font Mono
     style: Regular
 key_bindings:
   - chars: "\eb"
