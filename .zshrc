@@ -28,6 +28,8 @@ alias cat="bat"
 alias at="alacritty-themes"
 alias mkdir="mkdir -p"
 alias gcm="bash /Users/duarteocarmo/commiter.sh"
+alias pa="poetry shell"
+alias pd="exit"
 # alias docker="podman"
 
 
@@ -73,3 +75,8 @@ export PATH="/Users/duarteocarmo/.local/bin:$PATH"
 
 
 source /Users/duarteocarmo/.config/broot/launcher/bash/br
+eval "$(direnv hook zsh)"
+. "$HOME/.cargo/env"
+
+eval "$(atuin init zsh --disable-up-arrow)"
+export EDITOR=nvim
