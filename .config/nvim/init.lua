@@ -1,9 +1,6 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- [[ Install `lazy.nvim` plugin manager ]]
---    https://github.com/folke/lazy.nvim
---    `:help lazy.nvim.txt` for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -17,15 +14,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- [[ Configure plugins ]]
--- NOTE: Here is where you install your plugins.
---  You can configure plugins using the `config` key.
---
---  You can also configure plugins after the setup call,
---    as they will be available in your neovim runtime.
 require('lazy').setup({
-  -- NOTE: First, some plugins that don't require any configuration
-
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
@@ -33,8 +22,6 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
-  -- NOTE: This is where your plugins related to LSP can be installed.
-  --  The configuration is done below. Search for lspconfig to find it below.
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
@@ -145,19 +132,16 @@ require('lazy').setup({
       end,
     },
   },
-
-
-  -- Colorschemes
-  "rebelot/kanagawa.nvim",
-  "projekt0n/github-nvim-theme",
-  "nyoom-engineering/oxocarbon.nvim",
   {
-    "mcchrish/zenbones.nvim",
-    dependencies = {
-      "rktjmp/lush.nvim",
-    }
+    "miikanissi/modus-themes.nvim",
+    priority = 1000,
+    config = function()
+      require("modus-themes").setup({
+        style = "auto",
+        variant = "tritanopia", -- Theme comes in four variants `default`, `tinted`, `deuteranopia`, and `tritanopia`
+      })
+    end
   },
-
 
 
   {
@@ -188,13 +172,6 @@ require('lazy').setup({
         },
       }
     end
-    -- tag = "v2.20.8",
-    -- config = function()
-    --   require("indent_blankline").setup({
-    --     char = "┊",
-    --     show_trailing_blankline_indent = false,
-    --   })
-    -- end
   },
 
   -- "gc" to comment visual regions/lines
@@ -235,21 +212,6 @@ require('lazy').setup({
     event = "InsertEnter",
     opts = {} -- this is equalent to setup({}) function
   },
-  -- AI Completion Engine (codeium)
-  {
-    'Exafunction/codeium.vim',
-    event = 'BufEnter',
-    config = function()
-      vim.g.codeium_filetypes = {
-        beancount = false,
-      }
-
-      vim.g.codeium_enabled = true
-      vim.api.nvim_set_keymap("i", "<C-J>", "codeium#Accept()", { silent = true, expr = true })
-      vim.api.nvim_set_keymap("i", "<C-;>", "codeium#CycleCompletions", { silent = true, expr = true })
-    end,
-    enabled = false
-  },
   {
     "github/copilot.vim",
     enabled = true,
@@ -260,7 +222,7 @@ require('lazy').setup({
         ["*"] = false,
         ["javascript"] = true,
         ["typescript"] = true,
-        ["lua"] = false,
+        ["lua"] = true,
         ["rust"] = true,
         ["c"] = true,
         ["c#"] = true,
@@ -299,17 +261,15 @@ require('lazy').setup({
     config = function()
       local dn = require('dark_notify')
 
-      local theme_dark = "neobones"
-      local theme_light = theme_dark
 
       dn.run({
         schemes = {
           light = {
-            colorscheme = theme_dark,
+            colorscheme = "modus",
             background = "light",
           },
           dark = {
-            colorscheme = theme_light,
+            colorscheme = "modus",
             background = "dark",
           },
         },
@@ -319,21 +279,32 @@ require('lazy').setup({
   -- Beancount file support
   "nathangrigg/vim-beancount",
   -- Justfile support
-  "NoahTheDuke/vim-just"
+  "NoahTheDuke/vim-just",
 
-  -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
-  --       These are some example plugins that I've included in the kickstart repository.
-  --       Uncomment any of the lines below to enable them.
-  -- require 'kickstart.plugins.autoformat',
-  -- require 'kickstart.plugins.debug',
+  {
+    'stevearc/conform.nvim',
+    opts = {},
+    config = function()
+      require("conform").setup({
+        formatters_by_ft = {
+          python = function(bufnr)
+            if require("conform").get_formatter_info("ruff_format", bufnr).available then
+              return { "ruff_format", "ruff_fix" }
+            else
+              return { "isort", "black" }
+            end
+          end,
+          javascript = { { "prettierd", "prettier" } },
+          beancount = { "bean-format" },
+        },
+      })
+      vim.keymap.set({ "n", "v" }, "<C-k>", function()
+        require("conform").format({ async = false, lsp_fallback = true })
+      end)
+    end,
 
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
-  --    up-to-date with whatever is in the kickstart repo.
-  --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  --
-  --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  -- { import = 'custom.plugins' },
+  }
+
 }, {})
 
 -- [[ Setting options ]]
@@ -562,12 +533,6 @@ end, 0)
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
-  -- NOTE: Remember that lua is a real programming language, and as such it is possible
-  -- to define small helper and utility functions so you don't have to repeat yourself
-  -- many times.
-  --
-  -- In this case, we create a function that lets us more easily define mappings specific
-  -- for LSP related items. It sets the mode, buffer and description for us each time.
   local nmap = function(keys, func, desc)
     if desc then
       desc = 'LSP: ' .. desc
@@ -588,7 +553,6 @@ local on_attach = function(_, bufnr)
 
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -598,24 +562,20 @@ local on_attach = function(_, bufnr)
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, '[W]orkspace [L]ist Folders')
 
-  -- Create a command `:Format` local to the LSP buffer
-  vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-    vim.lsp.buf.format()
-  end, { desc = 'Format current buffer with LSP' })
-
-  -- Ctrl-k for formatting is a must
-  nmap('<C-k>', function()
-    vim.lsp.buf.format()
-    if vim.bo.filetype == "python" then
-      vim.lsp.buf.code_action({
-        context = {
-          only = { "source.fixAll.ruff" },
-        },
-        apply = true,
-      })
+  vim.api.nvim_create_user_command("Format", function(args)
+    local range = nil
+    if args.count ~= -1 then
+      local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
+      range = {
+        start = { args.line1, 0 },
+        ["end"] = { args.line2, end_line:len() },
+      }
     end
-  end, 'Format that baby')
+    require("conform").format({ async = true, lsp_fallback = true, range = range })
+  end, { range = true, desc = 'Format current buffer with LSP' })
 end
+
+
 
 -- document existing key chains
 require('which-key').register {
@@ -655,12 +615,8 @@ local servers = {
   rust_analyzer = {},
   tsserver = {},
   html = { filetypes = { 'html', 'twig', 'hbs' } },
-  beancount = {
-    { "beancount-language-server", "--stdio" },
-    init_options = {
-      journalFile = "/Users/duarteocarmo/Repos/accounting/duarte.beancount",
-    },
-  },
+  beancount = {},
+
 
   lua_ls = {
     Lua = {
@@ -696,6 +652,18 @@ mason_lspconfig.setup_handlers {
     }
   end,
 }
+
+
+require 'lspconfig'.beancount.setup {
+  cmd = { "beancount-language-server", "--stdio" },
+  init_options = {
+    journal_file = "/Users/duarteocarmo/Repos/accounting/duarte.beancount",
+  },
+}
+
+-- Default options
+
+
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
