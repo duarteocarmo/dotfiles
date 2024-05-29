@@ -9,10 +9,15 @@ if wezterm.config_builder then
 end
 
 
+-- local darktheme = 'Ef-Dark'
+-- local lighttheme = 'Ef-Duo-Light'
 -- local darktheme = 'Modus-Vivendi'
-local darktheme = 'Ef-Dark'
 -- local lighttheme = 'Modus-Operandi'
-local lighttheme = 'Ef-Duo-Light'
+local darktheme = 'Modus-Vivendi-Tinted'
+local lighttheme = 'Modus-Operandi-Tinted'
+-- local lighttheme = 'neobones_light'
+-- local lighttheme = 'Gruvbox light, soft (base16)'
+-- local darktheme = 'Gruvbox dark, hard (base16)'
 
 -- Adaptive theme
 function scheme_for_appearance(appearance)
@@ -44,7 +49,10 @@ config.freetype_load_flags = 'NO_HINTING'
 
 
 -- font
-config.font = wezterm.font 'Noto Sans Mono'
+-- config.font = wezterm.font 'Noto Sans Mono'
+-- config.font = wezterm.font 'Comic Mono'
+-- config.font = wezterm.font 'Fira Code Retina'
+config.font = wezterm.font 'SF Mono'
 -- In newer versions of wezterm, use the config_builder which will
 -- config.font =
 --   wezterm.font('Noto Sans Mono', { weight = 'Bold', italic = false })

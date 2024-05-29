@@ -138,7 +138,7 @@ require('lazy').setup({
     config = function()
       require("modus-themes").setup({
         style = "auto",
-        variant = "tritanopia", -- Theme comes in four variants `default`, `tinted`, `deuteranopia`, and `tritanopia`
+        variant = "tinted", -- Theme comes in four variants `default`, `tinted`, `deuteranopia`, and `tritanopia`
       })
     end
   },
@@ -296,6 +296,9 @@ require('lazy').setup({
           end,
           javascript = { { "prettierd", "prettier" } },
           beancount = { "bean-format" },
+          toml = { "taplo" },
+          htmldjango = { "djlint" },
+          css = { { "prettierd", "prettier" } }
         },
       })
       vim.keymap.set({ "n", "v" }, "<C-k>", function()
@@ -303,12 +306,13 @@ require('lazy').setup({
       end)
     end,
 
-  }
+  },
+
 
 }, {})
 
 -- [[ Setting options ]]
--- See `:help vim.o`
+-- See `:help vim.oEW_NO_E`
 -- NOTE: You can change these options as you wish!
 
 -- Set relative line numbers
