@@ -7,18 +7,19 @@ rectangle
 visual-studio-code
 spotify 
 stats 
-alacritty 
 bitwarden 
-hiddenbar
 ticktick
 telegram
 notion
-insomnia
+wezterm
+shottr
 
 * homebrew
 tmux
-asdf
+mise
 neovim
+jordanbaird-ice
+pipx
 
 * Apps
 reeder
@@ -27,5 +28,3 @@ dropbox
 
 * Terminal 
 - oh my zsh 
-- tldr
-- joplin

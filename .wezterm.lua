@@ -13,11 +13,15 @@ end
 -- local lighttheme = 'Ef-Duo-Light'
 -- local darktheme = 'Modus-Vivendi'
 -- local lighttheme = 'Modus-Operandi'
-local darktheme = 'Modus-Vivendi-Tinted'
-local lighttheme = 'Modus-Operandi-Tinted'
 -- local lighttheme = 'neobones_light'
 -- local lighttheme = 'Gruvbox light, soft (base16)'
 -- local darktheme = 'Gruvbox dark, hard (base16)'
+-- local darktheme = 'Tokyo Night'
+-- local lighttheme = 'Tokyo Night Day'
+local darktheme = 'Modus-Vivendi-Tinted'
+local lighttheme = 'Modus-Operandi-Tinted'
+-- local darktheme = 'Ef-Dark'
+-- local lighttheme = 'Ef-Day'
 
 -- Adaptive theme
 function scheme_for_appearance(appearance)
@@ -40,18 +44,16 @@ end)
 
 
 config.hide_tab_bar_if_only_one_tab = true
--- config.window_background_opacity = 0.3
--- config.macos_window_background_blur = 20
 --
 config.window_close_confirmation = 'NeverPrompt'
 config.freetype_load_flags = 'NO_HINTING'
-
 
 
 -- font
 -- config.font = wezterm.font 'Noto Sans Mono'
 -- config.font = wezterm.font 'Comic Mono'
 -- config.font = wezterm.font 'Fira Code Retina'
+-- config.font = wezterm.font 'JetBrains Mono'
 config.font = wezterm.font 'SF Mono'
 -- In newer versions of wezterm, use the config_builder which will
 -- config.font =

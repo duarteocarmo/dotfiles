@@ -3,7 +3,7 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
 ZSH_THEME="mh"
-plugins=(asdf z zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(z zsh-autosuggestions zsh-syntax-highlighting poetry asdf)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -37,12 +37,7 @@ alias pd="exit"
 # alias docker="podman"
 
 
-. "$HOME/.asdf/asdf.sh"
-fpath=(${ASDF_DIR}/completions $fpath)
 
-autoload -Uz compinit
-zstyle ':completion:*' menu select
-fpath+=~/.zfunc
 
 # >>> juliaup initialize >>>
 
@@ -84,3 +79,6 @@ eval "$(direnv hook zsh)"
 
 eval "$(atuin init zsh --disable-up-arrow)"
 export EDITOR=nvim
+
+# Created by `pipx` on 2024-06-12 09:07:35
+export PATH="$PATH:/Users/duarteocarmo/.local/bin"

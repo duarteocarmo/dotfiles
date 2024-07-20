@@ -57,7 +57,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',  opts = {} },
+  { 'folke/which-key.nvim',           opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -132,6 +132,8 @@ require('lazy').setup({
       end,
     },
   },
+  { 'jaredgorski/fogbell.vim' },
+  { 'owickstrom/vim-colors-paramount' },
   {
     "miikanissi/modus-themes.nvim",
     priority = 1000,
@@ -142,8 +144,7 @@ require('lazy').setup({
       })
     end
   },
-
-
+  { 'sjl/badwolf' },
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
@@ -151,6 +152,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = true,
+        theme = 'auto',
         component_separators = '|',
         section_separators = '',
       },
@@ -212,6 +214,7 @@ require('lazy').setup({
     event = "InsertEnter",
     opts = {} -- this is equalent to setup({}) function
   },
+  -- Copilot plugin
   {
     "github/copilot.vim",
     enabled = true,
@@ -231,6 +234,34 @@ require('lazy').setup({
         ["python"] = true,
         ["beancount"] = false
       }
+    end
+  },
+  -- Codeium
+  {
+    'Exafunction/codeium.vim',
+    event = 'BufEnter',
+    enabled = false,
+    config = function()
+      vim.g.codeium_filetypes = {
+        ["*"] = false,
+        ["javascript"] = true,
+        ["typescript"] = true,
+        ["lua"] = true,
+        ["rust"] = true,
+        ["c"] = true,
+        ["c#"] = true,
+        ["c++"] = true,
+        ["go"] = true,
+        ["python"] = true,
+        ["beancount"] = false
+      }
+
+      vim.keymap.set('i', '<C-J>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
+      vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end,
+        { expr = true, silent = true })
+      vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end,
+        { expr = true, silent = true })
+      vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true, silent = true })
     end
   },
   -- GPT plugin
@@ -266,6 +297,7 @@ require('lazy').setup({
         schemes = {
           light = {
             colorscheme = "modus",
+            -- colorscheme = "fogbell_light",
             background = "light",
           },
           dark = {
@@ -280,6 +312,22 @@ require('lazy').setup({
   "nathangrigg/vim-beancount",
   -- Justfile support
   "NoahTheDuke/vim-just",
+  -- Floating terminal
+  {
+    "numToStr/FTerm.nvim",
+    config = function()
+      require("FTerm").setup({
+        dimensions = {
+          height = 0.8,
+          width = 0.8,
+        },
+        border = "single",
+      })
+      vim.keymap.set({ "n", "v" }, "<leader>tt", ":lua require('FTerm').toggle()<CR>")
+      vim.keymap.set({ "t" }, "<Esc>", "<C-\\><C-n>:lua require('FTerm').toggle()<CR>")
+    end
+
+  },
 
   {
     'stevearc/conform.nvim',
@@ -305,10 +353,7 @@ require('lazy').setup({
         require("conform").format({ async = false, lsp_fallback = true })
       end)
     end,
-
   },
-
-
 }, {})
 
 -- [[ Setting options ]]
@@ -355,6 +400,10 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
+
+-- Keep shit in the middle
+-- vim.o.scrolloff = 999
+
 -- Go file completion
 vim.api.nvim_command("autocmd FileType go setlocal shiftwidth=4 tabstop=4")
 
@@ -373,6 +422,9 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous dia
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+
+vim.keymap.set('n', '<leader>sr', ":%s/<C-R><C-W>/", { desc = 'Search and replace' })
+
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -396,6 +448,18 @@ require('telescope').setup {
       },
     },
   },
+  pickers = {
+    -- Default configuration for builtin pickers goes here:
+    -- picker_name = {
+    --   picker_config_key = value,
+    --   ...
+    -- }
+    -- Now the picker_config_key will be applied every time you call this
+    -- builtin picker
+    colorscheme = {
+      enable_preview = true
+    }
+  }
 }
 
 -- Enable telescope fzf native, if installed
@@ -463,7 +527,6 @@ vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { de
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
-vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -718,5 +781,6 @@ cmp.setup {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
     { name = 'path' },
+    { name = 'codeium' },
   },
 }
