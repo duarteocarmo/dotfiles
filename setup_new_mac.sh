@@ -14,6 +14,7 @@ fish_update_completions
 brew install --cask appcleaner
 brew install --cask bitwarden
 brew install --cask caffeine
+brew install --cask cap
 brew install --cask cursor
 brew install --cask cyberduck
 brew install --cask db-browser-for-sqlite
@@ -24,7 +25,6 @@ brew install --cask font-iosevka
 brew install --cask font-jetbrains-mono
 brew install --cask github
 brew install --cask google-chrome
-brew install --cask reader
 brew install --cask handbrake
 brew install --cask iina
 brew install --cask imageoptim
@@ -36,15 +36,16 @@ brew install --cask maestral
 brew install --cask meetingbar
 brew install --cask menubar-countdown
 brew install --cask mimestream
-brew install --cask cap
 brew install --cask mullvadvpn
 brew install --cask ngrok
 brew install --cask nordvpn
 brew install --cask notion
 brew install --cask notion-calendar
 brew install --cask olama
+brew install --cask ollama
 brew install --cask pika
 brew install --cask raycast
+brew install --cask reader
 brew install --cask rectangle
 brew install --cask shottr
 brew install --cask slack
@@ -97,9 +98,9 @@ brew install prettierd
 brew install ripgrep
 brew install sqlite
 brew install stripe
-brew install uv
 brew install tesseract
 brew install tmux
+brew install uv
 brew install wget
 brew install zig
 
