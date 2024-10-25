@@ -57,7 +57,59 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',           opts = {} },
+  {
+    'folke/which-key.nvim',
+    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+    opts = {
+      icons = {
+        -- set icon mappings to true if you have a Nerd Font
+        mappings = vim.g.have_nerd_font,
+        -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
+        -- default whick-key.nvim defined Nerd Font icons, otherwise define a string table
+        keys = vim.g.have_nerd_font and {} or {
+          Up = '<Up> ',
+          Down = '<Down> ',
+          Left = '<Left> ',
+          Right = '<Right> ',
+          C = '<C-…> ',
+          M = '<M-…> ',
+          D = '<D-…> ',
+          S = '<S-…> ',
+          CR = '<CR> ',
+          Esc = '<Esc> ',
+          ScrollWheelDown = '<ScrollWheelDown> ',
+          ScrollWheelUp = '<ScrollWheelUp> ',
+          NL = '<NL> ',
+          BS = '<BS> ',
+          Space = '<Space> ',
+          Tab = '<Tab> ',
+          F1 = '<F1>',
+          F2 = '<F2>',
+          F3 = '<F3>',
+          F4 = '<F4>',
+          F5 = '<F5>',
+          F6 = '<F6>',
+          F7 = '<F7>',
+          F8 = '<F8>',
+          F9 = '<F9>',
+          F10 = '<F10>',
+          F11 = '<F11>',
+          F12 = '<F12>',
+        },
+      },
+
+      -- Document existing key chains
+      spec = {
+        { '<leader>c', group = '[C]ode',     mode = { 'n', 'x' } },
+        { '<leader>d', group = '[D]ocument' },
+        { '<leader>r', group = '[R]ename' },
+        { '<leader>s', group = '[S]earch' },
+        { '<leader>w', group = '[W]orkspace' },
+        { '<leader>t', group = '[T]oggle' },
+        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+      },
+    },
+  },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -271,13 +323,68 @@ require('lazy').setup({
       local my_prompt = assert(io.open("/Users/duarteocarmo/.gpt4prompt", "r")):read("*all")
       require("gp").setup({
         openai_api_key = { "cat", "/Users/duarteocarmo/.openai_api_key" },
+        default_command_agent = nil,
+        default_chat_agent = nil,
+        providers = {
+          anthropic = {
+            disable = false,
+            endpoint = "https://api.anthropic.com/v1/messages",
+            secret = { "cat", "/Users/duarteocarmo/.anthropic_api_key" },
+          },
+          openai = {
+            disable = false,
+            endpoint = "https://api.openai.com/v1/chat/completions",
+            secret = { "cat", "/Users/duarteocarmo/.openai_api_key" },
+          },
+          ollama = {
+            disable = false,
+            endpoint = "http://localhost:11434/v1/chat/completions",
+            secret = "dummy_secret",
+          }
+        },
         agents = {
           {
-            name = "ChatGPT4",
+            provider = "openai",
+            name = "Duarte - GPT4o",
             chat = true,
-            command = false,
-            model = { model = "gpt-4-1106-preview", temperature = 1.1, top_p = 1 },
-            system_prompt = my_prompt
+            command = true,
+            model = { model = "gpt-4o", temperature = 1.1, top_p = 1 },
+            system_prompt = my_prompt,
+          },
+          {
+            provider = "anthropic",
+            name = "Duarte - Claude-3-5-Sonnet",
+            chat = true,
+            command = true,
+            model = { model = "claude-3-5-sonnet-20240620", temperature = 0.8, top_p = 1 },
+            system_prompt = my_prompt,
+          },
+          {
+            provider = "ollama",
+            name = "Duarte - Llama",
+            chat = true,
+            command = true,
+            model = {
+              model = "llama3.2:latest",
+              -- temperature = 0.6,
+              -- top_p = 1,
+              -- min_p = 0.05,
+            },
+            -- system prompt (use this to specify the persona/role of the AI)
+            -- system_prompt = "You are a general AI assistant.",
+            system_prompt = my_prompt,
+          },
+          {
+            provider = "ollama",
+            name = "Duarte - Deepseek",
+            chat = true,
+            command = true,
+            model = {
+              model = "deepseek-coder:6.7b",
+            },
+            -- system prompt (use this to specify the persona/role of the AI)
+            -- system_prompt = "You are a general AI assistant.",
+            system_prompt = my_prompt,
           },
         },
       })
@@ -346,7 +453,7 @@ require('lazy').setup({
           beancount = { "bean-format" },
           toml = { "taplo" },
           htmldjango = { "djlint" },
-          css = { { "prettierd", "prettier" } }
+          css = { { "prettier" } }
         },
       })
       vim.keymap.set({ "n", "v" }, "<C-k>", function()
@@ -422,7 +529,6 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous dia
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
-
 vim.keymap.set('n', '<leader>sr', ":%s/<C-R><C-W>/", { desc = 'Search and replace' })
 
 
@@ -644,23 +750,6 @@ end
 
 
 
--- document existing key chains
-require('which-key').register {
-  ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-  ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-  ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
-  ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
-  ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-  ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-  ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
-  ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-}
--- register which-key VISUAL mode
--- required for visual <leader>hs (hunk stage) to work
-require('which-key').register({
-  ['<leader>'] = { name = 'VISUAL <leader>' },
-  ['<leader>h'] = { 'Git [H]unk' },
-}, { mode = 'v' })
 
 -- mason-lspconfig requires that these setup functions are called in this order
 -- before setting up the servers.
@@ -683,8 +772,6 @@ local servers = {
   tsserver = {},
   html = { filetypes = { 'html', 'twig', 'hbs' } },
   beancount = {},
-
-
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },

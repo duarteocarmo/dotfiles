@@ -28,6 +28,7 @@ alias vc="python3 -m venv .env"
 alias va=". .env/bin/activate"
 alias vd="deactivate"
 alias cat="bat"
+alias l="eza -l -a"
 # alias docker-clean="docker stop $(docker ps -a -q) && docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq)"
 alias at="alacritty-themes"
 alias mkdir="mkdir -p"
@@ -82,3 +83,5 @@ export EDITOR=nvim
 
 # Created by `pipx` on 2024-06-12 09:07:35
 export PATH="$PATH:/Users/duarteocarmo/.local/bin"
+
+
