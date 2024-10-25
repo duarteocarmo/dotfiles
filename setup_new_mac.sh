@@ -1,5 +1,14 @@
 # install homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+export PATH="/opt/homebrew/bin:$PATH"
+
+
+# install fish shell 
+echo /opt/homebrew/bin/fish | sudo tee -a /etc/shells
+chsh -s /opt/homebrew/bin/fish
+fish_add_path /opt/homebrew/bin
+fish_update_completions
+
 
 # install homebrew casks
 brew install --cask appcleaner
@@ -53,13 +62,48 @@ brew install --cask zed
 brew install --cask zettlr
 
 # non brews
-brew install jordanbaird-ice
-brew install neovim
-
-# install fish shell 
+brew install atuin
+brew install awscurl
+brew install bat
+brew install coreutils 
+brew install curl
+brew install dark-notify
+brew install direnv
+brew install dive
+brew install duckdb
+brew install eza
+brew install ffmpeg
 brew install fish
+brew install fzf
+brew install gcc
+brew install git
+brew install git-lfs
+brew install graphviz
+brew install htop
+brew install jordanbaird-ice
+brew install jq
+brew install just
+brew install lazygit
+brew install litestream
+brew install lpeg
+brew install lua
+brew install luajit
+brew install luarocks
+brew install mysql
+brew install neovim
+brew install php
+brew install pipx
+brew install prettierd
+brew install ripgrep
+brew install sqlite
+brew install stripe
+brew install uv
+brew install tesseract
+brew install tmux
+brew install wget
+brew install zig
 
+# uv
+echo 'uvx --generate-shell-completion fish | source' >> ~/.config/fish/config.fish
 # asdf 
-brew install coreutils curl git
 echo -e "\nsource "(brew --prefix asdf)"/libexec/asdf.fish" >> ~/.config/fish/config.fish
-
