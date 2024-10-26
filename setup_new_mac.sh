@@ -3,7 +3,7 @@
 export PATH="/opt/homebrew/bin:$PATH"
 
 
-# install fish shell 
+# install fish shell and update
 echo /opt/homebrew/bin/fish | sudo tee -a /etc/shells
 chsh -s /opt/homebrew/bin/fish
 fish_add_path /opt/homebrew/bin
@@ -63,11 +63,14 @@ brew install --cask zed
 brew install --cask zettlr
 
 # non brews
+brew install asdf
 brew install atuin
 brew install awscurl
 brew install bat
 brew install coreutils 
+brew install cormacrelf/tap/dark-notify
 brew install curl
+brew install cmake
 brew install dark-notify
 brew install direnv
 brew install dive
@@ -99,6 +102,7 @@ brew install ripgrep
 brew install sqlite
 brew install stripe
 brew install tesseract
+brew install thefuck
 brew install tmux
 brew install uv
 brew install wget
@@ -106,5 +110,26 @@ brew install zig
 
 # uv
 echo 'uvx --generate-shell-completion fish | source' >> ~/.config/fish/config.fish
+
+
 # asdf 
 echo -e "\nsource "(brew --prefix asdf)"/libexec/asdf.fish" >> ~/.config/fish/config.fish
+asdf plugin-add python
+asdf install python latest
+# set the python version you want for global
+
+
+# update completions
+fish_update_completions
+
+
+# fisher 
+curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+fisher install jethrokuan/z
+
+# rust and cargo 
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+
+# setup rosetta
+/usr/sbin/softwareupdate --install-rosetta --agree-to-license
