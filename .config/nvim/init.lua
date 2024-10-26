@@ -320,21 +320,20 @@ require('lazy').setup({
   {
     "robitx/gp.nvim",
     config = function()
-      local my_prompt = assert(io.open("/Users/duarteocarmo/.gpt4prompt", "r")):read("*all")
+      local my_prompt = assert(io.open("/Users/duarteocarmo/Dropbox/dots/.gpt4prompt", "r")):read("*all")
       require("gp").setup({
-        openai_api_key = { "cat", "/Users/duarteocarmo/.openai_api_key" },
         default_command_agent = nil,
         default_chat_agent = nil,
         providers = {
           anthropic = {
             disable = false,
             endpoint = "https://api.anthropic.com/v1/messages",
-            secret = { "cat", "/Users/duarteocarmo/.anthropic_api_key" },
+            secret = { "cat", "/Users/duarteocarmo/Dropbox/dots/.anthropic_api_key" },
           },
           openai = {
             disable = false,
             endpoint = "https://api.openai.com/v1/chat/completions",
-            secret = { "cat", "/Users/duarteocarmo/.openai_api_key" },
+            secret = { "cat", "/Users/duarteocarmo/Dropbox/dots/.openai_api_key" },
           },
           ollama = {
             disable = false,
@@ -766,12 +765,12 @@ require('mason-lspconfig').setup()
 --  define the property 'filetypes' to the map in question.
 local servers = {
   clangd = {},
-  gopls = {},
+  -- gopls = {},
   pyright = {},
   rust_analyzer = {},
-  tsserver = {},
+  -- tsserver = {},
   html = { filetypes = { 'html', 'twig', 'hbs' } },
-  beancount = {},
+  -- beancount = {},
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },

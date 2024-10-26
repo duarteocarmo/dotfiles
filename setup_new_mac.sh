@@ -1,3 +1,6 @@
+# setup rosetta
+/usr/sbin/softwareupdate --install-rosetta --agree-to-license
+
 # install homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 export PATH="/opt/homebrew/bin:$PATH"
@@ -12,6 +15,7 @@ fish_update_completions
 
 # install homebrew casks
 brew install --cask appcleaner
+brew install --cask arc
 brew install --cask bitwarden
 brew install --cask caffeine
 brew install --cask cap
@@ -67,10 +71,10 @@ brew install asdf
 brew install atuin
 brew install awscurl
 brew install bat
+brew install cmake
 brew install coreutils 
 brew install cormacrelf/tap/dark-notify
 brew install curl
-brew install cmake
 brew install dark-notify
 brew install direnv
 brew install dive
@@ -80,6 +84,7 @@ brew install ffmpeg
 brew install fish
 brew install fzf
 brew install gcc
+brew install gh
 brew install git
 brew install git-lfs
 brew install graphviz
@@ -111,17 +116,15 @@ brew install zig
 # uv
 echo 'uvx --generate-shell-completion fish | source' >> ~/.config/fish/config.fish
 
-
 # asdf 
 echo -e "\nsource "(brew --prefix asdf)"/libexec/asdf.fish" >> ~/.config/fish/config.fish
 asdf plugin-add python
+asdf plugin add golang https://github.com/asdf-community/asdf-golang.git
+asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 asdf install python latest
-# set the python version you want for global
-
-
-# update completions
+asdf install golang latest
+asdf install nodejs latest
 fish_update_completions
-
 
 # fisher 
 curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
@@ -129,7 +132,3 @@ fisher install jethrokuan/z
 
 # rust and cargo 
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-
-
-# setup rosetta
-/usr/sbin/softwareupdate --install-rosetta --agree-to-license
