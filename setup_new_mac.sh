@@ -57,6 +57,7 @@ brew install --cask spotify
 brew install --cask stats
 brew install --cask tableplus
 brew install --cask telegram
+brew install --cask the-unarchiver
 brew install --cask ticktick
 brew install --cask visual-studio-code
 brew install --cask vlc
