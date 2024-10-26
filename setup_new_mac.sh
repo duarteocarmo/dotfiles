@@ -16,6 +16,7 @@ fish_update_completions
 # install homebrew casks
 brew install --cask appcleaner
 brew install --cask arc
+brew install --cask arc
 brew install --cask bitwarden
 brew install --cask caffeine
 brew install --cask cap
@@ -36,6 +37,7 @@ brew install --cask itsycal
 brew install --cask jordanbaird-ice
 brew install --cask languagetool
 brew install --cask logitech-g-hub
+brew install --cask logitech-options
 brew install --cask maestral
 brew install --cask meetingbar
 brew install --cask menubar-countdown
