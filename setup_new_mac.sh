@@ -33,6 +33,7 @@ brew install --cask db-browser-for-sqlite
 brew install --cask discord
 brew install --cask docker
 brew install --cask firefox
+brew install --cask font-commit-mono-nerd-font
 brew install --cask font-iosevka
 brew install --cask font-jetbrains-mono
 brew install --cask github
@@ -113,12 +114,14 @@ brew install neovim
 brew install php
 brew install pipx
 brew install prettierd
+brew install rclone
 brew install ripgrep
 brew install sqlite
 brew install stripe
 brew install tesseract
 brew install thefuck
 brew install tmux
+brew install tree
 brew install uv
 brew install wget
 brew install zig
