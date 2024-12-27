@@ -47,3 +47,5 @@ bind -M insert \cr _atuin_search
 
 source /opt/homebrew/opt/asdf/libexec/asdf.fish
 uvx --generate-shell-completion fish | source
+
+set fish_greeting

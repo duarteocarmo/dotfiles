@@ -86,3 +86,5 @@ config.audible_bell = "Disabled"
 -- config.front_end = "WebGpu"
 
 return config
+
+

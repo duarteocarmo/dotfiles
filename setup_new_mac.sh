@@ -96,6 +96,7 @@ brew install fish
 brew install fzf
 brew install gcc
 brew install gh
+brew install ghostty
 brew install git
 brew install git-lfs
 brew install graphviz

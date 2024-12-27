@@ -1,0 +1,13 @@
+# theme = dark:neobones_dark,light:neobones_light
+# theme = dark:Github Dark,light:Github
+theme = dark:modus_vivendi_tinted,light:modus_operandi_tinted
+
+# local darktheme = 'Modus-Vivendi-Tinted'
+# local lighttheme = 'Modus-Operandi-Tinted'
+font-family = "SF Mono"
+
+
+# shell-integration = fish
+shell-integration-features = no-cursor
+cursor-style = block
+font-size = 12
