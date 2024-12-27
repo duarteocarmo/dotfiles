@@ -416,6 +416,8 @@ require('lazy').setup({
   },
   -- Beancount file support
   "nathangrigg/vim-beancount",
+  "crispgm/cmp-beancount",
+
   -- Justfile support
   "NoahTheDuke/vim-just",
   -- Floating terminal
@@ -868,5 +870,11 @@ cmp.setup {
     { name = 'luasnip' },
     { name = 'path' },
     { name = 'codeium' },
+    {
+      name = 'beancount',
+      option = {
+        account = '/Users/duarteocarmo/Repos/accounting/duarte.beancount'
+      }
+    }
   },
 }
