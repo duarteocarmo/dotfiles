@@ -10,6 +10,7 @@ alias ga="git add "
 alias gc="git commit -m "
 alias gp="git push"
 alias gpc="git push origin (git branch --show-current)"
+alias gcz="npx cz"
 # alias tn="zellij -s"
 # alias tl="zellij ls"
 # alias ta="zellij attach"
@@ -21,7 +22,7 @@ alias tk="tmux kill-server"
 alias vi="nvim"
 alias tree="tree -I __pycache__"
 alias joplin="~/.joplin-bin/bin/joplin"
-alias vc="python3 -m venv .env"
+alias vc="python -m venv .env"
 alias va=". .env/bin/activate.fish"
 alias vd="deactivate"
 alias cat="bat"
@@ -32,6 +33,7 @@ alias mkdir="mkdir -p"
 alias gcm="bash /Users/duarteocarmo/commiter.sh"
 alias pa="poetry shell"
 alias pd="exit"
+alias psh="poetry shell"
 
 
 set PATH /usr/local/bin $PATH
@@ -49,3 +51,9 @@ source /opt/homebrew/opt/asdf/libexec/asdf.fish
 uvx --generate-shell-completion fish | source
 
 set fish_greeting
+
+# Created by `pipx` on 2025-01-02 13:49:01
+set PATH $PATH /Users/duarteocarmo/.local/bin
+
+set -gx EDITOR nvim
+set -gx VISUAL nvim

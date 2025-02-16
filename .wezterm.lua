@@ -54,10 +54,29 @@ config.freetype_load_flags = 'NO_HINTING'
 -- config.font = wezterm.font 'Comic Mono'
 -- config.font = wezterm.font 'Fira Code Retina'
 -- config.font = wezterm.font 'JetBrains Mono'
-config.font = wezterm.font 'SF Mono'
+-- config.font = wezterm.font 'SF Mono'
+-- config.font = wezterm.font 'SFMono Nerd Font'
 -- In newer versions of wezterm, use the config_builder which will
 -- config.font =
 --   wezterm.font('Noto Sans Mono', { weight = 'Bold', italic = false })
+
+config.font_size = 12.0
+config.font = wezterm.font {
+  -- family = 'SFMono Nerd Font',
+  -- family = 'Noto Sans Mono',
+  family = 'TX-02',
+  -- weight = 'DemiBold',
+}
+
+
+-- config.font_size = 12
+-- config.font = wezterm.font {
+--   family = 'JetBrains Mono',
+--   weight = 'DemiBold',
+-- }
+
+-- config.default_cursor_style = "BlinkingUnderline"
+
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
 
 -- make task numbers clickable
@@ -83,6 +102,7 @@ config.keys = {
 }
 
 config.audible_bell = "Disabled"
+-- config.front_end = "OpenGL"
 -- config.front_end = "WebGpu"
 
 return config
