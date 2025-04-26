@@ -57,3 +57,10 @@ set PATH $PATH /Users/duarteocarmo/.local/bin
 
 set -gx EDITOR nvim
 set -gx VISUAL nvim
+
+# pnpm
+set -gx PNPM_HOME "/Users/duarteocarmo/Library/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+  set -gx PATH "$PNPM_HOME" $PATH
+end
+# pnpm end

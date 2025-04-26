@@ -83,88 +83,116 @@ return {
       }
     end,
   },
-  {
-    "robitx/gp.nvim",
-    config = function()
-      local my_prompt = assert(io.open("/Users/duarteocarmo/Dropbox/dots/.gpt4prompt", "r")):read("*all")
-      local conf = {
-        default_command_agent = nil,
-        default_chat_agent = nil,
-        providers = {
-          anthropic = {
-            disable = false,
-            endpoint = "https://api.anthropic.com/v1/messages",
-            secret = { "cat", "/Users/duarteocarmo/Dropbox/dots/.anthropic_api_key" },
-          },
-          openai = {
-            disable = false,
-            endpoint = "https://api.openai.com/v1/chat/completions",
-            secret = { "cat", "/Users/duarteocarmo/Dropbox/dots/.openai_api_key" },
-          },
-          ollama = {
-            disable = false,
-            endpoint = "http://localhost:11434/v1/chat/completions",
-            secret = "dummy_secret",
-          },
-        },
-        agents = {
-          {
-            provider = "openai",
-            name = "Duarte - GPT4o",
-            chat = true,
-            command = true,
-            model = { model = "gpt-4o", temperature = 1.1, top_p = 1 },
-            system_prompt = my_prompt,
-          },
-          {
-            provider = "anthropic",
-            name = "Duarte - Claude-3-5-Sonnet",
-            chat = true,
-            command = true,
-            model = { model = "claude-3-5-sonnet-20240620", temperature = 0.8, top_p = 1 },
-            system_prompt = my_prompt,
-          },
-          {
-            provider = "ollama",
-            name = "Duarte - Llama",
-            chat = true,
-            command = true,
-            model = {
-              model = "llama3.2:latest",
-              -- temperature = 0.6,
-              -- top_p = 1,
-              -- min_p = 0.05,
-            },
-            -- system prompt (use this to specify the persona/role of the AI)
-            -- system_prompt = "You are a general AI assistant.",
-            system_prompt = my_prompt,
-          },
-          {
-            provider = "ollama",
-            name = "Duarte - Deepseek",
-            chat = true,
-            command = true,
-            model = {
-              model = "deepseek-coder:6.7b",
-            },
-            -- system prompt (use this to specify the persona/role of the AI)
-            -- system_prompt = "You are a general AI assistant.",
-            system_prompt = my_prompt,
-          },
-        },
-      }
-      require("gp").setup(conf)
-      vim.keymap.set({ "n", "v" }, "<leader>pc", ":GpChatNew popup<CR>")
-      vim.keymap.set({ "n", "v" }, "<leader>pr", ":GpRewrite<CR>")
-      vim.keymap.set({ "n", "v" }, "<leader>pa", ":GpAppend<CR>")
+  -- {
+  --   "robitx/gp.nvim",
+  --   config = function()
+  --     local my_prompt = assert(io.open("/Users/duarteocarmo/Dropbox/dots/.gpt4prompt", "r")):read("*all")
+  --     local code_prompt = assert(io.open("/Users/duarteocarmo/Dropbox/dots/.code_prompt", "r")):read("*all")
+  --     local conf = {
+  --       default_command_agent = nil,
+  --       default_chat_agent = nil,
+  --       providers = {
+  --         anthropic = {
+  --           disable = false,
+  --           endpoint = "https://api.anthropic.com/v1/messages",
+  --           secret = { "cat", "/Users/duarteocarmo/Dropbox/dots/.anthropic_api_key" },
+  --         },
+  --         openai = {
+  --           disable = false,
+  --           endpoint = "https://api.openai.com/v1/chat/completions",
+  --           secret = { "cat", "/Users/duarteocarmo/Dropbox/dots/.openai_api_key" },
+  --         },
+  --         ollama = {
+  --           disable = false,
+  --           endpoint = "http://localhost:11434/v1/chat/completions",
+  --           secret = "dummy_secret",
+  --         },
+  --       },
+  --       agents = {
+  --         {
+  --           provider = "openai",
+  --           name = "Duarte - GPT4o",
+  --           chat = true,
+  --           command = true,
+  --           model = { model = "gpt-4o", temperature = 1.1, top_p = 1 },
+  --           system_prompt = code_prompt,
+  --         },
+  --         {
+  --           provider = "anthropic",
+  --           name = "Duarte - Claude-3-7-Sonnet",
+  --           chat = true,
+  --           command = true,
+  --           model = { model = "claude-3-7-sonnet-20250219", temperature = 0.8, top_p = 1 },
+  --           system_prompt = code_prompt,
+  --         },
+  --         {
+  --           provider = "ollama",
+  --           name = "Duarte - Phi4",
+  --           chat = true,
+  --           command = true,
+  --           model = {
+  --             model = "phi4:latest",
+  --           },
+  --           system_prompt = code_prompt,
+  --         },
+  --         {
+  --           provider = "ollama",
+  --           name = "Duarte - Deepseek R1 14b-8k",
+  --           chat = true,
+  --           command = true,
+  --           model = {
+  --             model = "deepseek-r1:14b-8k",
+  --           },
+  --           system_prompt = code_prompt,
+  --         },
+  --       },
+  --     }
+  --     require("gp").setup(conf)
+  --     vim.keymap.set({ "n", "v" }, "<leader>pc", ":GpChatNew popup<CR>")
+  --     vim.keymap.set({ "n", "v" }, "<leader>pr", ":GpRewrite<CR>")
+  --     vim.keymap.set({ "n", "v" }, "<leader>pa", ":GpAppend<CR>")
+  --
+  --     -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
+  --   end,
+  -- },
 
-      -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
+  {
+    "echasnovski/mini.diff",
+    config = function()
+      local diff = require("mini.diff")
+      diff.setup({
+        source = diff.gen_source.none(),
+      })
     end,
   },
-
+  {
+    "olimorris/codecompanion.nvim",
+    opts = {},
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("codecompanion").setup({
+        adapters = {
+          anthropic = function()
+            return require("codecompanion.adapters").extend("anthropic", {
+              env = {
+                api_key = "cmd:cat /Users/duarteocarmo/Dropbox/dots/.anthropic_api_key | tr -d '\\n'",
+              },
+            })
+          end,
+        },
+        display = {
+          diff = {
+            provider = "mini_diff",
+          },
+        },
+      })
+    end,
+  },
   {
     "saghen/blink.compat",
-    optional = false, -- make optional so it's only enabled if any extras need it
     opts = {},
     version = not vim.g.lazyvim_blink_main and "*",
   },
@@ -174,18 +202,14 @@ return {
     tag = "v0.11.0",
 
     dependencies = {
-      { "hrsh7th/cmp-emoji", "crispgm/cmp-beancount" },
+      { "crispgm/cmp-beancount" },
     },
     opts = {
       sources = {
         compat = {},
-        default = { "lsp", "path", "snippets", "buffer", "beancount", "emoji" },
+        default = { "lsp", "path", "snippets", "buffer", "beancount" },
         cmdline = {},
         providers = {
-          emoji = {
-            name = "emoji",
-            module = "blink.compat.source",
-          },
           beancount = {
             name = "beancount",
             module = "blink.compat.source",
@@ -224,6 +248,10 @@ return {
           },
         },
       },
+    },
+    keys = {
+      { "<leader>fg", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
+      { "<leader>ff", LazyVim.pick("files", { root = false }), desc = "Find Files (cwd)" },
     },
   },
 
