@@ -10,6 +10,10 @@ return {
     end,
   },
   {
+    "arzg/vim-colors-xcode",
+    priority = 1000,
+  },
+  {
     "oonamo/ef-themes.nvim",
     opts = {
       light = "ef-light", -- Ef-theme to select for light backgrounds
@@ -20,7 +24,8 @@ return {
     "LazyVim/LazyVim",
     tag = "v14.13.0",
     opts = {
-      colorscheme = "ef-theme",
+      colorscheme = "default",
+      -- colorscheme = "xcodedarkhc",
     },
   },
   {
@@ -83,78 +88,59 @@ return {
       }
     end,
   },
-  -- {
-  --   "robitx/gp.nvim",
-  --   config = function()
-  --     local my_prompt = assert(io.open("/Users/duarteocarmo/Dropbox/dots/.gpt4prompt", "r")):read("*all")
-  --     local code_prompt = assert(io.open("/Users/duarteocarmo/Dropbox/dots/.code_prompt", "r")):read("*all")
-  --     local conf = {
-  --       default_command_agent = nil,
-  --       default_chat_agent = nil,
-  --       providers = {
-  --         anthropic = {
-  --           disable = false,
-  --           endpoint = "https://api.anthropic.com/v1/messages",
-  --           secret = { "cat", "/Users/duarteocarmo/Dropbox/dots/.anthropic_api_key" },
-  --         },
-  --         openai = {
-  --           disable = false,
-  --           endpoint = "https://api.openai.com/v1/chat/completions",
-  --           secret = { "cat", "/Users/duarteocarmo/Dropbox/dots/.openai_api_key" },
-  --         },
-  --         ollama = {
-  --           disable = false,
-  --           endpoint = "http://localhost:11434/v1/chat/completions",
-  --           secret = "dummy_secret",
-  --         },
-  --       },
-  --       agents = {
-  --         {
-  --           provider = "openai",
-  --           name = "Duarte - GPT4o",
-  --           chat = true,
-  --           command = true,
-  --           model = { model = "gpt-4o", temperature = 1.1, top_p = 1 },
-  --           system_prompt = code_prompt,
-  --         },
-  --         {
-  --           provider = "anthropic",
-  --           name = "Duarte - Claude-3-7-Sonnet",
-  --           chat = true,
-  --           command = true,
-  --           model = { model = "claude-3-7-sonnet-20250219", temperature = 0.8, top_p = 1 },
-  --           system_prompt = code_prompt,
-  --         },
-  --         {
-  --           provider = "ollama",
-  --           name = "Duarte - Phi4",
-  --           chat = true,
-  --           command = true,
-  --           model = {
-  --             model = "phi4:latest",
-  --           },
-  --           system_prompt = code_prompt,
-  --         },
-  --         {
-  --           provider = "ollama",
-  --           name = "Duarte - Deepseek R1 14b-8k",
-  --           chat = true,
-  --           command = true,
-  --           model = {
-  --             model = "deepseek-r1:14b-8k",
-  --           },
-  --           system_prompt = code_prompt,
-  --         },
-  --       },
-  --     }
-  --     require("gp").setup(conf)
-  --     vim.keymap.set({ "n", "v" }, "<leader>pc", ":GpChatNew popup<CR>")
-  --     vim.keymap.set({ "n", "v" }, "<leader>pr", ":GpRewrite<CR>")
-  --     vim.keymap.set({ "n", "v" }, "<leader>pa", ":GpAppend<CR>")
-  --
-  --     -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
-  --   end,
-  -- },
+  {
+    "robitx/gp.nvim",
+    config = function()
+      -- local my_prompt = assert(io.open("/Users/duarteocarmo/Dropbox/dots/.gpt4prompt", "r")):read("*all")
+      local code_prompt = assert(io.open("/Users/duarteocarmo/Dropbox/dots/.code_prompt", "r")):read("*all")
+
+      local ollama_lines = vim.fn.split(vim.fn.system("ollama ls"), "\n")
+      local ollama_agents = {}
+
+      for i = 2, #ollama_lines do -- skip header
+        local name = ollama_lines[i]:match("^([^%s]+)")
+        if name then
+          table.insert(ollama_agents, {
+            provider = "ollama",
+            name = "Ollama - " .. name,
+            chat = true,
+            command = true,
+            model = { model = name },
+            system_prompt = code_prompt,
+          })
+        end
+      end
+
+      local conf = {
+        default_command_agent = nil,
+        default_chat_agent = nil,
+        providers = {
+          ollama = {
+            disable = false,
+            endpoint = "http://localhost:11434/v1/chat/completions",
+            secret = "dummy_secret",
+          },
+          copilot = {
+            disable = false,
+            endpoint = "https://api.githubcopilot.com/chat/completions",
+            secret = {
+              "bash",
+              "-c",
+              "cat ~/.config/github-copilot/apps.json | sed -e 's/.*oauth_token...//;s/\".*//'",
+            },
+          },
+        },
+
+        agents = vim.tbl_extend("force", {}, ollama_agents),
+      }
+      require("gp").setup(conf)
+      vim.keymap.set({ "n", "v" }, "<leader>pc", ":GpChatNew popup<CR>")
+      vim.keymap.set({ "n", "v" }, "<leader>pr", ":GpRewrite<CR>")
+      vim.keymap.set({ "n", "v" }, "<leader>pa", ":GpAppend<CR>")
+
+      -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
+    end,
+  },
 
   {
     "echasnovski/mini.diff",
@@ -165,32 +151,32 @@ return {
       })
     end,
   },
-  {
-    "olimorris/codecompanion.nvim",
-    opts = {},
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    config = function()
-      require("codecompanion").setup({
-        adapters = {
-          anthropic = function()
-            return require("codecompanion.adapters").extend("anthropic", {
-              env = {
-                api_key = "cmd:cat /Users/duarteocarmo/Dropbox/dots/.anthropic_api_key | tr -d '\\n'",
-              },
-            })
-          end,
-        },
-        display = {
-          diff = {
-            provider = "mini_diff",
-          },
-        },
-      })
-    end,
-  },
+  -- {
+  --   "olimorris/codecompanion.nvim",
+  --   opts = {},
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-treesitter/nvim-treesitter",
+  --   },
+  --   config = function()
+  --     require("codecompanion").setup({
+  --       adapters = {
+  --         anthropic = function()
+  --           return require("codecompanion.adapters").extend("anthropic", {
+  --             env = {
+  --               api_key = "cmd:cat /Users/duarteocarmo/Dropbox/dots/.anthropic_api_key | tr -d '\\n'",
+  --             },
+  --           })
+  --         end,
+  --       },
+  --       display = {
+  --         diff = {
+  --           provider = "mini_diff",
+  --         },
+  --       },
+  --     })
+  --   end,
+  -- },
   {
     "saghen/blink.compat",
     opts = {},

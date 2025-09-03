@@ -23,7 +23,20 @@ alias vi="nvim"
 alias tree="tree -I __pycache__"
 alias joplin="~/.joplin-bin/bin/joplin"
 alias vc="python -m venv .env"
-alias va=". .env/bin/activate.fish"
+function va
+    if test -f poetry.lock
+        poetry shell
+        return
+    end
+
+    if test -d .venv
+        source .venv/bin/activate.fish
+    else if test -d .env
+        source .env/bin/activate.fish
+    else
+        echo "No .venv, .env, or poetry.lock found"
+    end
+end
 alias vd="deactivate"
 alias cat="bat"
 alias l="eza -l -a"
@@ -34,6 +47,7 @@ alias gcm="bash /Users/duarteocarmo/commiter.sh"
 alias pa="poetry shell"
 alias pd="exit"
 alias psh="poetry shell"
+
 
 
 set PATH /usr/local/bin $PATH
@@ -64,3 +78,24 @@ if not string match -q -- $PNPM_HOME $PATH
   set -gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end
+
+# Added by LM Studio CLI (lms)
+set -gx PATH $PATH /Users/duarteocarmo/.lmstudio/bin
+# End of LM Studio CLI section
+
+
+# Added by OrbStack: command-line tools and integration
+# This won't be added again if you remove it.
+source ~/.orbstack/shell/init2.fish 2>/dev/null || :
+
+# bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH
+fish_add_path $HOME/.local/bin
+
+
+
+
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/opt/homebrew/share/google-cloud-sdk/path.fish.inc' ]; . '/opt/homebrew/share/google-cloud-sdk/path.fish.inc'; end

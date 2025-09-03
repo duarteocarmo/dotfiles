@@ -1,20 +1,18 @@
+# font-size = 12
+# font-style = Medium
+# font-style-bold = Bold
+# font-style-bold-italic = Bold Italic
+# font-style-italic = Medium Italic
+# font-thicken = false
+# theme = dark:modus_vivendi_tinted,light:modus_operandi_tinted
+# theme = light:xcodelighthc,dark:xcodedarkhc
+# theme= dark:tokyonight,light:tokyonight-day
 confirm-close-surface = false
 copy-on-select = clipboard
 cursor-style = block
 cursor-style-blink = false
 font-family = TX-02
+keybind = shift+enter=text:\n
 macos-titlebar-style = tabs
 shell-integration-features = no-cursor
-# theme = dark:modus_vivendi_tinted,light:modus_operandi_tinted
 theme = light:ef-light,dark:ef-dark
-
-
-
-
-# font-size = 12
-# font-style = Medium
-# font-thicken = false
-# theme= dark:tokyonight,light:tokyonight-day
-# font-style-bold = Bold
-# font-style-italic = Medium Italic
-# font-style-bold-italic = Bold Italic
