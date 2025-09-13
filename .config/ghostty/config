@@ -15,4 +15,4 @@ font-family = TX-02
 keybind = shift+enter=text:\n
 macos-titlebar-style = tabs
 shell-integration-features = no-cursor
-theme = light:ef-light,dark:ef-dark
+theme = light:NvimLight,dark:NvimDark
