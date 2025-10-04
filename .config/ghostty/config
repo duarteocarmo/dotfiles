@@ -7,6 +7,8 @@
 # theme = dark:modus_vivendi_tinted,light:modus_operandi_tinted
 # theme = light:xcodelighthc,dark:xcodedarkhc
 # theme= dark:tokyonight,light:tokyonight-day
+# theme = light:Nvim Light,dark:Nvim Dark
+# theme = light:GitHub Light High Contrast, dark:GitHub Dark High Contrast
 confirm-close-surface = false
 copy-on-select = clipboard
 cursor-style = block
@@ -15,4 +17,4 @@ font-family = TX-02
 keybind = shift+enter=text:\n
 macos-titlebar-style = tabs
 shell-integration-features = no-cursor
-theme = light:NvimLight,dark:NvimDark
+theme = light:Tokyonight Day, dark: Tokyonight Night

@@ -10,9 +10,37 @@ return {
     end,
   },
   {
+    "folke/tokyonight.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {},
+  },
+  {
+    "metalelf0/black-metal-theme-neovim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("black-metal").setup({
+        -- optional configuration here
+      })
+    end,
+  },
+  {
+    "projekt0n/github-nvim-theme",
+    name = "github-theme",
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+    config = function()
+      require("github-theme").setup({
+        -- ...
+      })
+    end,
+  },
+  {
     "arzg/vim-colors-xcode",
     priority = 1000,
   },
+  { "ntk148v/komau.vim" },
   {
     "oonamo/ef-themes.nvim",
     opts = {
@@ -24,8 +52,7 @@ return {
     "LazyVim/LazyVim",
     tag = "v14.13.0",
     opts = {
-      colorscheme = "default",
-      -- colorscheme = "xcodedarkhc",
+      colorscheme = "tokyonight",
     },
   },
   {
@@ -37,9 +64,11 @@ return {
         schemes = {
           light = {
             background = "light",
+            colorscheme = "tokyonight-day",
           },
           dark = {
             background = "dark",
+            colorscheme = "tokyonight-night",
           },
         },
       })
@@ -97,19 +126,37 @@ return {
       local ollama_lines = vim.fn.split(vim.fn.system("ollama ls"), "\n")
       local ollama_agents = {}
 
-      for i = 2, #ollama_lines do -- skip header
-        local name = ollama_lines[i]:match("^([^%s]+)")
-        if name then
-          table.insert(ollama_agents, {
-            provider = "ollama",
-            name = "Ollama - " .. name,
-            chat = true,
-            command = true,
-            model = { model = name },
-            system_prompt = code_prompt,
-          })
-        end
-      end
+      -- for i = 2, #ollama_lines do
+      --   local name = ollama_lines[i]:match("^([^%s]+)")
+      --   if name then
+      --     table.insert(ollama_agents, {
+      --       provider = "ollama",
+      --       name = "Ollama - " .. name,
+      --       chat = true,
+      --       command = true,
+      --       model = { model = name },
+      --       system_prompt = code_prompt,
+      --     })
+      --   end
+      -- end
+
+      table.insert(ollama_agents, {
+        provider = "copilot",
+        name = "Copilot - Claude Sonnet 4",
+        chat = true,
+        command = true,
+        model = { model = "claude-sonnet-4", temperature = 1.1, top_p = 1 },
+        system_prompt = code_prompt,
+      })
+
+      table.insert(ollama_agents, {
+        provider = "copilot",
+        name = "Copilot - Grok",
+        chat = true,
+        command = true,
+        model = { model = "grok-code-fast-1" },
+        system_prompt = code_prompt,
+      })
 
       local conf = {
         default_command_agent = nil,
@@ -249,6 +296,56 @@ return {
   {
     "lukas-reineke/headlines.nvim",
     enabled = false,
+  },
+  {
+    "NickvanDyke/opencode.nvim",
+    dependencies = {
+      -- Recommended for better prompt input, and required to use `opencode.nvim`'s embedded terminal — otherwise optional
+      { "folke/snacks.nvim", opts = { input = { enabled = true } } },
+    },
+    config = function()
+      vim.g.opencode_opts = {
+        -- Your configuration, if any — see `lua/opencode/config.lua`
+      }
+
+      -- Required for `opts.auto_reload`
+      vim.opt.autoread = true
+
+      -- Recommended/example keymaps
+      vim.keymap.set("n", "<leader>ot", function()
+        require("opencode").toggle()
+      end, { desc = "Toggle embedded" })
+      vim.keymap.set("n", "<leader>oA", function()
+        require("opencode").ask()
+      end, { desc = "Ask" })
+      vim.keymap.set("n", "<leader>oa", function()
+        require("opencode").ask("@cursor: ")
+      end, { desc = "Ask about this" })
+      vim.keymap.set("v", "<leader>oa", function()
+        require("opencode").ask("@selection: ")
+      end, { desc = "Ask about selection" })
+      vim.keymap.set("n", "<leader>oe", function()
+        require("opencode").prompt("Explain @cursor and its context")
+      end, { desc = "Explain this code" })
+      vim.keymap.set("n", "<leader>o+", function()
+        require("opencode").prompt("@buffer", { append = true })
+      end, { desc = "Add buffer to prompt" })
+      vim.keymap.set("v", "<leader>o+", function()
+        require("opencode").prompt("@selection", { append = true })
+      end, { desc = "Add selection to prompt" })
+      vim.keymap.set("n", "<leader>on", function()
+        require("opencode").command("session_new")
+      end, { desc = "New session" })
+      vim.keymap.set("n", "<S-C-u>", function()
+        require("opencode").command("messages_half_page_up")
+      end, { desc = "Messages half page up" })
+      vim.keymap.set("n", "<S-C-d>", function()
+        require("opencode").command("messages_half_page_down")
+      end, { desc = "Messages half page down" })
+      vim.keymap.set({ "n", "v" }, "<leader>os", function()
+        require("opencode").select()
+      end, { desc = "Select prompt" })
+    end,
   },
 
   {

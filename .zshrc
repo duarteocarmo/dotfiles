@@ -4,3 +4,4 @@ export PATH="/opt/homebrew/bin:$PATH"
 export PATH="$PATH:/Users/duarteocarmo/.lmstudio/bin"
 # End of LM Studio CLI section
 
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
