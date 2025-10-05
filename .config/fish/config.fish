@@ -60,8 +60,6 @@ atuin init fish | source
 # bind to ctrl-r in normal and insert mode, add any other bindings you want here too
 bind \cr _atuin_search
 bind -M insert \cr _atuin_search
-
-source /opt/homebrew/opt/asdf/libexec/asdf.fish
 uvx --generate-shell-completion fish | source
 
 set fish_greeting
@@ -94,11 +92,23 @@ set --export PATH $BUN_INSTALL/bin $PATH
 fish_add_path $HOME/.local/bin
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/opt/homebrew/share/google-cloud-sdk/path.fish.inc' ]; . '/opt/homebrew/share/google-cloud-sdk/path.fish.inc'; end
+if test -f '/opt/homebrew/share/google-cloud-sdk/path.fish.inc'
+    source '/opt/homebrew/share/google-cloud-sdk/path.fish.inc'
+end
 
-# starship init fish | source
-
-set -gx VOLTA_HOME "$HOME/.volta"
-set -gx PATH "$VOLTA_HOME/bin" $PATH
 zoxide init fish | source
 
+~/.local/bin/mise activate fish | source
+
+# claude code 
+function claude-z
+    env \
+        ANTHROPIC_BASE_URL="https://api.z.ai/api/anthropic" \
+        ANTHROPIC_AUTH_TOKEN=(cat ~/Dropbox/dots/.z_ai_api_key | string trim) \
+        command claude $argv
+end
+
+# Everything should points to a single AGENTS.md file
+ln -sf ~/.AGENTS.md ~/.codex/AGENTS.md # Codex
+ln -sf ~/.AGENTS.md ~/.claude/CLAUDE.md # Claude code
+ln -sf ~/.AGENTS.md ~/.config/opencode/AGENTS.md # OpenCode

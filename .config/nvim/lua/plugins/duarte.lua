@@ -1,52 +1,10 @@
 return {
-  {
-    "miikanissi/modus-themes.nvim",
-    priority = 1000,
-    config = function()
-      require("modus-themes").setup({
-        style = "auto",
-        variant = "tinted", -- Theme comes in four variants `default`, `tinted`, `deuteranopia`, and `tritanopia`
-      })
-    end,
-  },
+
   {
     "folke/tokyonight.nvim",
     lazy = false,
     priority = 1000,
     opts = {},
-  },
-  {
-    "metalelf0/black-metal-theme-neovim",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require("black-metal").setup({
-        -- optional configuration here
-      })
-    end,
-  },
-  {
-    "projekt0n/github-nvim-theme",
-    name = "github-theme",
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
-    config = function()
-      require("github-theme").setup({
-        -- ...
-      })
-    end,
-  },
-  {
-    "arzg/vim-colors-xcode",
-    priority = 1000,
-  },
-  { "ntk148v/komau.vim" },
-  {
-    "oonamo/ef-themes.nvim",
-    opts = {
-      light = "ef-light", -- Ef-theme to select for light backgrounds
-      dark = "ef-dark", -- Ef-theme to select for dark backgrounds
-    },
   },
   {
     "LazyVim/LazyVim",
@@ -97,24 +55,26 @@ return {
     },
   },
   {
-    "github/copilot.vim",
-    enabled = true,
+    "zbirenbaum/copilot.lua",
+    requires = {
+      "copilotlsp-nvim/copilot-lsp", -- (optional) for NES functionality
+    },
+    cmd = "Copilot",
+    event = "InsertEnter",
     config = function()
-      vim.g.copilot_no_tab_map = true
-      vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
-      vim.g.copilot_filetypes = {
-        ["*"] = false,
-        ["javascript"] = true,
-        ["typescript"] = true,
-        ["lua"] = true,
-        ["rust"] = true,
-        ["c"] = true,
-        ["c#"] = true,
-        ["c++"] = true,
-        ["go"] = true,
-        ["python"] = true,
-        ["beancount"] = false,
-      }
+      require("copilot").setup({
+        suggestion = {
+          enabled = true,
+          auto_trigger = true,
+          keymap = {
+            accept = "<C-J>",
+          },
+        },
+        filetypes = {
+          ["*"] = true,
+          beancount = false,
+        },
+      })
     end,
   },
   {
@@ -123,22 +83,7 @@ return {
       -- local my_prompt = assert(io.open("/Users/duarteocarmo/Dropbox/dots/.gpt4prompt", "r")):read("*all")
       local code_prompt = assert(io.open("/Users/duarteocarmo/Dropbox/dots/.code_prompt", "r")):read("*all")
 
-      local ollama_lines = vim.fn.split(vim.fn.system("ollama ls"), "\n")
       local ollama_agents = {}
-
-      -- for i = 2, #ollama_lines do
-      --   local name = ollama_lines[i]:match("^([^%s]+)")
-      --   if name then
-      --     table.insert(ollama_agents, {
-      --       provider = "ollama",
-      --       name = "Ollama - " .. name,
-      --       chat = true,
-      --       command = true,
-      --       model = { model = name },
-      --       system_prompt = code_prompt,
-      --     })
-      --   end
-      -- end
 
       table.insert(ollama_agents, {
         provider = "copilot",
@@ -296,6 +241,39 @@ return {
   {
     "lukas-reineke/headlines.nvim",
     enabled = false,
+  },
+
+  {
+    "yetone/avante.nvim",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      {
+        "MeanderingProgrammer/render-markdown.nvim",
+        opts = { file_types = { "markdown", "Avante" } },
+        ft = { "markdown", "Avante" },
+      },
+    },
+    build = "make",
+    opts = {
+      provider = "copilot",
+      providers = {
+        copilot = {
+          endpoint = "https://api.githubcopilot.com",
+          model = "claude-sonnet-4.5",
+          proxy = nil, -- [protocol://]host[:port] Use this proxy
+          allow_insecure = false, -- Allow insecure server connections
+          timeout = 30000, -- Timeout in milliseconds
+          context_window = 64000, -- Number of tokens to send to the model for context
+          extra_request_body = {
+            temperature = 0.75,
+            max_tokens = 20480,
+          },
+        },
+      },
+    },
   },
   {
     "NickvanDyke/opencode.nvim",
