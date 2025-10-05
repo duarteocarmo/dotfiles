@@ -252,6 +252,7 @@ return {
           opts = {
             chat = {
               default_memory = "default",
+              enabled = true,
             },
           },
         },
