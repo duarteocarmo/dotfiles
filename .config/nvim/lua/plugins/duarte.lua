@@ -80,8 +80,7 @@ return {
   {
     "robitx/gp.nvim",
     config = function()
-      -- local my_prompt = assert(io.open("/Users/duarteocarmo/Dropbox/dots/.gpt4prompt", "r")):read("*all")
-      local code_prompt = assert(io.open("/Users/duarteocarmo/Dropbox/dots/.code_prompt", "r")):read("*all")
+      local code_prompt = assert(io.open("/Users/duarteocarmo/.AGENTS.MD", "r")):read("*all")
 
       local ollama_agents = {}
 
@@ -143,32 +142,6 @@ return {
       })
     end,
   },
-  -- {
-  --   "olimorris/codecompanion.nvim",
-  --   opts = {},
-  --   dependencies = {
-  --     "nvim-lua/plenary.nvim",
-  --     "nvim-treesitter/nvim-treesitter",
-  --   },
-  --   config = function()
-  --     require("codecompanion").setup({
-  --       adapters = {
-  --         anthropic = function()
-  --           return require("codecompanion.adapters").extend("anthropic", {
-  --             env = {
-  --               api_key = "cmd:cat /Users/duarteocarmo/Dropbox/dots/.anthropic_api_key | tr -d '\\n'",
-  --             },
-  --           })
-  --         end,
-  --       },
-  --       display = {
-  --         diff = {
-  --           provider = "mini_diff",
-  --         },
-  --       },
-  --     })
-  --   end,
-  -- },
   {
     "saghen/blink.compat",
     opts = {},
@@ -244,37 +217,81 @@ return {
   },
 
   {
-    "yetone/avante.nvim",
+    "olimorris/codecompanion.nvim",
     dependencies = {
-      "nvim-tree/nvim-web-devicons",
-      "stevearc/dressing.nvim",
       "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      {
-        "MeanderingProgrammer/render-markdown.nvim",
-        opts = { file_types = { "markdown", "Avante" } },
-        ft = { "markdown", "Avante" },
-      },
     },
-    build = "make",
-    opts = {
-      provider = "copilot",
-      providers = {
-        copilot = {
-          endpoint = "https://api.githubcopilot.com",
-          model = "claude-sonnet-4.5",
-          proxy = nil, -- [protocol://]host[:port] Use this proxy
-          allow_insecure = false, -- Allow insecure server connections
-          timeout = 30000, -- Timeout in milliseconds
-          context_window = 64000, -- Number of tokens to send to the model for context
-          extra_request_body = {
-            temperature = 0.75,
-            max_tokens = 20480,
+    opts = {},
+    config = function()
+      require("codecompanion").setup({
+
+        display = {
+          chat = {
+            show_settings = true,
           },
         },
-      },
-    },
+        adapters = {
+          copilot = function()
+            return require("codecompanion.adapters").extend("copilot", {
+              schema = {
+                model = {
+                  default = "claude-sonnet-4.5",
+                },
+              },
+            })
+          end,
+        },
+
+        memory = {
+          default = {
+            description = "My default group",
+            files = {
+              "~/.AGENTS.MD",
+            },
+          },
+          opts = {
+            chat = {
+              default_memory = "default",
+            },
+          },
+        },
+      })
+    end,
   },
+
+  -- {
+  --   "yetone/avante.nvim",
+  --   dependencies = {
+  --     "nvim-tree/nvim-web-devicons",
+  --     "stevearc/dressing.nvim",
+  --     "nvim-lua/plenary.nvim",
+  --     "MunifTanjim/nui.nvim",
+  --     {
+  --       "MeanderingProgrammer/render-markdown.nvim",
+  --       opts = { file_types = { "markdown", "Avante" } },
+  --       ft = { "markdown", "Avante" },
+  --     },
+  --   },
+  --   build = "make",
+  --   opts = {
+  --     instructions_file = "/Users/duarteocarmo/.AGENTS.MD",
+  --     provider = "copilot",
+  --     providers = {
+  --       copilot = {
+  --         endpoint = "https://api.githubcopilot.com",
+  --         model = "claude-sonnet-4.5",
+  --         proxy = nil, -- [protocol://]host[:port] Use this proxy
+  --         allow_insecure = false, -- Allow insecure server connections
+  --         timeout = 30000, -- Timeout in milliseconds
+  --         context_window = 64000, -- Number of tokens to send to the model for context
+  --         extra_request_body = {
+  --           temperature = 0.75,
+  --           max_tokens = 20480,
+  --         },
+  --       },
+  --     },
+  --   },
+  -- },
   {
     "NickvanDyke/opencode.nvim",
     dependencies = {
