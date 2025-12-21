@@ -2,7 +2,6 @@ if status is-interactive
     # Commands to run in interactive sessions can go here
 end
 
-
 alias brow='/usr/local/homebrew/bin/brew'
 alias vi="nvim"
 alias gst="git status"
@@ -11,10 +10,12 @@ alias gc="git commit -m "
 alias gp="git push"
 alias gpc="git push origin (git branch --show-current)"
 alias gcz="npx cz"
+alias gcr="git commit --amend --no-edit && git push origin HEAD --force-with-lease"
 # alias tn="zellij -s"
 # alias tl="zellij ls"
 # alias ta="zellij attach"
 # alias tk="zellij ka -y && zellij da -y"
+alias htop="btop"
 alias tn="tmux new -s "
 alias tl="tmux ls"
 alias ta="tmux attach-session -t "
@@ -48,13 +49,10 @@ alias pa="poetry shell"
 alias pd="exit"
 alias psh="poetry shell"
 
-
-
 set PATH /usr/local/bin $PATH
 thefuck --alias | source
 
-
-set -gx ATUIN_NOBIND "true"
+set -gx ATUIN_NOBIND true
 atuin init fish | source
 
 # bind to ctrl-r in normal and insert mode, add any other bindings you want here too
@@ -71,16 +69,15 @@ set -gx EDITOR nvim
 set -gx VISUAL nvim
 
 # pnpm
-set -gx PNPM_HOME "/Users/duarteocarmo/Library/pnpm"
+set -gx PNPM_HOME /Users/duarteocarmo/Library/pnpm
 if not string match -q -- $PNPM_HOME $PATH
-  set -gx PATH "$PNPM_HOME" $PATH
+    set -gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end
 
 # Added by LM Studio CLI (lms)
 set -gx PATH $PATH /Users/duarteocarmo/.lmstudio/bin
 # End of LM Studio CLI section
-
 
 # Added by OrbStack: command-line tools and integration
 # This won't be added again if you remove it.
@@ -104,7 +101,7 @@ zoxide init fish | source
 function claude-z
     env \
         ANTHROPIC_BASE_URL="https://api.z.ai/api/anthropic" \
-        ANTHROPIC_AUTH_TOKEN=(cat ~/Dropbox/dots/.z_ai_api_key | string trim) \
+        ANTHROPIC_AUTH_TOKEN=(cat ~/Nextcloud/dots/.z_ai_api_key | string trim) \
         command claude $argv
 end
 
@@ -112,3 +109,27 @@ end
 ln -sf ~/.AGENTS.md ~/.codex/AGENTS.md # Codex
 ln -sf ~/.AGENTS.md ~/.claude/CLAUDE.md # Claude code
 ln -sf ~/.AGENTS.md ~/.config/opencode/AGENTS.md # OpenCode
+
+function git_refresh_rebase_squash
+    set current_branch (git branch --show-current)
+    if test "$current_branch" = main
+        echo "❌ You're on main. Switch to a feature branch first."
+        return 1
+    end
+
+    echo "🔄 Fetching latest main..."
+    git fetch origin main
+
+    echo "🌿 Rebasing $current_branch on top of main..."
+    git rebase origin/main || return 1
+
+    echo "🧹 Squashing all commits into one..."
+    git reset origin/main
+    git add -A
+
+    echo "✍️  Opening editor for commit message..."
+    git commit
+
+    echo "✅ Done. You can now push with:"
+    echo "   git push --force-with-lease"
+end

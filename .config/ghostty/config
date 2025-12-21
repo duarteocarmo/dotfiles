@@ -9,6 +9,7 @@
 # theme= dark:tokyonight,light:tokyonight-day
 # theme = light:Nvim Light,dark:Nvim Dark
 # theme = light:GitHub Light High Contrast, dark:GitHub Dark High Contrast
+# theme = light:Tokyonight Day, dark: Tokyonight Night
 confirm-close-surface = false
 copy-on-select = clipboard
 cursor-style = block
@@ -17,4 +18,6 @@ font-family = TX-02
 keybind = shift+enter=text:\n
 macos-titlebar-style = tabs
 shell-integration-features = no-cursor
-theme = light:Tokyonight Day, dark: Tokyonight Night
+theme = light:ef-eagle, dark: Tokyonight
+window-height=30
+window-width=110

@@ -6,12 +6,26 @@ return {
     priority = 1000,
     opts = {},
   },
+  { "miikanissi/modus-themes.nvim", priority = 1000 },
+  { "oonamo/ef-themes.nvim" },
+  { "datsfilipe/vesper.nvim" },
+  { "projekt0n/github-nvim-theme" },
+  { "nyoom-engineering/oxocarbon.nvim" },
+  { "yorickpeterse/vim-paper" },
   {
     "LazyVim/LazyVim",
     tag = "v14.13.0",
     opts = {
-      colorscheme = "tokyonight",
+      colorscheme = "ef-eagle",
     },
+  },
+  {
+    "ibhagwan/fzf-lua",
+    -- optional for icon support
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    -- or if using mini.icons/mini.nvim
+    -- dependencies = { "nvim-mini/mini.icons" },
+    opts = {},
   },
   {
     "cormacrelf/dark-notify",
@@ -22,11 +36,12 @@ return {
         schemes = {
           light = {
             background = "light",
-            colorscheme = "tokyonight-day",
+            colorscheme = "ef-eagle",
           },
           dark = {
             background = "dark",
-            colorscheme = "tokyonight-night",
+            -- colorscheme = "vesper",
+            colorscheme = "tokyonight",
           },
         },
       })
@@ -56,13 +71,21 @@ return {
   },
   {
     "zbirenbaum/copilot.lua",
-    requires = {
-      "copilotlsp-nvim/copilot-lsp", -- (optional) for NES functionality
+    dependencies = {
+      "copilotlsp-nvim/copilot-lsp",
     },
     cmd = "Copilot",
     event = "InsertEnter",
     config = function()
       require("copilot").setup({
+        nes = {
+          enabled = false, -- Not nice.
+          keymap = {
+            accept_and_goto = "<leader>p",
+            accept = false,
+            dismiss = "<Esc>",
+          },
+        },
         suggestion = {
           enabled = true,
           auto_trigger = true,
@@ -73,38 +96,70 @@ return {
         filetypes = {
           ["*"] = true,
           beancount = false,
+          sh = function()
+            if string.match(vim.fs.basename(vim.api.nvim_buf_get_name(0)), "^%.env") then
+              return false
+            end
+            return true
+          end,
         },
       })
+    end,
+  },
+  {
+    "NickvanDyke/opencode.nvim",
+    dependencies = {
+      { "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
+    },
+    config = function()
+      vim.g.opencode_opts = {}
+      vim.o.autoread = true
+
+      vim.keymap.set({ "n", "x" }, "<leader>oq", function()
+        require("opencode").ask("@this: ", { submit = true })
+      end, { desc = "Ask opencode" })
+      vim.keymap.set({ "n", "x" }, "<leader>oe", function()
+        require("opencode").select()
+      end, { desc = "Execute opencode action…" })
+      vim.keymap.set({ "n", "t" }, "<leader>ot", function()
+        require("opencode").toggle()
+      end, { desc = "Toggle opencode" })
+      vim.keymap.set({ "n", "x" }, "<leader>oar", function()
+        return require("opencode").operator("@this ")
+      end, { expr = true, desc = "Add range to opencode" })
+      vim.keymap.set("n", "<leader>oal", function()
+        return require("opencode").operator("@this ") .. "_"
+      end, { expr = true, desc = "Add line to opencode" })
     end,
   },
   {
     "robitx/gp.nvim",
     config = function()
       local code_prompt = assert(io.open("/Users/duarteocarmo/.AGENTS.MD", "r")):read("*all")
-
       local ollama_agents = {}
 
-      table.insert(ollama_agents, {
-        provider = "copilot",
-        name = "Copilot - Claude Sonnet 4",
-        chat = true,
-        command = true,
-        model = { model = "claude-sonnet-4", temperature = 1.1, top_p = 1 },
-        system_prompt = code_prompt,
-      })
+      -- TODO: Make one for openrouter and ollama as well
 
-      table.insert(ollama_agents, {
-        provider = "copilot",
-        name = "Copilot - Grok",
-        chat = true,
-        command = true,
-        model = { model = "grok-code-fast-1" },
-        system_prompt = code_prompt,
-      })
+      local copilot_models = {
+        { name = "claude-sonnet-4.5", model = "claude-sonnet-4.5" },
+        { name = "gpt-5-mini", model = "gpt-5-mini" },
+        -- { name = "GPT-5.1-Codex", model = "gpt-5.1-codex" },
+      }
+
+      for _, config in ipairs(copilot_models) do
+        table.insert(ollama_agents, {
+          provider = "copilot",
+          name = "Copilot - " .. config.name,
+          chat = true,
+          command = true,
+          model = { model = config.model, temperature = config.temperature, top_p = config.top_p },
+          system_prompt = code_prompt,
+        })
+      end
 
       local conf = {
-        default_command_agent = nil,
-        default_chat_agent = nil,
+        default_command_agent = "gpt-5-mini",
+        default_chat_agent = "gpt-5-mini",
         providers = {
           ollama = {
             disable = false,
@@ -132,7 +187,6 @@ return {
       -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
     end,
   },
-
   {
     "echasnovski/mini.diff",
     config = function()
@@ -154,11 +208,23 @@ return {
 
     dependencies = {
       { "crispgm/cmp-beancount" },
+      {
+        "L3MON4D3/LuaSnip",
+        version = "v2.*",
+
+        config = function()
+          local luasnip = require("luasnip")
+          require("luasnip.loaders.from_lua").load({
+            paths = vim.fn.stdpath("config") .. "/lua/snippets",
+          })
+        end,
+      },
     },
     opts = {
+      snippets = { preset = "luasnip" },
       sources = {
         compat = {},
-        default = { "lsp", "path", "snippets", "buffer", "beancount" },
+        default = { "lsp", "path", "buffer", "beancount", "snippets" },
         cmdline = {},
         providers = {
           beancount = {
@@ -172,7 +238,6 @@ return {
       },
     },
   },
-
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -214,134 +279,6 @@ return {
   {
     "lukas-reineke/headlines.nvim",
     enabled = false,
-  },
-
-  {
-    "olimorris/codecompanion.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
-    opts = {},
-    config = function()
-      require("codecompanion").setup({
-
-        display = {
-          chat = {
-            show_settings = true,
-          },
-        },
-        adapters = {
-          copilot = function()
-            return require("codecompanion.adapters").extend("copilot", {
-              schema = {
-                model = {
-                  default = "claude-sonnet-4.5",
-                },
-              },
-            })
-          end,
-        },
-
-        memory = {
-          default = {
-            description = "My default group",
-            files = {
-              "~/.AGENTS.MD",
-            },
-          },
-          opts = {
-            chat = {
-              default_memory = "default",
-              enabled = true,
-            },
-          },
-        },
-      })
-    end,
-  },
-
-  -- {
-  --   "yetone/avante.nvim",
-  --   dependencies = {
-  --     "nvim-tree/nvim-web-devicons",
-  --     "stevearc/dressing.nvim",
-  --     "nvim-lua/plenary.nvim",
-  --     "MunifTanjim/nui.nvim",
-  --     {
-  --       "MeanderingProgrammer/render-markdown.nvim",
-  --       opts = { file_types = { "markdown", "Avante" } },
-  --       ft = { "markdown", "Avante" },
-  --     },
-  --   },
-  --   build = "make",
-  --   opts = {
-  --     instructions_file = "/Users/duarteocarmo/.AGENTS.MD",
-  --     provider = "copilot",
-  --     providers = {
-  --       copilot = {
-  --         endpoint = "https://api.githubcopilot.com",
-  --         model = "claude-sonnet-4.5",
-  --         proxy = nil, -- [protocol://]host[:port] Use this proxy
-  --         allow_insecure = false, -- Allow insecure server connections
-  --         timeout = 30000, -- Timeout in milliseconds
-  --         context_window = 64000, -- Number of tokens to send to the model for context
-  --         extra_request_body = {
-  --           temperature = 0.75,
-  --           max_tokens = 20480,
-  --         },
-  --       },
-  --     },
-  --   },
-  -- },
-  {
-    "NickvanDyke/opencode.nvim",
-    dependencies = {
-      -- Recommended for better prompt input, and required to use `opencode.nvim`'s embedded terminal — otherwise optional
-      { "folke/snacks.nvim", opts = { input = { enabled = true } } },
-    },
-    config = function()
-      vim.g.opencode_opts = {
-        -- Your configuration, if any — see `lua/opencode/config.lua`
-      }
-
-      -- Required for `opts.auto_reload`
-      vim.opt.autoread = true
-
-      -- Recommended/example keymaps
-      vim.keymap.set("n", "<leader>ot", function()
-        require("opencode").toggle()
-      end, { desc = "Toggle embedded" })
-      vim.keymap.set("n", "<leader>oA", function()
-        require("opencode").ask()
-      end, { desc = "Ask" })
-      vim.keymap.set("n", "<leader>oa", function()
-        require("opencode").ask("@cursor: ")
-      end, { desc = "Ask about this" })
-      vim.keymap.set("v", "<leader>oa", function()
-        require("opencode").ask("@selection: ")
-      end, { desc = "Ask about selection" })
-      vim.keymap.set("n", "<leader>oe", function()
-        require("opencode").prompt("Explain @cursor and its context")
-      end, { desc = "Explain this code" })
-      vim.keymap.set("n", "<leader>o+", function()
-        require("opencode").prompt("@buffer", { append = true })
-      end, { desc = "Add buffer to prompt" })
-      vim.keymap.set("v", "<leader>o+", function()
-        require("opencode").prompt("@selection", { append = true })
-      end, { desc = "Add selection to prompt" })
-      vim.keymap.set("n", "<leader>on", function()
-        require("opencode").command("session_new")
-      end, { desc = "New session" })
-      vim.keymap.set("n", "<S-C-u>", function()
-        require("opencode").command("messages_half_page_up")
-      end, { desc = "Messages half page up" })
-      vim.keymap.set("n", "<S-C-d>", function()
-        require("opencode").command("messages_half_page_down")
-      end, { desc = "Messages half page down" })
-      vim.keymap.set({ "n", "v" }, "<leader>os", function()
-        require("opencode").select()
-      end, { desc = "Select prompt" })
-    end,
   },
 
   {
