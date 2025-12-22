@@ -1,6 +1,57 @@
 return {
 
   {
+    "folke/noice.nvim",
+    enabled = false,
+  },
+  { "lukas-reineke/indent-blankline.nvim", enabled = false },
+  { "nvimdev/dashboard-nvim", enabled = false },
+  { "goolord/alpha-nvim", enabled = false },
+  { "akinsho/bufferline.nvim", enabled = false },
+  {
+    "lukas-reineke/headlines.nvim",
+    enabled = false,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    branch = "master",
+    lazy = false,
+    build = ":TSUpdate",
+
+    opts = {
+      -- LazyVim config for treesitter
+      indent = { enable = true },
+      highlight = { enable = true },
+      folds = { enable = true },
+      ensure_installed = {
+        "bash",
+        "c",
+        "diff",
+        "html",
+        "javascript",
+        "jsdoc",
+        "json",
+        "jsonc",
+        "lua",
+        "luadoc",
+        "luap",
+        "markdown",
+        "markdown_inline",
+        "printf",
+        "python",
+        "query",
+        "regex",
+        "toml",
+        "tsx",
+        "typescript",
+        "vim",
+        "vimdoc",
+        "xml",
+        "yaml",
+      },
+    },
+  },
+  {
     "folke/tokyonight.nvim",
     lazy = false,
     priority = 1000,
@@ -272,15 +323,6 @@ return {
     },
   },
 
-  { "lukas-reineke/indent-blankline.nvim", enabled = false },
-  { "nvimdev/dashboard-nvim", enabled = false },
-  { "goolord/alpha-nvim", enabled = false },
-  { "akinsho/bufferline.nvim", enabled = false },
-  {
-    "lukas-reineke/headlines.nvim",
-    enabled = false,
-  },
-
   {
     "numToStr/FTerm.nvim",
     cmd = "FTerm",
@@ -329,18 +371,5 @@ return {
     },
   },
 
-  {
-    "folke/noice.nvim",
-    enabled = true,
-  },
-
-  {
-    "sphamba/smear-cursor.nvim",
-    opts = {},
-    enabled = false,
-  },
   { "nathangrigg/vim-beancount" },
-  { "tpope/vim-fugitive" },
-  { "tpope/vim-rhubarb" },
-  { "tpope/vim-sleuth" },
 }
