@@ -4,6 +4,14 @@
       "rev": "d1320892cc2ebab472935242d9d992a2c9570180",
       "src": "https://github.com/numToStr/FTerm.nvim"
     },
+    "anysphere.nvim": {
+      "rev": "05d10d2ca1cd1107809ef0941028d2329374f217",
+      "src": "https://github.com/dapovich/anysphere.nvim"
+    },
+    "auto-dark-mode.nvim": {
+      "rev": "e300259ec777a40b4b9e3c8e6ade203e78d15881",
+      "src": "https://github.com/f-person/auto-dark-mode.nvim"
+    },
     "conform.nvim": {
       "rev": "5420c4b5ea0aeb99c09cfbd4fd0b70d257b44f25",
       "src": "https://github.com/stevearc/conform.nvim"
@@ -15,6 +23,18 @@
     "copilot.lua": {
       "rev": "e78d1ffebdf6ccb6fd8be4e6898030c1cf5f9b64",
       "src": "https://github.com/zbirenbaum/copilot.lua"
+    },
+    "cursor-light.nvim": {
+      "rev": "9397cbfc685a9686f66aee212232724981650381",
+      "src": "https://github.com/vpoltora/cursor-light.nvim"
+    },
+    "cursor-themes": {
+      "rev": "91db964f6774c5f5da7cdd05b5c48548e9ca994b",
+      "src": "https://github.com/duarteocarmo/cursor-themes"
+    },
+    "dark-notify": {
+      "rev": "46879bc7783e65ab6ed9607ef05fd9c1424786b6",
+      "src": "https://github.com/cormacrelf/dark-notify"
     },
     "diffview.nvim": {
       "rev": "4516612fe98ff56ae0415a259ff6361a89419b0a",
@@ -31,6 +51,10 @@
     "jj.nvim": {
       "rev": "40cf2fea139ed4f80c4883cace8cc12a7fa35747",
       "src": "https://github.com/NicolasGB/jj.nvim"
+    },
+    "kanagawa.nvim": {
+      "rev": "aef7f5cec0a40dbe7f3304214850c472e2264b10",
+      "src": "https://github.com/rebelot/kanagawa.nvim"
     },
     "lazygit.nvim": {
       "rev": "a04ad0dbc725134edbee3a5eea29290976695357",
@@ -80,6 +104,10 @@
       "rev": "f957373912e88579e26fdaea4735450ff2ef5c9c",
       "src": "https://github.com/karb94/neoscroll.nvim"
     },
+    "nightfox.nvim": {
+      "rev": "ba47d4b4c5ec308718641ba7402c143836f35aa9",
+      "src": "https://github.com/EdenEast/nightfox.nvim"
+    },
     "nvim-lspconfig": {
       "rev": "d696e36d5792daf828f8c8e8d4b9aa90c1a10c2a",
       "src": "https://github.com/neovim/nvim-lspconfig"
@@ -92,9 +120,17 @@
       "rev": "d9d12d4bfb9a4c5b8b8bdf7f612551df6972946c",
       "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
     },
+    "tokyonight.nvim": {
+      "rev": "5da1b76e64daf4c5d410f06bcb6b9cb640da7dfd",
+      "src": "https://github.com/folke/tokyonight.nvim"
+    },
     "vesper.nvim": {
       "rev": "002313594701828245d32d391bab9f24157b4c29",
       "src": "https://github.com/nexxeln/vesper.nvim"
+    },
+    "vim-beancount": {
+      "rev": "589a4f06f3b2fd7cd2356c2ef1dafadf6b7a97cf",
+      "src": "https://github.com/nathangrigg/vim-beancount"
     },
     "vim-fugitive": {
       "rev": "61b51c09b7c9ce04e821f6cf76ea4f6f903e3cf4",

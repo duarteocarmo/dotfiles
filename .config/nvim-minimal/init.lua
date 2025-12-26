@@ -50,6 +50,7 @@ map("n", "<leader>fg", "<cmd>Pick grep_live<cr>")
 map("n", "<leader>gg", "<cmd>:LazyGit<cr>")
 map({ "n", "v" }, "<leader>pc", ":GpChatNew popup<CR>", opts)
 map({ "n", "v" }, "<leader>pr", ":GpRewrite<CR>", opts)
+
 map({ "n", "v" }, "<leader>pa", ":GpAppend<CR>", opts)
 
 map({ "n", "v" }, "<C-k>", function()
@@ -72,6 +73,9 @@ local plugins = {
 	"rachartier/tiny-inline-diagnostic.nvim",
 	"kdheepak/lazygit.nvim",
 	"robitx/gp.nvim",
+	"cormacrelf/dark-notify",
+	"nathangrigg/vim-beancount",
+	"duarteocarmo/cursor-themes",
 }
 
 vim.pack.add(vim.tbl_map(function(repo)
@@ -185,3 +189,16 @@ vim.lsp.config.beancount = {
 	},
 }
 vim.lsp.enable("beancount")
+
+require("dark_notify").run({
+	schemes = {
+		light = {
+			background = "light",
+			colorscheme = "cursor-light",
+		},
+		dark = {
+			background = "dark",
+			colorscheme = "cursor-dark",
+		},
+	},
+})
