@@ -372,4 +372,6 @@ return {
   },
 
   { "nathangrigg/vim-beancount" },
+  { "tpope/vim-fugitive" },
+  { "tpope/vim-rhubarb" },
 }

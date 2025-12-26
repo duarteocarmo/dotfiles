@@ -19,7 +19,6 @@ o.autoread = true
 o.signcolumn = "yes"
 o.backspace = "indent,eol,start"
 o.shell = "/opt/homebrew/bin/fish"
-o.colorcolumn = "100"
 o.completeopt = { "menuone", "noselect", "popup" }
 o.wildmode = { "lastused", "full" }
 o.pumheight = 15
@@ -31,14 +30,6 @@ o.smartcase = true
 o.swapfile = false
 o.foldmethod = "indent"
 o.foldlevelstart = 99
-
---  Show/hide trail chars
--- o.list = true
--- o.listchars = {
--- 	tab = "  ",
--- 	trail = "·",
--- 	nbsp = "␣",
--- }
 
 local g = vim.g
 g.mapleader = " "
@@ -62,20 +53,21 @@ map({ "n", "v" }, "<C-k>", function()
 end, opts)
 
 vim.pack.add({
-	"https://github.com/sindrets/diffview.nvim",
-	"https://github.com/tpope/vim-fugitive",
 	"https://github.com//mason-org/mason.nvim",
 	"https://github.com//neovim/nvim-lspconfig",
 	"https://github.com/mason-org/mason-lspconfig.nvim",
+	"https://github.com/numToStr/FTerm.nvim",
 	"https://github.com/nvim-mini/mini.completion",
 	"https://github.com/nvim-mini/mini.pick",
+	"https://github.com/nvim-mini/mini.diff",
 	"https://github.com/nvim-treesitter/nvim-treesitter",
-	"https://github.com/nexxeln/vesper.nvim",
-	"https://github.com/numToStr/FTerm.nvim",
+	"https://github.com/sindrets/diffview.nvim",
 	"https://github.com/stevearc/conform.nvim",
+	"https://github.com/tpope/vim-fugitive",
+	"https://github.com/tpope/vim-rhubarb",
 })
 
-vim.cmd("colorscheme vesper")
+vim.cmd("colorscheme default")
 
 require("vim._extui").enable({}) -- https://github.com/neovim/neovim/pull/27855
 require("diffview").setup({ use_icons = false })
@@ -83,6 +75,7 @@ require("mason").setup()
 require("mason-lspconfig").setup({ ensure_installed = { "lua_ls", "rust_analyzer" } })
 require("mini.completion").setup()
 require("mini.pick").setup()
+require("mini.diff").setup()
 require("nvim-treesitter").install({ "lua", "rust", "python" })
 require("FTerm").setup({
 	border = "single",
