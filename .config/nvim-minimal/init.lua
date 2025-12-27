@@ -76,6 +76,7 @@ local plugins = {
 	"cormacrelf/dark-notify",
 	"nathangrigg/vim-beancount",
 	"duarteocarmo/cursor-themes",
+	"duarteocarmo/pierre-vscode-theme",
 }
 
 vim.pack.add(vim.tbl_map(function(repo)
