@@ -29,7 +29,7 @@
       "src": "https://github.com/vpoltora/cursor-light.nvim"
     },
     "cursor-themes": {
-      "rev": "957f37da16fe7f26378254ffb81ee9d076a0cab4",
+      "rev": "1173d11a77323adf3fd6d38c658bf58dc00301ac",
       "src": "https://github.com/duarteocarmo/cursor-themes"
     },
     "dark-notify": {
@@ -100,6 +100,10 @@
       "rev": "c57c2c56c9f0af04f3b609d11caa840880074784",
       "src": "https://github.com/miikanissi/modus-themes.nvim"
     },
+    "monokai-pro.nvim": {
+      "rev": "1ac671f6da720cba967d28d25c2f16b8b4e18808",
+      "src": "https://github.com/loctvl842/monokai-pro.nvim"
+    },
     "neoscroll.nvim": {
       "rev": "f957373912e88579e26fdaea4735450ff2ef5c9c",
       "src": "https://github.com/karb94/neoscroll.nvim"
@@ -113,7 +117,7 @@
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
-      "rev": "45d08da7bb3ea206d698b33f0576fdf9661e2979",
+      "rev": "36fcb4a4238928f0b627e1ab84ade0acc1facc2c",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "pierre-vscode-theme": {

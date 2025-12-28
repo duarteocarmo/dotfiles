@@ -1,4 +1,4 @@
-theme = dark:Nvim Dark,light:Nvim Light
+theme = dark:Cursor Dark,light:Monokai Pro Light Sun
 confirm-close-surface = false
 copy-on-select = clipboard
 cursor-style = block

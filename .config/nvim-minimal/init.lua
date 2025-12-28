@@ -44,9 +44,18 @@ map("n", "<leader>y", function() -- copy relative filepath to clipboard
 	vim.fn.setreg("+", vim.fn.expand("%"))
 end)
 
-map("n", "<leader>ff", "<cmd>Pick files<cr>")
-map("n", "<leader>rr", "<cmd>:restart<cr>")
+map("n", "<leader>ff", function()
+	local in_git = vim.fn.system("git rev-parse --is-inside-work-tree 2>/dev/null"):match("true")
+	if in_git then
+		require("mini.pick").builtin.files({ tool = "git" })
+	else
+		require("mini.pick").builtin.files({ tool = "rg" }) -- or 'fd'
+	end
+end)
+
 map("n", "<leader>fg", "<cmd>Pick grep_live<cr>")
+
+map("n", "<leader>rr", "<cmd>:restart<cr>")
 map("n", "<leader>gg", "<cmd>:LazyGit<cr>")
 map({ "n", "v" }, "<leader>pc", ":GpChatNew popup<CR>", opts)
 map({ "n", "v" }, "<leader>pr", ":GpRewrite<CR>", opts)
@@ -77,6 +86,7 @@ local plugins = {
 	"nathangrigg/vim-beancount",
 	"duarteocarmo/cursor-themes",
 	"duarteocarmo/pierre-vscode-theme",
+	"loctvl842/monokai-pro.nvim",
 }
 
 vim.pack.add(vim.tbl_map(function(repo)
@@ -91,6 +101,7 @@ require("mason").setup()
 require("mason-lspconfig").setup({ ensure_installed = { "lua_ls", "rust_analyzer" } })
 require("mini.completion").setup()
 require("mini.pick").setup()
+require("mini.icons").setup()
 require("mini.statusline").setup({})
 require("mini.diff").setup()
 require("tiny-inline-diagnostic").setup()
