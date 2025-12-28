@@ -1,0 +1,6 @@
+{
+  "Beancount Entry": {
+    "prefix": "bcentry",
+    "body": "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE * \"${1:account}\"\n\tAssets:Banking:$1"
+  }
+}

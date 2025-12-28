@@ -99,11 +99,23 @@ require("vim._extui").enable({}) -- https://github.com/neovim/neovim/pull/27855
 require("diffview").setup({ use_icons = false })
 require("mason").setup()
 require("mason-lspconfig").setup({ ensure_installed = { "lua_ls", "rust_analyzer" } })
+
 require("mini.completion").setup()
 require("mini.pick").setup()
 require("mini.icons").setup()
 require("mini.statusline").setup({})
 require("mini.diff").setup()
+
+local gen_loader = require("mini.snippets").gen_loader
+require("mini.snippets").setup({
+	snippets = {
+		gen_loader.from_lang(),
+	},
+	mappings = {
+		stop = "<ESC>",
+	},
+})
+require("mini.snippets").start_lsp_server()
 require("tiny-inline-diagnostic").setup()
 require("copilot").setup({
 	nes = {
@@ -193,11 +205,13 @@ require("gp").setup({
 	},
 })
 vim.lsp.config.beancount = {
-	cmd = { "beancount-language-server", "--stdio" },
-	filetypes = { "beancount" },
-	root_markers = { ".git" },
-	settings = {
-		journal_file = os.getenv("HOME") .. "/Repos/accounting/duarte.beancount",
+	init_options = {
+		journal_file = "/Users/duarteocarmo/Repos/accounting/duarte.beancount",
+		formatting = {
+			prefix_width = 30,
+			currency_column = 60,
+			number_currency_spacing = 1,
+		},
 	},
 }
 vim.lsp.enable("beancount")
@@ -214,3 +228,18 @@ require("dark_notify").run({
 		},
 	},
 })
+
+local imap_expr = function(lhs, rhs)
+	vim.keymap.set("i", lhs, rhs, { expr = true })
+end
+imap_expr("<Tab>", [[pumvisible() ? "\<C-n>" : "\<Tab>"]])
+imap_expr("<S-Tab>", [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]])
+
+-- Enter to confirm
+_G.cr_action = function()
+	if vim.fn.complete_info()["selected"] ~= -1 then
+		return "\25" -- <C-y>
+	end
+	return "\r"
+end
+vim.keymap.set("i", "<CR>", "v:lua.cr_action()", { expr = true })
