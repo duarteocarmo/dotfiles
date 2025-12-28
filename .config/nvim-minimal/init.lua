@@ -39,7 +39,6 @@ local map = vim.keymap.set
 
 map({ "n", "v" }, "<leader>tt", "<cmd>lua require('FTerm').toggle()<cr>", opts)
 map({ "t" }, "<Esc>", "<C-\\><C-n><cmd>lua require('FTerm').toggle()<cr>", opts)
-
 map("n", "<leader>y", function() -- copy relative filepath to clipboard
 	vim.fn.setreg("+", vim.fn.expand("%"))
 end)
@@ -54,14 +53,11 @@ map("n", "<leader>ff", function()
 end)
 
 map("n", "<leader>fg", "<cmd>Pick grep_live<cr>")
-
 map("n", "<leader>rr", "<cmd>:restart<cr>")
 map("n", "<leader>gg", "<cmd>:LazyGit<cr>")
 map({ "n", "v" }, "<leader>pc", ":GpChatNew popup<CR>", opts)
 map({ "n", "v" }, "<leader>pr", ":GpRewrite<CR>", opts)
-
 map({ "n", "v" }, "<leader>pa", ":GpAppend<CR>", opts)
-
 map({ "n", "v" }, "<C-k>", function()
 	require("conform").format({ async = false, lsp_fallback = true })
 end, opts)
@@ -85,8 +81,8 @@ local plugins = {
 	"cormacrelf/dark-notify",
 	"nathangrigg/vim-beancount",
 	"duarteocarmo/cursor-themes",
-	"duarteocarmo/pierre-vscode-theme",
-	"loctvl842/monokai-pro.nvim",
+	"folke/tokyonight.nvim",
+	-- "duarteocarmo/pierre-vscode-theme",
 }
 
 vim.pack.add(vim.tbl_map(function(repo)
@@ -99,7 +95,6 @@ require("vim._extui").enable({}) -- https://github.com/neovim/neovim/pull/27855
 require("diffview").setup({ use_icons = false })
 require("mason").setup()
 require("mason-lspconfig").setup({ ensure_installed = { "lua_ls", "rust_analyzer" } })
-
 require("mini.completion").setup()
 require("mini.pick").setup()
 require("mini.icons").setup()
@@ -144,7 +139,15 @@ require("copilot").setup({
 		end,
 	},
 })
-require("nvim-treesitter").install({ "lua", "rust", "python" })
+require("nvim-treesitter").install({ "lua", "rust", "python", "beancount" })
+vim.treesitter.language.register("beancount", "beancount")
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "*",
+	callback = function()
+		pcall(vim.treesitter.start)
+	end,
+})
 require("FTerm").setup({
 	border = "single",
 	dimensions = {
@@ -204,9 +207,11 @@ require("gp").setup({
 		},
 	},
 })
+local beancount_journal = "/Users/duarteocarmo/Repos/accounting/duarte.beancount"
+
 vim.lsp.config.beancount = {
 	init_options = {
-		journal_file = "/Users/duarteocarmo/Repos/accounting/duarte.beancount",
+		journal_file = beancount_journal,
 		formatting = {
 			prefix_width = 30,
 			currency_column = 60,
@@ -215,6 +220,16 @@ vim.lsp.config.beancount = {
 	},
 }
 vim.lsp.enable("beancount")
+
+-- Enable LSP semantic highlighting
+vim.api.nvim_create_autocmd("LspAttach", {
+	callback = function(args)
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
+		if client and client.server_capabilities.semanticTokensProvider then
+			vim.lsp.semantic_tokens.enable(true, { bufnr = args.buf })
+		end
+	end,
+})
 
 require("dark_notify").run({
 	schemes = {
@@ -235,10 +250,9 @@ end
 imap_expr("<Tab>", [[pumvisible() ? "\<C-n>" : "\<Tab>"]])
 imap_expr("<S-Tab>", [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]])
 
--- Enter to confirm
 _G.cr_action = function()
 	if vim.fn.complete_info()["selected"] ~= -1 then
-		return "\25" -- <C-y>
+		return "\25"
 	end
 	return "\r"
 end
