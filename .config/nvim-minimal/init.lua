@@ -98,7 +98,14 @@ vim.cmd("colorscheme default")
 require("vim._extui").enable({}) -- https://github.com/neovim/neovim/pull/27855
 require("diffview").setup({ use_icons = false })
 require("mason").setup()
-require("mason-lspconfig").setup({ ensure_installed = { "lua_ls", "rust_analyzer" } })
+require("mason-lspconfig").setup({
+	ensure_installed = { "lua_ls", "rust_analyzer", "basedpyright" },
+	handlers = {
+		function(server_name)
+			vim.lsp.enable(server_name)
+		end,
+	},
+})
 require("mini.pick").setup()
 require("mini.icons").setup()
 require("mini.statusline").setup({})
@@ -253,13 +260,26 @@ vim.lsp.config.beancount = {
 }
 vim.lsp.enable("beancount")
 
--- Enable LSP semantic highlighting
+-- LSP keybindings and features
 vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(args)
+		local bufnr = args.buf
 		local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+		-- Enable LSP semantic highlighting
 		if client and client.server_capabilities.semanticTokensProvider then
-			vim.lsp.semantic_tokens.enable(true, { bufnr = args.buf })
+			vim.lsp.semantic_tokens.enable(true, { bufnr = bufnr })
 		end
+
+		-- LSP keybindings
+		local opts = { buffer = bufnr, silent = true }
+		vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+		vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+		vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+		vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+		vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 	end,
 })
 
