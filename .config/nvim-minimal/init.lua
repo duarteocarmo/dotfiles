@@ -82,6 +82,10 @@ local plugins = {
 	"nathangrigg/vim-beancount",
 	"duarteocarmo/cursor-themes",
 	"folke/tokyonight.nvim",
+	"saghen/blink.cmp@v0.11.0",
+	"saghen/blink.compat",
+	"crispgm/cmp-beancount",
+	"L3MON4D3/LuaSnip@v2.*",
 	-- "duarteocarmo/pierre-vscode-theme",
 }
 
@@ -95,11 +99,39 @@ require("vim._extui").enable({}) -- https://github.com/neovim/neovim/pull/27855
 require("diffview").setup({ use_icons = false })
 require("mason").setup()
 require("mason-lspconfig").setup({ ensure_installed = { "lua_ls", "rust_analyzer" } })
-require("mini.completion").setup()
 require("mini.pick").setup()
 require("mini.icons").setup()
 require("mini.statusline").setup({})
 require("mini.diff").setup()
+
+-- LuaSnip configuration
+local luasnip = require("luasnip")
+
+-- blink.cmp configuration
+require("blink.cmp").setup({
+	keymap = {
+		preset = "super-tab",
+	},
+	appearance = {
+		use_nvim_cmp_as_default = true,
+		nerd_font_variant = "mono",
+	},
+	sources = {
+		default = { "lsp", "path", "buffer", "beancount", "luasnip" },
+		providers = {
+			beancount = {
+				name = "beancount",
+				module = "blink.compat.source",
+				opts = {
+					account = "/Users/duarteocarmo/Repos/accounting/duarte.beancount",
+				},
+			},
+		},
+	},
+	snippets = {
+		preset = "luasnip",
+	},
+})
 
 local gen_loader = require("mini.snippets").gen_loader
 require("mini.snippets").setup({
@@ -244,16 +276,4 @@ require("dark_notify").run({
 	},
 })
 
-local imap_expr = function(lhs, rhs)
-	vim.keymap.set("i", lhs, rhs, { expr = true })
-end
-imap_expr("<Tab>", [[pumvisible() ? "\<C-n>" : "\<Tab>"]])
-imap_expr("<S-Tab>", [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]])
-
-_G.cr_action = function()
-	if vim.fn.complete_info()["selected"] ~= -1 then
-		return "\25"
-	end
-	return "\r"
-end
-vim.keymap.set("i", "<CR>", "v:lua.cr_action()", { expr = true })
+-- blink.cmp handles completion keybindings with super-tab preset
