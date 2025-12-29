@@ -181,12 +181,6 @@ require("copilot").setup({
 require("nvim-treesitter").install({ "lua", "rust", "python", "beancount" })
 vim.treesitter.language.register("beancount", "beancount")
 
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "*",
-	callback = function()
-		pcall(vim.treesitter.start)
-	end,
-})
 require("FTerm").setup({
 	border = "single",
 	dimensions = {
