@@ -99,7 +99,7 @@ require("vim._extui").enable({}) -- https://github.com/neovim/neovim/pull/27855
 require("diffview").setup({ use_icons = false })
 require("mason").setup()
 require("mason-lspconfig").setup({
-	ensure_installed = { "lua_ls", "rust_analyzer", "pyright" },
+	ensure_installed = { "lua_ls", "rust_analyzer", "basedpyright" },
 	handlers = {
 		function(server_name)
 			vim.lsp.enable(server_name)
