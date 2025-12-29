@@ -16,10 +16,8 @@ o.softtabstop = 2
 o.expandtab = true
 o.wrap = false
 o.autoread = true
-o.signcolumn = "yes"
 o.backspace = "indent,eol,start"
 o.shell = "/opt/homebrew/bin/fish"
-o.completeopt = { "menuone", "noselect", "popup" }
 o.wildmode = { "lastused", "full" }
 o.pumheight = 15
 o.winborder = "rounded"
@@ -64,7 +62,6 @@ end, opts)
 
 local plugins = {
 	"mason-org/mason.nvim",
-	"neovim/nvim-lspconfig",
 	"mason-org/mason-lspconfig.nvim",
 	"numToStr/FTerm.nvim",
 	"nvim-mini/mini.nvim",
@@ -74,7 +71,6 @@ local plugins = {
 	"tpope/vim-fugitive",
 	"tpope/vim-rhubarb",
 	"zbirenbaum/copilot.lua",
-	"copilotlsp-nvim/copilot-lsp",
 	"rachartier/tiny-inline-diagnostic.nvim",
 	"kdheepak/lazygit.nvim",
 	"robitx/gp.nvim",
@@ -111,9 +107,6 @@ require("mini.icons").setup()
 require("mini.statusline").setup({})
 require("mini.diff").setup()
 
--- LuaSnip configuration
-local luasnip = require("luasnip")
-
 -- blink.cmp configuration
 require("blink.cmp").setup({
 	keymap = {
@@ -140,16 +133,6 @@ require("blink.cmp").setup({
 	},
 })
 
-local gen_loader = require("mini.snippets").gen_loader
-require("mini.snippets").setup({
-	snippets = {
-		gen_loader.from_lang(),
-	},
-	mappings = {
-		stop = "<ESC>",
-	},
-})
-require("mini.snippets").start_lsp_server()
 require("tiny-inline-diagnostic").setup()
 require("copilot").setup({
 	nes = {
@@ -289,5 +272,3 @@ require("dark_notify").run({
 		},
 	},
 })
-
--- blink.cmp handles completion keybindings with super-tab preset
