@@ -40,7 +40,6 @@ map({ "t" }, "<Esc>", "<C-\\><C-n><cmd>lua require('FTerm').toggle()<cr>", opts)
 map("n", "<leader>y", function() -- copy relative filepath to clipboard
 	vim.fn.setreg("+", vim.fn.expand("%"))
 end)
-
 map("n", "<leader>ff", function()
 	local in_git = vim.fn.system("git rev-parse --is-inside-work-tree 2>/dev/null"):match("true")
 	if in_git then
@@ -49,7 +48,6 @@ map("n", "<leader>ff", function()
 		require("mini.pick").builtin.files({ tool = "rg" }) -- or 'fd'
 	end
 end)
-
 map("n", "<leader>fg", "<cmd>Pick grep_live<cr>")
 map("n", "<leader>rr", "<cmd>:restart<cr>")
 map("n", "<leader>gg", "<cmd>:LazyGit<cr>")
@@ -61,27 +59,28 @@ map({ "n", "v" }, "<C-k>", function()
 end, opts)
 
 local plugins = {
-	"mason-org/mason.nvim",
+	"L3MON4D3/LuaSnip",
+	"cormacrelf/dark-notify",
+	"crispgm/cmp-beancount",
+	"duarteocarmo/cursor-themes",
+	"folke/tokyonight.nvim",
+	"kdheepak/lazygit.nvim",
 	"mason-org/mason-lspconfig.nvim",
+	"mason-org/mason.nvim",
+	"nathangrigg/vim-beancount",
+	"neovim/nvim-lspconfig",
 	"numToStr/FTerm.nvim",
 	"nvim-mini/mini.nvim",
 	"nvim-treesitter/nvim-treesitter",
+	"rachartier/tiny-inline-diagnostic.nvim",
+	"robitx/gp.nvim",
+	"saghen/blink.cmp",
+	"saghen/blink.compat",
 	"sindrets/diffview.nvim",
 	"stevearc/conform.nvim",
 	"tpope/vim-fugitive",
 	"tpope/vim-rhubarb",
 	"zbirenbaum/copilot.lua",
-	"rachartier/tiny-inline-diagnostic.nvim",
-	"kdheepak/lazygit.nvim",
-	"robitx/gp.nvim",
-	"cormacrelf/dark-notify",
-	"nathangrigg/vim-beancount",
-	"duarteocarmo/cursor-themes",
-	"folke/tokyonight.nvim",
-	"saghen/blink.cmp@v0.11.0",
-	"saghen/blink.compat",
-	"crispgm/cmp-beancount",
-	"L3MON4D3/LuaSnip@v2.*",
 	-- "duarteocarmo/pierre-vscode-theme",
 }
 
@@ -95,19 +94,13 @@ require("vim._extui").enable({}) -- https://github.com/neovim/neovim/pull/27855
 require("diffview").setup({ use_icons = false })
 require("mason").setup()
 require("mason-lspconfig").setup({
-	ensure_installed = { "lua_ls", "rust_analyzer", "basedpyright" },
-	handlers = {
-		function(server_name)
-			vim.lsp.enable(server_name)
-		end,
-	},
+	ensure_installed = { "lua_ls", "rust_analyzer", "pyright" },
 })
 require("mini.pick").setup()
 require("mini.icons").setup()
 require("mini.statusline").setup({})
 require("mini.diff").setup()
 
--- blink.cmp configuration
 require("blink.cmp").setup({
 	keymap = {
 		preset = "super-tab",
@@ -117,7 +110,7 @@ require("blink.cmp").setup({
 		nerd_font_variant = "mono",
 	},
 	sources = {
-		default = { "lsp", "path", "buffer", "beancount", "luasnip" },
+		default = { "lsp", "path", "buffer", "beancount" },
 		providers = {
 			beancount = {
 				name = "beancount",
@@ -162,8 +155,6 @@ require("copilot").setup({
 	},
 })
 require("nvim-treesitter").install({ "lua", "rust", "python", "beancount" })
-vim.treesitter.language.register("beancount", "beancount")
-
 require("FTerm").setup({
 	border = "single",
 	dimensions = {
@@ -237,18 +228,16 @@ vim.lsp.config.beancount = {
 }
 vim.lsp.enable("beancount")
 
--- LSP keybindings and features
+-- LSP stuff
 vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(args)
 		local bufnr = args.buf
 		local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-		-- Enable LSP semantic highlighting
 		if client and client.server_capabilities.semanticTokensProvider then
 			vim.lsp.semantic_tokens.enable(true, { bufnr = bufnr })
 		end
 
-		-- LSP keybindings
 		local opts = { buffer = bufnr, silent = true }
 		vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
@@ -260,6 +249,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
+-- Even nicer highlighting with Treesitter
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "*",
+	callback = function()
+		pcall(vim.treesitter.start)
+	end,
+})
+
 require("dark_notify").run({
 	schemes = {
 		light = {
@@ -268,7 +265,7 @@ require("dark_notify").run({
 		},
 		dark = {
 			background = "dark",
-			colorscheme = "cursor-dark",
+			colorscheme = "tokyonight",
 		},
 	},
 })

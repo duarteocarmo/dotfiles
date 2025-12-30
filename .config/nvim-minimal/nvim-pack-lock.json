@@ -4,6 +4,10 @@
       "rev": "d1320892cc2ebab472935242d9d992a2c9570180",
       "src": "https://github.com/numToStr/FTerm.nvim"
     },
+    "LuaSnip": {
+      "rev": "3732756842a2f7e0e76a7b0487e9692072857277",
+      "src": "https://github.com/L3MON4D3/LuaSnip"
+    },
     "anysphere.nvim": {
       "rev": "05d10d2ca1cd1107809ef0941028d2329374f217",
       "src": "https://github.com/dapovich/anysphere.nvim"
