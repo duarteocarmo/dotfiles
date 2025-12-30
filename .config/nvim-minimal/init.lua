@@ -265,7 +265,7 @@ require("dark_notify").run({
 		},
 		dark = {
 			background = "dark",
-			colorscheme = "tokyonight",
+			colorscheme = "cursor-dark",
 		},
 	},
 })
