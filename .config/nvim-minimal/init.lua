@@ -63,6 +63,7 @@ local plugins = {
 	"cormacrelf/dark-notify",
 	"crispgm/cmp-beancount",
 	"duarteocarmo/cursor-themes",
+	"duarteocarmo/pierre-vscode-theme",
 	"folke/tokyonight.nvim",
 	"kdheepak/lazygit.nvim",
 	"mason-org/mason-lspconfig.nvim",
@@ -81,7 +82,6 @@ local plugins = {
 	"tpope/vim-fugitive",
 	"tpope/vim-rhubarb",
 	"zbirenbaum/copilot.lua",
-	-- "duarteocarmo/pierre-vscode-theme",
 }
 
 vim.pack.add(vim.tbl_map(function(repo)
@@ -121,6 +121,7 @@ require("blink.cmp").setup({
 			},
 		},
 	},
+	fuzzy = { implementation = "lua" },
 	snippets = {
 		preset = "luasnip",
 	},
