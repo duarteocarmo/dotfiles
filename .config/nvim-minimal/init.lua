@@ -16,10 +16,8 @@ o.softtabstop = 2
 o.expandtab = true
 o.wrap = false
 o.autoread = true
-o.signcolumn = "yes"
 o.backspace = "indent,eol,start"
 o.shell = "/opt/homebrew/bin/fish"
-o.completeopt = { "menuone", "noselect", "popup" }
 o.wildmode = { "lastused", "full" }
 o.pumheight = 15
 o.winborder = "rounded"
@@ -64,7 +62,6 @@ end, opts)
 
 local plugins = {
 	"mason-org/mason.nvim",
-	"neovim/nvim-lspconfig",
 	"mason-org/mason-lspconfig.nvim",
 	"numToStr/FTerm.nvim",
 	"nvim-mini/mini.nvim",
@@ -74,7 +71,6 @@ local plugins = {
 	"tpope/vim-fugitive",
 	"tpope/vim-rhubarb",
 	"zbirenbaum/copilot.lua",
-	"copilotlsp-nvim/copilot-lsp",
 	"rachartier/tiny-inline-diagnostic.nvim",
 	"kdheepak/lazygit.nvim",
 	"robitx/gp.nvim",
@@ -98,14 +94,18 @@ vim.cmd("colorscheme default")
 require("vim._extui").enable({}) -- https://github.com/neovim/neovim/pull/27855
 require("diffview").setup({ use_icons = false })
 require("mason").setup()
-require("mason-lspconfig").setup({ ensure_installed = { "lua_ls", "rust_analyzer" } })
+require("mason-lspconfig").setup({
+	ensure_installed = { "lua_ls", "rust_analyzer", "basedpyright" },
+	handlers = {
+		function(server_name)
+			vim.lsp.enable(server_name)
+		end,
+	},
+})
 require("mini.pick").setup()
 require("mini.icons").setup()
 require("mini.statusline").setup({})
 require("mini.diff").setup()
-
--- LuaSnip configuration
-local luasnip = require("luasnip")
 
 -- blink.cmp configuration
 require("blink.cmp").setup({
@@ -133,16 +133,6 @@ require("blink.cmp").setup({
 	},
 })
 
-local gen_loader = require("mini.snippets").gen_loader
-require("mini.snippets").setup({
-	snippets = {
-		gen_loader.from_lang(),
-	},
-	mappings = {
-		stop = "<ESC>",
-	},
-})
-require("mini.snippets").start_lsp_server()
 require("tiny-inline-diagnostic").setup()
 require("copilot").setup({
 	nes = {
@@ -174,12 +164,6 @@ require("copilot").setup({
 require("nvim-treesitter").install({ "lua", "rust", "python", "beancount" })
 vim.treesitter.language.register("beancount", "beancount")
 
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "*",
-	callback = function()
-		pcall(vim.treesitter.start)
-	end,
-})
 require("FTerm").setup({
 	border = "single",
 	dimensions = {
@@ -253,13 +237,26 @@ vim.lsp.config.beancount = {
 }
 vim.lsp.enable("beancount")
 
--- Enable LSP semantic highlighting
+-- LSP keybindings and features
 vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(args)
+		local bufnr = args.buf
 		local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+		-- Enable LSP semantic highlighting
 		if client and client.server_capabilities.semanticTokensProvider then
-			vim.lsp.semantic_tokens.enable(true, { bufnr = args.buf })
+			vim.lsp.semantic_tokens.enable(true, { bufnr = bufnr })
 		end
+
+		-- LSP keybindings
+		local opts = { buffer = bufnr, silent = true }
+		vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+		vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+		vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+		vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+		vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 	end,
 })
 
@@ -275,5 +272,3 @@ require("dark_notify").run({
 		},
 	},
 })
-
--- blink.cmp handles completion keybindings with super-tab preset
