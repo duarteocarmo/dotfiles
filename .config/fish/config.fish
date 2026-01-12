@@ -3,7 +3,6 @@ if status is-interactive
 end
 
 alias brow='/usr/local/homebrew/bin/brew'
-alias vi="nvim"
 alias gst="git status"
 alias ga="git add "
 alias gc="git commit -m "
@@ -21,7 +20,10 @@ alias tl="tmux ls"
 alias ta="tmux attach-session -t "
 alias tk="tmux kill-server"
 # alias nvim-head="$HOME/.local/nvim-head/bin/nvim"
-alias vi="NVIM_APPNAME=nvim-minimal $HOME/.local/nvim-head/bin/nvim"
+set -gx NVIM_APPNAME nvim-minimal
+set -g NVIM_BIN "$HOME/.local/nvim-head/bin/nvim"
+alias vi="$NVIM_BIN"
+alias nvim="$NVIM_BIN"
 alias tree="tree -I __pycache__"
 alias joplin="~/.joplin-bin/bin/joplin"
 alias vc="python -m venv .env"
@@ -66,8 +68,8 @@ set fish_greeting
 # Created by `pipx` on 2025-01-02 13:49:01
 set PATH $PATH /Users/duarteocarmo/.local/bin
 
-set -gx EDITOR nvim
-set -gx VISUAL nvim
+set -gx EDITOR $NVIM_BIN
+set -gx VISUAL $NVIM_BIN
 
 # pnpm
 set -gx PNPM_HOME /Users/duarteocarmo/Library/pnpm
@@ -134,3 +136,6 @@ function git_refresh_rebase_squash
     echo "✅ Done. You can now push with:"
     echo "   git push --force-with-lease"
 end
+
+# opencode
+fish_add_path /Users/duarteocarmo/.opencode/bin

@@ -1,6 +1,16 @@
 {
   "Beancount Entry": {
     "prefix": "bcentry",
-    "body": "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE * \"${1:account}\"\n\tAssets:Banking:$1"
+    "body": [
+      "$CURRENT_YEAR-$CURRENT_MONTH-${CURRENT_DATE/(.*)/${1:/downcase}/} * \"${1:account}\"",
+      "\t\t${2:Expenses:Uncategorized}  ${3:0.00} DKK",
+      "\t\tAssets:Banking:$1"
+    ],
+    "description": "New beancount transaction entry"
+  },
+  "EUR to DKK": {
+    "prefix": "eurdkk",
+    "body": "@ 7.47 DKK",
+    "description": "EUR to DKK conversion rate"
   }
 }

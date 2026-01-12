@@ -82,6 +82,7 @@ local plugins = {
 	"tpope/vim-fugitive",
 	"tpope/vim-rhubarb",
 	"zbirenbaum/copilot.lua",
+	"projekt0n/github-nvim-theme",
 }
 
 vim.pack.add(vim.tbl_map(function(repo)
@@ -113,7 +114,7 @@ require("blink.cmp").setup({
 		["<C-f>"] = { "scroll_documentation_down", "fallback" },
 	},
 	sources = {
-		default = { "lsp", "path", "buffer", "beancount" },
+		default = { "snippets", "lsp", "path", "buffer", "beancount" },
 		providers = {
 			beancount = {
 				name = "beancount",
@@ -128,6 +129,10 @@ require("blink.cmp").setup({
 	snippets = {
 		preset = "luasnip",
 	},
+})
+
+require("luasnip.loaders.from_vscode").lazy_load({
+	paths = { vim.fn.stdpath("config") .. "/snippets" },
 })
 
 require("tiny-inline-diagnostic").setup()
@@ -150,6 +155,7 @@ require("copilot").setup({
 	filetypes = {
 		["*"] = true,
 		beancount = false,
+		markdown = false,
 		sh = function()
 			if string.match(vim.fs.basename(vim.api.nvim_buf_get_name(0)), "^%.env") then
 				return false
@@ -265,11 +271,17 @@ require("dark_notify").run({
 	schemes = {
 		light = {
 			background = "light",
-			colorscheme = "cursor-light",
+			colorscheme = "github_light_tritanopia",
 		},
 		dark = {
 			background = "dark",
-			colorscheme = "cursor-dark",
+			colorscheme = "github_dark_tritanopia",
 		},
 	},
+})
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+	callback = function()
+		vim.highlight.on_yank()
+	end,
 })

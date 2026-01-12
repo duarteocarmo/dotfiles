@@ -1,4 +1,4 @@
-theme = dark:Cursor Dark,light:Monokai Pro Light Sun
+theme = dark:GitHub Dark High Contrast,light:GitHub Light High Contrast
 confirm-close-surface = false
 copy-on-select = clipboard
 cursor-style = block
