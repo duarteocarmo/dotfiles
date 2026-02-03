@@ -29,7 +29,7 @@
         "-y",
         "vibium"
       ],
-      "enabled": true
+      "enabled": false
     }
   }
 }

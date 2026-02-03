@@ -17,7 +17,7 @@
       "src": "https://github.com/f-person/auto-dark-mode.nvim"
     },
     "blink.cmp": {
-      "rev": "6a4914ca987453464a7dfc7fc237a992adb567d0",
+      "rev": "b1b77404ce3c8b11e8f35611a28176b944c41e29",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.compat": {
@@ -29,7 +29,7 @@
       "src": "https://github.com/crispgm/cmp-beancount"
     },
     "conform.nvim": {
-      "rev": "8314f4c9e205e7f30b62147069729f9a1227d8bf",
+      "rev": "238f542a118984a88124fc915d5b981680418707",
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "copilot-lsp": {
@@ -37,7 +37,7 @@
       "src": "https://github.com/copilotlsp-nvim/copilot-lsp"
     },
     "copilot.lua": {
-      "rev": "5ace9ecd0db9a7a6c14064e4ce4ede5b800325f3",
+      "rev": "0ab400d547814b04b39a069208ff7b40ab22dfb5",
       "src": "https://github.com/zbirenbaum/copilot.lua"
     },
     "cursor-light.nvim": {
@@ -61,7 +61,7 @@
       "src": "https://github.com/projekt0n/github-nvim-theme"
     },
     "gitlinker.nvim": {
-      "rev": "0a746e66eb6a047f0b88b31ed2791a22953a3967",
+      "rev": "d991b0fc12551227ab345e428696092ff2d117fc",
       "src": "https://github.com/linrongbin16/gitlinker.nvim"
     },
     "gp.nvim": {
@@ -69,7 +69,7 @@
       "src": "https://github.com/robitx/gp.nvim"
     },
     "jj.nvim": {
-      "rev": "80d3a88f160f36c0cfce7ba6e5ca48f801d89e7d",
+      "rev": "d13a5c9aec08318323f19fcdc1a1d2c469e00739",
       "src": "https://github.com/NicolasGB/jj.nvim"
     },
     "kanagawa.nvim": {
@@ -81,7 +81,7 @@
       "src": "https://github.com/kdheepak/lazygit.nvim"
     },
     "mason-lspconfig.nvim": {
-      "rev": "fe661093f4b05136437b531e7f959af2a2ae66c8",
+      "rev": "80c0130c5f16b551865a69e832f1feadeedb5fbe",
       "src": "https://github.com/mason-org/mason-lspconfig.nvim"
     },
     "mason.nvim": {
@@ -105,7 +105,7 @@
       "src": "https://github.com/nvim-mini/mini.files"
     },
     "mini.nvim": {
-      "rev": "8dccba88fc4dce006ca0ad668067c9e0d5ce7702",
+      "rev": "19973fa2c13399d68bf8d2cd98b0cb7367a8a72a",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "mini.pick": {
@@ -141,7 +141,7 @@
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
-      "rev": "5a7e5638e7d220575b1c22c8a2e099b52231886e",
+      "rev": "15b3416cc1f557c4932468e512a0bd45871167bc",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "nvim-treesitter-textobjects": {
