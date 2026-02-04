@@ -58,8 +58,6 @@ map({ "n", "v" }, "<C-k>", function()
 	require("conform").format({ async = false, lsp_fallback = true })
 end, opts)
 
-map("n", "<leader>go", require("utils").open_github_line, opts)
-
 local plugins = {
 	"L3MON4D3/LuaSnip",
 	"cormacrelf/dark-notify",
@@ -81,8 +79,8 @@ local plugins = {
 	"saghen/blink.compat",
 	"sindrets/diffview.nvim",
 	"stevearc/conform.nvim",
-	-- "tpope/vim-fugitive",
-	-- "tpope/vim-rhubarb",
+	"tpope/vim-fugitive",
+	"tpope/vim-rhubarb",
 	"zbirenbaum/copilot.lua",
 	"projekt0n/github-nvim-theme",
 }

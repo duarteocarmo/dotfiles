@@ -19,11 +19,8 @@ alias tn="tmux new -s "
 alias tl="tmux ls"
 alias ta="tmux attach-session -t "
 alias tk="tmux kill-server"
-# alias nvim-head="$HOME/.local/nvim-head/bin/nvim"
 set -gx NVIM_APPNAME nvim-minimal
-set -g NVIM_BIN "$HOME/.local/nvim-head/bin/nvim"
-alias vi="$NVIM_BIN"
-alias nvim="$NVIM_BIN"
+alias vi=nvim
 alias tree="tree -I __pycache__"
 alias joplin="~/.joplin-bin/bin/joplin"
 alias vc="python -m venv .env"
@@ -68,8 +65,8 @@ set fish_greeting
 # Created by `pipx` on 2025-01-02 13:49:01
 set PATH $PATH /Users/duarteocarmo/.local/bin
 
-set -gx EDITOR $NVIM_BIN
-set -gx VISUAL $NVIM_BIN
+set -gx EDITOR nvim
+set -gx VISUAL nvim
 
 # pnpm
 set -gx PNPM_HOME /Users/duarteocarmo/Library/pnpm
