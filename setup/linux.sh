@@ -27,7 +27,6 @@ APT_PACKAGES=(
   build-essential
   pkg-config
   cmake
-  lazygit
 )
 
 MISE_TOOLS=(
@@ -41,12 +40,18 @@ FISH_CONFIG="$(cat <<'FISH'
 if status is-interactive
 end
 
+fish_add_path $HOME/.local/bin
+
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 
 alias vi=nvim
 alias l="eza -l -a"
-alias cat=bat
+if type -q bat
+    alias cat=bat
+else if type -q batcat
+    alias cat=batcat
+end
 alias gst="git status"
 
 set -gx ATUIN_NOBIND true
@@ -131,6 +136,40 @@ install_atuin() {
   export PATH="$HOME/.local/bin:$PATH"
 }
 
+install_lazygit() {
+  if need_cmd lazygit; then
+    return 0
+  fi
+
+  mkdir -p "$HOME/.local/bin"
+
+  local arch
+  arch="$(uname -m)"
+  case "$arch" in
+    x86_64) arch="x86_64" ;;
+    aarch64|arm64) arch="arm64" ;;
+    *)
+      log "Skipping lazygit (unsupported arch: $arch)."
+      return 0
+      ;;
+  esac
+
+  local version
+  version="$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | jq -r '.tag_name' 2>/dev/null || true)"
+  if [[ -z "${version}" || "${version}" == "null" ]]; then
+    version="v0.45.0"
+  fi
+
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  curl -fsSL -o "$tmpdir/lazygit.tar.gz" \
+    "https://github.com/jesseduffield/lazygit/releases/download/${version}/lazygit_${version#v}_Linux_${arch}.tar.gz"
+  tar -xzf "$tmpdir/lazygit.tar.gz" -C "$tmpdir" lazygit
+  mv "$tmpdir/lazygit" "$HOME/.local/bin/lazygit"
+  chmod +x "$HOME/.local/bin/lazygit"
+  rm -rf "$tmpdir"
+}
+
 setup_fish() {
   mkdir -p "$HOME/.config/fish"
 
@@ -158,6 +197,7 @@ main() {
   mise_install_tools
   install_neovim_nightly
   install_atuin
+  install_lazygit
   setup_fish
 
   log "Done."
