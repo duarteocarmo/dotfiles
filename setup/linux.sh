@@ -141,8 +141,6 @@ install_lazygit() {
     return 0
   fi
 
-  mkdir -p "$HOME/.local/bin"
-
   local arch
   arch="$(uname -m)"
   case "$arch" in
@@ -155,18 +153,19 @@ install_lazygit() {
   esac
 
   local version
-  version="$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | jq -r '.tag_name' 2>/dev/null || true)"
-  if [[ -z "${version}" || "${version}" == "null" ]]; then
-    version="v0.45.0"
+  version="$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep -Po '\"tag_name\": *\"v\\K[^\"]*' || true)"
+  if [[ -z "${version}" ]]; then
+    log "Could not resolve lazygit version"
+    return 1
   fi
 
   local tmpdir
   tmpdir="$(mktemp -d)"
   curl -fsSL -o "$tmpdir/lazygit.tar.gz" \
-    "https://github.com/jesseduffield/lazygit/releases/download/${version}/lazygit_${version#v}_Linux_${arch}.tar.gz"
+    "https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_Linux_${arch}.tar.gz"
   tar -xzf "$tmpdir/lazygit.tar.gz" -C "$tmpdir" lazygit
-  mv "$tmpdir/lazygit" "$HOME/.local/bin/lazygit"
-  chmod +x "$HOME/.local/bin/lazygit"
+  ensure_sudo
+  sudo install "$tmpdir/lazygit" -D -t /usr/local/bin/
   rm -rf "$tmpdir"
 }
 
