@@ -80,7 +80,10 @@ ensure_sudo() {
 apt_install() {
   ensure_sudo
   sudo apt-get update -y
+  sudo apt-get upgrade -y
   sudo apt-get install -y "${APT_PACKAGES[@]}"
+  sudo apt-get autoremove -y
+  sudo apt-get clean
 }
 
 install_mise() {
@@ -162,4 +165,3 @@ main() {
 }
 
 main "$@"
-
