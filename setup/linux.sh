@@ -196,7 +196,9 @@ main() {
   mise_install_tools
   install_neovim_nightly
   install_atuin
-  install_lazygit
+  if ! install_lazygit; then
+    log "lazygit install failed, skipping."
+  fi
   setup_fish
 
   log "Done."
