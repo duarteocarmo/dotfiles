@@ -17,6 +17,7 @@ APT_PACKAGES=(
   fzf
   ripgrep
   jq
+  gpg
   direnv
   zoxide
   eza
@@ -89,6 +90,7 @@ apt_install() {
   sudo apt-get install -y "${APT_PACKAGES[@]}"
   sudo apt-get autoremove -y
   sudo apt-get clean
+  log "APT packages installed."
 }
 
 install_mise() {
@@ -97,12 +99,14 @@ install_mise() {
   fi
   curl -fsSL https://mise.jdx.dev/install.sh | sh
   export PATH="$HOME/.local/bin:$PATH"
+  log "mise installed."
 }
 
 mise_install_tools() {
   export PATH="$HOME/.local/bin:$PATH"
   mise install "${MISE_TOOLS[@]}"
   mise use -g "${MISE_TOOLS[@]}"
+  log "mise tools installed."
 }
 
 install_neovim_nightly() {
@@ -118,6 +122,7 @@ install_neovim_nightly() {
   curl -fsSL -o "$HOME/.local/bin/nvim" \
     https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.appimage
   chmod +x "$HOME/.local/bin/nvim"
+  log "Neovim nightly installed."
 }
 
 install_atuin() {
@@ -128,45 +133,38 @@ install_atuin() {
   if apt-cache show atuin >/dev/null 2>&1; then
     ensure_sudo
     sudo apt-get install -y atuin
+    log "Atuin installed via apt."
     return 0
   fi
 
   # Fallback. If this ever changes, tweak the URL.
   curl -fsSL https://setup.atuin.sh | sh
   export PATH="$HOME/.local/bin:$PATH"
+  log "Atuin installed via setup script."
 }
 
-install_lazygit() {
-  if need_cmd lazygit; then
+install_gh_cli() {
+  if need_cmd gh; then
     return 0
   fi
 
-  local arch
-  arch="$(uname -m)"
-  case "$arch" in
-    x86_64) arch="x86_64" ;;
-    aarch64|arm64) arch="arm64" ;;
-    *)
-      log "Skipping lazygit (unsupported arch: $arch)."
-      return 0
-      ;;
-  esac
-
-  local version
-  version="$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep -Po '\"tag_name\": *\"v\\K[^\"]*' || true)"
-  if [[ -z "${version}" ]]; then
-    log "Could not resolve lazygit version"
-    return 1
+  if apt-cache show gh >/dev/null 2>&1; then
+    ensure_sudo
+    sudo apt-get install -y gh
+    log "GitHub CLI installed via apt."
+    return 0
   fi
 
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  curl -fsSL -o "$tmpdir/lazygit.tar.gz" \
-    "https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_Linux_${arch}.tar.gz"
-  tar -xzf "$tmpdir/lazygit.tar.gz" -C "$tmpdir" lazygit
   ensure_sudo
-  sudo install "$tmpdir/lazygit" -D -t /usr/local/bin/
-  rm -rf "$tmpdir"
+  sudo mkdir -p /usr/share/keyrings
+  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    | sudo tee /usr/share/keyrings/githubcli-archive-keyring.gpg >/dev/null
+  sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+    | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+  sudo apt-get update -y
+  sudo apt-get install -y gh
+  log "GitHub CLI installed via GitHub repo."
 }
 
 setup_fish() {
@@ -186,20 +184,26 @@ setup_fish() {
   if [[ "${SHELL:-}" != "$fish_path" ]]; then
     chsh -s "$fish_path" "$USER" || true
   fi
+  log "Fish shell configured."
 }
 
 main() {
   export DEBIAN_FRONTEND=noninteractive
 
   apt_install
+  log "System packages ready."
   install_mise
+  log "mise ready."
   mise_install_tools
+  log "Toolchains ready."
   install_neovim_nightly
+  log "Neovim ready."
   install_atuin
-  if ! install_lazygit; then
-    log "lazygit install failed, skipping."
-  fi
+  log "Atuin ready."
+  install_gh_cli
+  log "GitHub CLI ready."
   setup_fish
+  log "Fish setup ready."
 
   log "Done."
   log "Open a new terminal (or run: exec fish) to start using fish."
