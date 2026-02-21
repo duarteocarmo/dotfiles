@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "theme": "system",
+  "theme": "orng",
   "keybinds": {
     "editor_open": "ctrl+g"
   },
@@ -31,5 +31,8 @@
       ],
       "enabled": false
     }
-  }
+  },
+  "plugin": [
+    "opencode-reminders"
+  ]
 }
