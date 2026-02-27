@@ -9,7 +9,7 @@
       "src": "https://github.com/L3MON4D3/LuaSnip"
     },
     "blink.cmp": {
-      "rev": "22cbfef275b6f76c6c55e9ef9ed8bb8b6f8bb894",
+      "rev": "b650e976a927be6b46487a0a610b75af111376c5",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.compat": {
@@ -47,6 +47,10 @@
     "lazygit.nvim": {
       "rev": "a04ad0dbc725134edbee3a5eea29290976695357",
       "src": "https://github.com/kdheepak/lazygit.nvim"
+    },
+    "llama.lua": {
+      "rev": "b98621516e4fcda9d07e951e43669a0aea545cd7",
+      "src": "https://github.com/duarteocarmo/llama.lua"
     },
     "llama.vim": {
       "rev": "a1c8e6e40cb45df59b78add5b65d575386832465",
