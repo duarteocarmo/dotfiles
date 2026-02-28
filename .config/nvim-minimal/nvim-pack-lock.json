@@ -24,10 +24,6 @@
       "rev": "c2526f1cde528a66e086ab1668e996d162c75f4f",
       "src": "https://github.com/stevearc/conform.nvim"
     },
-    "cursor-themes": {
-      "rev": "1173d11a77323adf3fd6d38c658bf58dc00301ac",
-      "src": "https://github.com/duarteocarmo/cursor-themes"
-    },
     "dark-notify": {
       "rev": "46879bc7783e65ab6ed9607ef05fd9c1424786b6",
       "src": "https://github.com/cormacrelf/dark-notify"
@@ -35,14 +31,6 @@
     "diffview.nvim": {
       "rev": "4516612fe98ff56ae0415a259ff6361a89419b0a",
       "src": "https://github.com/sindrets/diffview.nvim"
-    },
-    "github-nvim-theme": {
-      "rev": "c106c9472154d6b2c74b74565616b877ae8ed31d",
-      "src": "https://github.com/projekt0n/github-nvim-theme"
-    },
-    "gp.nvim": {
-      "rev": "c37f154b97690c4925fef4e35ffdbf2c844b5f4e",
-      "src": "https://github.com/robitx/gp.nvim"
     },
     "lazygit.nvim": {
       "rev": "a04ad0dbc725134edbee3a5eea29290976695357",
@@ -52,9 +40,9 @@
       "rev": "b98621516e4fcda9d07e951e43669a0aea545cd7",
       "src": "https://github.com/duarteocarmo/llama.lua"
     },
-    "llama.vim": {
-      "rev": "a1c8e6e40cb45df59b78add5b65d575386832465",
-      "src": "https://github.com/ggml-org/llama.vim"
+    "lush.nvim": {
+      "rev": "9c60ec2279d62487d942ce095e49006af28eed6e",
+      "src": "https://github.com/rktjmp/lush.nvim"
     },
     "mason-lspconfig.nvim": {
       "rev": "c953789db7fd28eafe5eb5659846d34b5024b3cc",
@@ -76,17 +64,9 @@
       "rev": "4967fa48b0fe7a7f92cee546c76bb4bb61bb14d5",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
-    "pierre-vscode-theme": {
-      "rev": "e96a87efa8b1bf4fb9f4ece7d5da8ba2a6e17b5e",
-      "src": "https://github.com/duarteocarmo/pierre-vscode-theme"
-    },
     "tiny-inline-diagnostic.nvim": {
       "rev": "ecce93ff7db4461e942c03e0fcc64bd785df4057",
       "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
-    },
-    "tokyonight.nvim": {
-      "rev": "5da1b76e64daf4c5d410f06bcb6b9cb640da7dfd",
-      "src": "https://github.com/folke/tokyonight.nvim"
     },
     "vim-beancount": {
       "rev": "589a4f06f3b2fd7cd2356c2ef1dafadf6b7a97cf",
@@ -99,6 +79,10 @@
     "vim-rhubarb": {
       "rev": "5496d7c94581c4c9ad7430357449bb57fc59f501",
       "src": "https://github.com/tpope/vim-rhubarb"
+    },
+    "zenbones.nvim": {
+      "rev": "22b7fb75593412e0dc81b4bdefae718e9e84aa82",
+      "src": "https://github.com/zenbones-theme/zenbones.nvim"
     }
   }
 }

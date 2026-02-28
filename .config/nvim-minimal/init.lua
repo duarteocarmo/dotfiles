@@ -62,9 +62,6 @@ local plugins = {
 	"L3MON4D3/LuaSnip",
 	"cormacrelf/dark-notify",
 	"crispgm/cmp-beancount",
-	"duarteocarmo/cursor-themes",
-	"duarteocarmo/pierre-vscode-theme",
-	"folke/tokyonight.nvim",
 	"kdheepak/lazygit.nvim",
 	"mason-org/mason-lspconfig.nvim",
 	"mason-org/mason.nvim",
@@ -74,15 +71,12 @@ local plugins = {
 	"nvim-mini/mini.nvim",
 	"nvim-treesitter/nvim-treesitter",
 	"rachartier/tiny-inline-diagnostic.nvim",
-	"robitx/gp.nvim",
 	"saghen/blink.cmp",
 	"saghen/blink.compat",
 	"sindrets/diffview.nvim",
 	"stevearc/conform.nvim",
 	"tpope/vim-fugitive",
 	"tpope/vim-rhubarb",
-	"projekt0n/github-nvim-theme",
-	-- "duarteocarmo/llama.lua",
 }
 
 vim.pack.add(vim.tbl_map(function(repo)
@@ -209,11 +203,9 @@ require("dark_notify").run({
 	schemes = {
 		light = {
 			background = "light",
-			colorscheme = "github_light_tritanopia",
 		},
 		dark = {
 			background = "dark",
-			colorscheme = "github_dark_tritanopia",
 		},
 	},
 })
@@ -254,7 +246,6 @@ end
 vim.keymap.set("n", "<leader>pc", pack_clean)
 vim.keymap.set("n", "<leader>pu", vim.pack.update)
 
--- vim.pack.add({ "https://github.com/ggml-org/llama.vim" })
 vim.pack.add({ "https://github.com/duarteocarmo/llama.lua" })
 require("llama").setup({
 	endpoint_fim = "http://127.0.0.1:8012/infill",
