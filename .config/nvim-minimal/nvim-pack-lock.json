@@ -8,6 +8,14 @@
       "rev": "dae4f5aaa3574bd0c2b9dd20fb9542a02c10471c",
       "src": "https://github.com/L3MON4D3/LuaSnip"
     },
+    "alabaster.nvim": {
+      "rev": "ae0c5f41c70b576f0678319e57fe47b2b288d2fc",
+      "src": "https://github.com/p00f/alabaster.nvim"
+    },
+    "base16-black-metal-scheme": {
+      "rev": "c7a32bec8105a1ceddb9fcc90b713dabde5e7e5e",
+      "src": "https://github.com/metalelf0/base16-black-metal-scheme"
+    },
     "blink.cmp": {
       "rev": "b650e976a927be6b46487a0a610b75af111376c5",
       "src": "https://github.com/saghen/blink.cmp"
@@ -32,6 +40,18 @@
       "rev": "4516612fe98ff56ae0415a259ff6361a89419b0a",
       "src": "https://github.com/sindrets/diffview.nvim"
     },
+    "gitlinker.nvim": {
+      "rev": "bbe2a1254fc8fce21f3bbf9a020266a1c49799f7",
+      "src": "https://github.com/linrongbin16/gitlinker.nvim"
+    },
+    "gruvbox-material": {
+      "rev": "790afe9dd085aa04eccd1da3626c5fa05c620e53",
+      "src": "https://github.com/sainnhe/gruvbox-material"
+    },
+    "lackluster.nvim": {
+      "rev": "70dd682e564784893b984deb51dd5ddd263c8cc7",
+      "src": "https://github.com/slugbyte/lackluster.nvim"
+    },
     "lazygit.nvim": {
       "rev": "a04ad0dbc725134edbee3a5eea29290976695357",
       "src": "https://github.com/kdheepak/lazygit.nvim"
@@ -52,9 +72,21 @@
       "rev": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65",
       "src": "https://github.com/mason-org/mason.nvim"
     },
+    "mini.files": {
+      "rev": "57eb96a828f80efb8095a611e3aafcfa43548f8b",
+      "src": "https://github.com/nvim-mini/mini.files"
+    },
     "mini.nvim": {
       "rev": "f28cd08c8be826355d64080400fab1764c9693dd",
       "src": "https://github.com/nvim-mini/mini.nvim"
+    },
+    "mini.pick": {
+      "rev": "8521fe21df86e08d9e4b3c3f3a7d50e47954e1af",
+      "src": "https://github.com/nvim-mini/mini.pick"
+    },
+    "neoscroll.nvim": {
+      "rev": "c8d29979cb0cb3a2437a8e0ae683fd82f340d3b8",
+      "src": "https://github.com/karb94/neoscroll.nvim"
     },
     "nvim-lspconfig": {
       "rev": "3f58aeca0c6ece8a9fb8782ea3fcb6024f285be3",
@@ -63,6 +95,14 @@
     "nvim-treesitter": {
       "rev": "4967fa48b0fe7a7f92cee546c76bb4bb61bb14d5",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
+    },
+    "studio98": {
+      "rev": "28041cc4b7b174e227607d3673b103df6347836e",
+      "src": "https://github.com/jnz/studio98"
+    },
+    "teide.nvim": {
+      "rev": "95041d1d78e786bd88be64bca3e1771f7b6236df",
+      "src": "https://github.com/serhez/teide.nvim"
     },
     "tiny-inline-diagnostic.nvim": {
       "rev": "ecce93ff7db4461e942c03e0fcc64bd785df4057",

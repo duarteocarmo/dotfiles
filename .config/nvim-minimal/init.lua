@@ -51,6 +51,10 @@ end)
 map("n", "<leader>fg", "<cmd>Pick grep_live<cr>")
 map("n", "<leader>rr", "<cmd>:restart<cr>")
 map("n", "<leader>gg", "<cmd>:LazyGit<cr>")
+map({ "n", "v" }, "<leader>gu", "<cmd>GitLink<cr>", opts)
+map({ "n", "v" }, "<leader>go", function()
+	require("gitlinker").link({ action = require("gitlinker.actions").system })
+end, opts)
 map({ "n", "v" }, "<leader>pc", ":GpChatNew popup<CR>", opts)
 map({ "n", "v" }, "<leader>pr", ":GpRewrite<CR>", opts)
 map({ "n", "v" }, "<leader>pa", ":GpAppend<CR>", opts)
@@ -75,18 +79,32 @@ local plugins = {
 	"saghen/blink.compat",
 	"sindrets/diffview.nvim",
 	"stevearc/conform.nvim",
-	"tpope/vim-fugitive",
-	"tpope/vim-rhubarb",
+	"linrongbin16/gitlinker.nvim",
+	"karb94/neoscroll.nvim",
+  "sainnhe/gruvbox-material",
+  "slugbyte/lackluster.nvim",
+  "jnz/studio98",
+  "metalelf0/base16-black-metal-scheme",
+  "p00f/alabaster.nvim"
 }
 
 vim.pack.add(vim.tbl_map(function(repo)
 	return "https://github.com/" .. repo
 end, plugins))
 
-vim.cmd("colorscheme default")
+
+vim.g.gruvbox_material_background = "hard"
+vim.g.gruvbox_material_better_performance = 1
+vim.g.gruvbox_material_enable_italic = true
+vim.o.background = "dark"
+vim.cmd("colorscheme gruvbox-material")
+
+
 
 require("vim._extui").enable({}) -- https://github.com/neovim/neovim/pull/27855
 require("diffview").setup({ use_icons = false })
+require("neoscroll").setup({ duration_multiplier = 0.3 })
+require("gitlinker").setup()
 require("mason").setup()
 require("mason-lspconfig").setup({
 	ensure_installed = { "lua_ls", "rust_analyzer", "pyright" },
@@ -202,10 +220,10 @@ vim.api.nvim_create_autocmd("FileType", {
 require("dark_notify").run({
 	schemes = {
 		light = {
-			background = "light",
+			colorscheme = "default",
 		},
 		dark = {
-			background = "dark",
+			colorscheme = "lackluster-night",
 		},
 	},
 })
@@ -287,3 +305,5 @@ require("llama").setup({
 	keymap_debug_toggle = "<leader>lld",
 	enable_at_startup = true,
 })
+
+
