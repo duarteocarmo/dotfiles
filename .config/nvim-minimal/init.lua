@@ -81,11 +81,10 @@ local plugins = {
 	"stevearc/conform.nvim",
 	"linrongbin16/gitlinker.nvim",
 	"karb94/neoscroll.nvim",
-  "sainnhe/gruvbox-material",
-  "slugbyte/lackluster.nvim",
-  "jnz/studio98",
-  "metalelf0/base16-black-metal-scheme",
-  "p00f/alabaster.nvim"
+	"slugbyte/lackluster.nvim",
+	-- "jnz/studio98",
+	-- "metalelf0/base16-black-metal-scheme",
+	-- "p00f/alabaster.nvim",
 }
 
 vim.pack.add(vim.tbl_map(function(repo)
@@ -93,11 +92,6 @@ vim.pack.add(vim.tbl_map(function(repo)
 end, plugins))
 
 
-vim.g.gruvbox_material_background = "hard"
-vim.g.gruvbox_material_better_performance = 1
-vim.g.gruvbox_material_enable_italic = true
-vim.o.background = "dark"
-vim.cmd("colorscheme gruvbox-material")
 
 
 
