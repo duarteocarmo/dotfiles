@@ -48,6 +48,10 @@
       "rev": "790afe9dd085aa04eccd1da3626c5fa05c620e53",
       "src": "https://github.com/sainnhe/gruvbox-material"
     },
+    "koda.nvim": {
+      "rev": "4fe384484afc06140cefe046acb881119c284400",
+      "src": "https://github.com/oskarnurm/koda.nvim"
+    },
     "lackluster.nvim": {
       "rev": "70dd682e564784893b984deb51dd5ddd263c8cc7",
       "src": "https://github.com/slugbyte/lackluster.nvim"

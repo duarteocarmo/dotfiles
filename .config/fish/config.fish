@@ -136,3 +136,8 @@ end
 
 # opencode
 fish_add_path /Users/duarteocarmo/.opencode/bin
+
+# drtv downloader
+function drtv
+    /Users/duarteocarmo/repos/drtv-downloader/dr_download.sh $argv
+end

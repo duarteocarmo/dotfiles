@@ -81,7 +81,7 @@ local plugins = {
 	"stevearc/conform.nvim",
 	"linrongbin16/gitlinker.nvim",
 	"karb94/neoscroll.nvim",
-	"slugbyte/lackluster.nvim",
+	"oskarnurm/koda.nvim",
 	-- "jnz/studio98",
 	-- "metalelf0/base16-black-metal-scheme",
 	-- "p00f/alabaster.nvim",
@@ -90,10 +90,6 @@ local plugins = {
 vim.pack.add(vim.tbl_map(function(repo)
 	return "https://github.com/" .. repo
 end, plugins))
-
-
-
-
 
 require("vim._extui").enable({}) -- https://github.com/neovim/neovim/pull/27855
 require("diffview").setup({ use_icons = false })
@@ -211,13 +207,14 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
+require("koda").setup({ cache = true })
 require("dark_notify").run({
 	schemes = {
 		light = {
-			colorscheme = "default",
+			colorscheme = "koda",
 		},
 		dark = {
-			colorscheme = "lackluster-night",
+			colorscheme = "koda",
 		},
 	},
 })
@@ -227,6 +224,14 @@ vim.g.maplocalleader = " "
 vim.api.nvim_create_autocmd("TextYankPost", {
 	callback = function()
 		vim.highlight.on_yank()
+	end,
+})
+
+vim.api.nvim_create_autocmd({ "FocusGained", "TermLeave", "BufEnter", "CursorHold", "CursorHoldI" }, {
+	callback = function()
+		if vim.fn.getcmdwintype() == "" then
+			vim.cmd("checktime")
+		end
 	end,
 })
 
@@ -280,7 +285,7 @@ require("llama").setup({
 	ring_scope = 1024,
 	ring_update_ms = 1000,
 	auto_fim_debounce_ms = 100,
-	server_managed = true,
+	server_managed = false,
 	server_args = { "--fim-qwen-3b-default" },
 	filetypes = {
 		["*"] = true,
@@ -297,7 +302,5 @@ require("llama").setup({
 	keymap_fim_accept_word = "<leader>ll]",
 	keymap_inst_trigger = "<leader>li",
 	keymap_debug_toggle = "<leader>lld",
-	enable_at_startup = true,
+	enable_at_startup = false,
 })
-
-
