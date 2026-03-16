@@ -107,6 +107,9 @@ require("mini.diff").setup()
 require("blink.cmp").setup({
 	keymap = {
 		preset = "default",
+		["<Tab>"] = { "select_next", "fallback" },
+		["<S-Tab>"] = { "select_prev", "fallback" },
+		["<CR>"] = { "accept", "fallback" },
 	},
 	appearance = {
 		nerd_font_variant = "mono",
@@ -263,44 +266,61 @@ end
 vim.keymap.set("n", "<leader>pc", pack_clean)
 vim.keymap.set("n", "<leader>pu", vim.pack.update)
 
-vim.pack.add({ "https://github.com/duarteocarmo/llama.lua" })
-require("llama").setup({
-	endpoint_fim = "http://127.0.0.1:8012/infill",
-	endpoint_inst = "http://127.0.0.1:8012/v1/chat/completions",
-	model_fim = "",
-	model_inst = "",
-	api_key = "",
-	n_prefix = 256,
-	n_suffix = 64,
-	n_predict = 128,
-	stop_strings = {},
-	t_max_prompt_ms = 500,
-	t_max_predict_ms = 1000,
-	show_info = 2,
-	auto_fim = true,
-	max_line_suffix = 8,
-	max_cache_keys = 250,
-	ring_n_chunks = 16,
-	ring_chunk_size = 64,
-	ring_scope = 1024,
-	ring_update_ms = 1000,
-	auto_fim_debounce_ms = 100,
-	server_managed = false,
-	server_args = { "--fim-qwen-3b-default" },
-	filetypes = {
-		["*"] = true,
-		yaml = false,
-		markdown = false,
-		help = false,
-		gitcommit = false,
-		gitrebase = false,
-		hgcommit = false,
+vim.pack.add({ "https://github.com/milanglacier/minuet-ai.nvim" })
+vim.pack.add({ "https://github.com/nvim-lua/plenary.nvim" })
+require("minuet").setup({
+	virtualtext = {
+		auto_trigger_ft = { "lua" },
+		keymap = {
+			-- accept whole completion
+			accept = "<C-j>",
+			-- accept one line
+			accept_line = "<A-a>",
+			-- accept n lines (prompts for number)
+			-- e.g. "A-z 2 CR" will accept 2 lines
+			accept_n_lines = "<A-z>",
+			-- Cycle to prev completion item, or manually invoke completion
+			prev = "<A-[>",
+			-- Cycle to next completion item, or manually invoke completion
+			next = "<A-]>",
+			dismiss = "<A-e>",
+		},
 	},
-	keymap_fim_trigger = "<leader>llf",
-	keymap_fim_accept_full = "<C-j>",
-	keymap_fim_accept_line = "<S-Tab>",
-	keymap_fim_accept_word = "<leader>ll]",
-	keymap_inst_trigger = "<leader>li",
-	keymap_debug_toggle = "<leader>lld",
-	enable_at_startup = false,
+	provider = "openai_fim_compatible",
+	n_completions = 1, -- recommend for local model for resource saving
+	-- I recommend beginning with a small context window size and incrementally
+	-- expanding it, depending on your local computing power. A context window
+	-- of 512, serves as an good starting point to estimate your computing
+	-- power. Once you have a reliable estimate of your local computing power,
+	-- you should adjust the context window to a larger value.
+	context_window = 512,
+	provider_options = {
+		openai_fim_compatible = {
+			-- For Windows users, TERM may not be present in environment variables.
+			-- Consider using APPDATA instead.
+			api_key = "TERM",
+			name = "Llama.cpp",
+			end_point = "http://localhost:8012/v1/completions",
+			-- The model is set by the llama-cpp server and cannot be altered
+			-- post-launch.
+			model = "PLACEHOLDER",
+			optional = {
+				max_tokens = 56,
+				top_p = 0.9,
+			},
+			-- Llama.cpp does not support the `suffix` option in FIM completion.
+			-- Therefore, we must disable it and manually populate the special
+			-- tokens required for FIM completion.
+			template = {
+				prompt = function(context_before_cursor, context_after_cursor, _)
+					return "<|fim_prefix|>"
+						.. context_before_cursor
+						.. "<|fim_suffix|>"
+						.. context_after_cursor
+						.. "<|fim_middle|>"
+				end,
+				suffix = false,
+			},
+		},
+	},
 })
