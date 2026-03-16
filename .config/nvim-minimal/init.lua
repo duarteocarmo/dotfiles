@@ -82,6 +82,8 @@ local plugins = {
 	"linrongbin16/gitlinker.nvim",
 	"karb94/neoscroll.nvim",
 	"oskarnurm/koda.nvim",
+	"nvim-lua/plenary.nvim",
+	"Exafunction/windsurf.nvim",
 	-- "jnz/studio98",
 	-- "metalelf0/base16-black-metal-scheme",
 	-- "p00f/alabaster.nvim",
@@ -266,61 +268,14 @@ end
 vim.keymap.set("n", "<leader>pc", pack_clean)
 vim.keymap.set("n", "<leader>pu", vim.pack.update)
 
-vim.pack.add({ "https://github.com/milanglacier/minuet-ai.nvim" })
-vim.pack.add({ "https://github.com/nvim-lua/plenary.nvim" })
-require("minuet").setup({
-	virtualtext = {
-		auto_trigger_ft = { "lua" },
-		keymap = {
-			-- accept whole completion
+require("codeium").setup({
+	enable_cmp_source = false,
+	virtual_text = {
+		enabled = true,
+		key_bindings = {
 			accept = "<C-j>",
-			-- accept one line
-			accept_line = "<A-a>",
-			-- accept n lines (prompts for number)
-			-- e.g. "A-z 2 CR" will accept 2 lines
-			accept_n_lines = "<A-z>",
-			-- Cycle to prev completion item, or manually invoke completion
-			prev = "<A-[>",
-			-- Cycle to next completion item, or manually invoke completion
-			next = "<A-]>",
-			dismiss = "<A-e>",
-		},
-	},
-	provider = "openai_fim_compatible",
-	n_completions = 1, -- recommend for local model for resource saving
-	-- I recommend beginning with a small context window size and incrementally
-	-- expanding it, depending on your local computing power. A context window
-	-- of 512, serves as an good starting point to estimate your computing
-	-- power. Once you have a reliable estimate of your local computing power,
-	-- you should adjust the context window to a larger value.
-	context_window = 512,
-	provider_options = {
-		openai_fim_compatible = {
-			-- For Windows users, TERM may not be present in environment variables.
-			-- Consider using APPDATA instead.
-			api_key = "TERM",
-			name = "Llama.cpp",
-			end_point = "http://localhost:8012/v1/completions",
-			-- The model is set by the llama-cpp server and cannot be altered
-			-- post-launch.
-			model = "PLACEHOLDER",
-			optional = {
-				max_tokens = 56,
-				top_p = 0.9,
-			},
-			-- Llama.cpp does not support the `suffix` option in FIM completion.
-			-- Therefore, we must disable it and manually populate the special
-			-- tokens required for FIM completion.
-			template = {
-				prompt = function(context_before_cursor, context_after_cursor, _)
-					return "<|fim_prefix|>"
-						.. context_before_cursor
-						.. "<|fim_suffix|>"
-						.. context_after_cursor
-						.. "<|fim_middle|>"
-				end,
-				suffix = false,
-			},
+			next = "<M-]>",
+			prev = "<M-[>",
 		},
 	},
 })
