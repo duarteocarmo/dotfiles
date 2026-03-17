@@ -81,7 +81,8 @@ local plugins = {
 	"stevearc/conform.nvim",
 	"linrongbin16/gitlinker.nvim",
 	"karb94/neoscroll.nvim",
-	"oskarnurm/koda.nvim",
+	"miikanissi/modus-themes.nvim",
+	"rose-pine/neovim",
 	"nvim-lua/plenary.nvim",
 	"Exafunction/windsurf.nvim",
 	-- "jnz/studio98",
@@ -212,15 +213,20 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
-require("koda").setup({ cache = true })
+require("modus-themes").setup({
+	style = "auto",
+	variant = "default",
+	styles = {
+		comments = { italic = true },
+		keywords = { bold = true },
+	},
+})
 require("dark_notify").run({
 	schemes = {
-		light = {
-			colorscheme = "koda",
-		},
-		dark = {
-			colorscheme = "koda",
-		},
+		-- light = { colorscheme = "rose-pine-dawn" },
+		-- dark = { colorscheme = "rose-pine" },
+		light = { colorscheme = "modus_operandi" },
+		dark = { colorscheme = "modus_vivendi" },
 	},
 })
 

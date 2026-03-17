@@ -1,4 +1,5 @@
-theme = dark:GitHub Dark High Contrast,light:GitHub Light High Contrast
+# theme = dark:Rose Pine,light:Rose Pine Dawn
+theme = dark:Modus Vivendi,light:Modus Operandi
 confirm-close-surface = false
 copy-on-select = clipboard
 cursor-style = block

@@ -1,3 +1,4 @@
+
 if status is-interactive
     # Commands to run in interactive sessions can go here
 end
@@ -141,3 +142,5 @@ fish_add_path /Users/duarteocarmo/.opencode/bin
 function drtv
     /Users/duarteocarmo/repos/drtv-downloader/dr_download.sh $argv
 end
+
+source ~/.config/fish/secrets.fish
