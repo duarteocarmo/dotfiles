@@ -1,0 +1,9 @@
+{
+  "lastChangelogVersion": "0.58.4",
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-opus-4-6",
+  "defaultThinkingLevel": "medium",
+  "hideThinkingBlock": true,
+  "theme": "light",
+  "packages": []
+}
