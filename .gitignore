@@ -7,6 +7,7 @@
 !.agents/skills/**/*
 .agents/skills/**/node_modules/
 .agents/skills/**/package-lock.json
+.agents/skills/ro*
 
 # Track pi extensions
 !.pi/

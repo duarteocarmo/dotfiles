@@ -1,11 +1,24 @@
 ---
 name: github
-description: "Interact with GitHub using the `gh` CLI. Use `gh issue`, `gh pr`, `gh run`, and `gh api` for issues, PRs, CI runs, and advanced queries."
+description: "Interact with GitHub using the `gh` CLI. Use `gh issue`, `gh pr`, `gh run`, and `gh api` for issues, PRs, CI runs, and advanced queries. To read a file from GitHub, do NOT use gh or markitdown — convert the blob URL to a raw URL (raw.githubusercontent.com) and fetch it directly with curl or the Read tool."
 ---
 
 # GitHub Skill
 
 Use the `gh` CLI to interact with GitHub. Always specify `--repo owner/repo` when not in a git directory, or use URLs directly.
+
+## Reading Files
+
+To read a file from GitHub, convert the blob URL to a raw URL and fetch directly — no `gh`, no markitdown:
+
+```
+https://github.com/user/repo/blob/branch/path/file.ts
+→ https://raw.githubusercontent.com/user/repo/branch/path/file.ts
+```
+
+```bash
+curl https://raw.githubusercontent.com/user/repo/branch/path/file.ts
+```
 
 ## Pull Requests
 

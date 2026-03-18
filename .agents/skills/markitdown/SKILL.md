@@ -1,6 +1,6 @@
 ---
 name: markitdown
-description: Convert files and web pages to Markdown using Microsoft's markitdown. Use for reading web pages, PDFs, Word docs, Excel, PowerPoint, images, audio, YouTube URLs, and more. Runs via uvx with no install needed.
+description: "Convert files and URLs to Markdown using Microsoft's markitdown. Use for web pages, web PDFs, or local files — supports: PDF, PowerPoint, Word, Excel, Images (EXIF + OCR), Audio (transcription), HTML, CSV/JSON/XML, ZIP files, YouTube URLs, EPubs, and more. Do NOT use for GitHub URLs — convert to raw.githubusercontent.com and fetch directly instead. Runs via uvx with no install needed."
 ---
 
 # MarkItDown
@@ -76,7 +76,15 @@ Replace `VIDEO_ID` with the ID from the URL (e.g., `2JjKn7uhKqY` from `https://w
 
 ## When to Use
 
-- Reading web pages (especially JS-heavy sites that simpler extractors miss)
+- Reading web pages (especially JS-heavy sites that simpler extractors fail on)
 - Converting PDFs, Office documents, or other files to Markdown for analysis
 - Extracting text from images, audio, or YouTube videos
 - Any task where you need file content as clean Markdown
+
+## When NOT to Use
+
+- **GitHub URLs** — never use markitdown on `github.com` blob URLs. Convert to a raw URL and fetch directly instead:
+  - Change `https://github.com/user/repo/blob/branch/file.ts`
+  - To `https://raw.githubusercontent.com/user/repo/branch/file.ts`
+  - Then use `curl` or the `Read` tool on the raw URL
+- **Plain text/source files reachable via a raw URL** — fetch directly, no conversion needed
