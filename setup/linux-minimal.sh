@@ -52,17 +52,22 @@ install_node() {
     return 0
   fi
 
-  # fnm is the lightest way to get node without mise/nvm
-  if ! need_cmd fnm; then
-    curl -fsSL https://fnm.vercel.app/install.sh | bash -s -- --skip-shell
-    export PATH="$HOME/.local/share/fnm:$PATH"
-    eval "$(fnm env)"
-  fi
+  local arch
+  arch="$(uname -m)"
+  local node_arch
+  case "$arch" in
+    x86_64)  node_arch="x64" ;;
+    aarch64) node_arch="arm64" ;;
+    *) log "Skipping node (unsupported arch: $arch)."; return 0 ;;
+  esac
 
-  fnm install 22
-  fnm default 22
-  eval "$(fnm env)"
-  log "Node $(node --version) installed via fnm."
+  local version="v22.20.0"
+  local tarball="node-${version}-linux-${node_arch}.tar.xz"
+  local url="https://nodejs.org/dist/${version}/${tarball}"
+
+  mkdir -p "$HOME/.local"
+  curl -fsSL "$url" | tar -xJ -C "$HOME/.local" --strip-components=1
+  log "Node ${version} installed."
 }
 
 install_neovim() {
