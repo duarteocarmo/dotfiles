@@ -15,3 +15,7 @@
 !.pi/agent/extensions/**/
 !.pi/agent/extensions/**/*
 .pi/agent/extensions/**/node_modules/
+
+# Track pi themes
+!.pi/agent/themes/
+!.pi/agent/themes/**

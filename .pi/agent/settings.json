@@ -4,6 +4,6 @@
   "defaultModel": "claude-opus-4-6",
   "defaultThinkingLevel": "medium",
   "hideThinkingBlock": false,
-  "theme": "dark",
+  "theme": "modus-vivendi",
   "packages": []
 }
