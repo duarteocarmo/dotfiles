@@ -19,7 +19,7 @@ Requires an API key set as `ARTIFICIAL_ANALYSIS_API_KEY` environment variable.
 
 Full docs (endpoints, fields, response formats): https://artificialanalysis.ai/api-reference#free-api
 
-Rate limit: 1,000 requests/day. Cache responses when possible.
+Rate limit: 1,000 requests/day. The rate limit is strict and resets slowly — avoid burst calls. **Always cache responses to a temp file** (e.g., `/tmp/aa_models.json`) and reuse them instead of making repeated API calls. Only fetch fresh data if no cached file exists or the user explicitly asks to refresh.
 
 ## Endpoints
 

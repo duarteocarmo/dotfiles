@@ -9,9 +9,26 @@ Lightweight Chrome DevTools Protocol CLI. Connects directly via WebSocket — no
 
 ## Prerequisites
 
-- Chrome (or Chromium, Brave, Edge, Vivaldi) with remote debugging enabled: open `chrome://inspect/#remote-debugging` and toggle the switch
+- Chrome (or Chromium, Brave, Edge, Vivaldi, Helium) with remote debugging enabled: open `chrome://inspect/#remote-debugging` and toggle the switch
 - Node.js 22+ (uses built-in WebSocket)
 - If your browser's `DevToolsActivePort` is in a non-standard location, set `CDP_PORT_FILE` to its full path
+
+## Multiple browsers
+
+The user runs two browsers with CDP enabled. To target a specific one, set `CDP_PORT_FILE`:
+
+| Browser | `CDP_PORT_FILE` |
+|---------|----------------|
+| Helium  | `~/Library/Application Support/net.imput.helium/DevToolsActivePort` |
+| Chrome  | `~/Library/Application Support/Google/Chrome/DevToolsActivePort` |
+
+Example:
+```bash
+CDP_PORT_FILE=~/Library/Application\ Support/net.imput.helium/DevToolsActivePort scripts/cdp.mjs list
+CDP_PORT_FILE=~/Library/Application\ Support/Google/Chrome/DevToolsActivePort scripts/cdp.mjs list
+```
+
+Without `CDP_PORT_FILE`, the tool picks whichever `DevToolsActivePort` it finds first. Always list both when the user asks about browsers.
 
 ## Commands
 

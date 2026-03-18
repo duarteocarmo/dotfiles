@@ -1,1 +1,17 @@
 *
+
+# Track all skills
+!.agents/
+!.agents/skills/
+!.agents/skills/**/
+!.agents/skills/**/*
+.agents/skills/**/node_modules/
+.agents/skills/**/package-lock.json
+
+# Track pi extensions
+!.pi/
+!.pi/agent/
+!.pi/agent/extensions/
+!.pi/agent/extensions/**/
+!.pi/agent/extensions/**/*
+.pi/agent/extensions/**/node_modules/
