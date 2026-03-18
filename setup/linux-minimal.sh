@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Minimal Linux setup for coding with pi.
-# Installs: git, curl, tmux, ripgrep, uv, node, neovim, gh, pi
+# Installs: git, curl, tmux, ripgrep, direnv, uv, node, neovim, gh, glab, pi
 #   bash setup/linux-minimal.sh
 
 APT_PACKAGES=(
@@ -14,6 +14,7 @@ APT_PACKAGES=(
   tmux
   ripgrep
   jq
+  direnv
   build-essential
 )
 
@@ -122,6 +123,34 @@ install_gh_cli() {
   log "GitHub CLI installed."
 }
 
+install_glab() {
+  if need_cmd glab; then
+    log "glab already installed."
+    return 0
+  fi
+
+  local arch
+  arch="$(uname -m)"
+  local glab_arch
+  case "$arch" in
+    x86_64)  glab_arch="x86_64" ;;
+    aarch64) glab_arch="arm64" ;;
+    *) log "Skipping glab (unsupported arch: $arch)."; return 0 ;;
+  esac
+
+  local version
+  version="$(curl -fsSL https://gitlab.com/api/v4/projects/34675721/releases | jq -r '.[0].tag_name' | sed 's/^v//')"
+  local url="https://gitlab.com/gitlab-org/cli/-/releases/v${version}/downloads/glab_${version}_linux_${glab_arch}.tar.gz"
+
+  local tmp_dir
+  tmp_dir="$(mktemp -d)"
+  curl -fsSL "$url" | tar -xz -C "$tmp_dir"
+  mv "$tmp_dir/bin/glab" "$HOME/.local/bin/glab"
+  chmod +x "$HOME/.local/bin/glab"
+  rm -rf "$tmp_dir"
+  log "glab ${version} installed."
+}
+
 install_pi() {
   if need_cmd pi; then
     log "pi already installed."
@@ -140,10 +169,11 @@ main() {
   install_node
   install_neovim
   install_gh_cli
+  install_glab
   install_pi
 
   log ""
-  log "Done. Installed: git, curl, tmux, ripgrep, jq, direnv, uv, node, neovim, gh, pi"
+  log "Done. Installed: git, curl, tmux, ripgrep, jq, direnv, uv, node, neovim, gh, glab, pi"
 }
 
 main "$@"
