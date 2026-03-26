@@ -1,6 +1,6 @@
 ---
 name: markitdown
-description: "Convert files and URLs to Markdown using Microsoft's markitdown. Use for web pages, web PDFs, or local files — supports: PDF, PowerPoint, Word, Excel, Images (EXIF + OCR), Audio (transcription), HTML, CSV/JSON/XML, ZIP files, YouTube URLs, EPubs, and more. Do NOT use for GitHub URLs — convert to raw.githubusercontent.com and fetch directly instead. Runs via uvx with no install needed."
+description: "Convert files and URLs to Markdown using Microsoft's markitdown. Use for web pages, web PDFs, or local files — supports: PDF, PowerPoint, Word, Excel, Images (EXIF + OCR), Audio (transcription), HTML, CSV/JSON/XML, ZIP files, YouTube URLs, EPubs, and more. Do NOT use for GitHub URLs — convert to raw.githubusercontent.com and fetch directly instead. Runs via uvx with no install needed. You only need this when you need Markdown! For some links, curl/wget is fine!"
 ---
 
 # MarkItDown

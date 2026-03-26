@@ -1,0 +1,10 @@
+{
+  "name": "pi-preview",
+  "private": true,
+  "dependencies": {
+    "marked": "^15.0.0"
+  },
+  "pi": {
+    "extensions": ["./index.ts"]
+  }
+}
