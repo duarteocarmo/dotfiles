@@ -1,0 +1,23 @@
+{
+  "providers": {
+    "llama-cpp": {
+      "baseUrl": "http://localhost:8080/v1",
+      "api": "openai-completions",
+      "apiKey": "none",
+      "models": [
+        {
+          "id": "gemma-4-26B-A4B-it-GGUF:Q4_K_M"
+        },
+        {
+          "id": "gemma-4-E4B-it-GGUF:Q4_K_M"
+        },
+        {
+          "id": "Qwen3.5-9B-GGUF:Q4_K_M"
+        },
+        {
+          "id": "Qwen3.5-4B-GGUF:Q4_K_M"
+        }
+      ]
+    }
+  }
+}
