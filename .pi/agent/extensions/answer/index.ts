@@ -81,13 +81,13 @@ async function selectExtractionModel(
 	currentModel: Model<Api>,
 	modelRegistry: {
 		find: (provider: string, modelId: string) => Model<Api> | undefined;
-		getApiKey: (model: Model<Api>) => Promise<string | undefined>;
+		getApiKeyAndHeaders: (model: Model<Api>) => Promise<{ ok: boolean; apiKey?: string; error?: string }>;
 	},
 ): Promise<Model<Api>> {
 	const haikuModel = modelRegistry.find("anthropic", HAIKU_MODEL_ID);
 	if (haikuModel) {
-		const apiKey = await modelRegistry.getApiKey(haikuModel);
-		if (apiKey) {
+		const auth = await modelRegistry.getApiKeyAndHeaders(haikuModel);
+		if (auth.ok && auth.apiKey) {
 			return haikuModel;
 		}
 	}
@@ -528,7 +528,8 @@ export default function (pi: ExtensionAPI) {
 				loader.onAbort = () => done(null);
 
 				const doExtract = async () => {
-					const apiKey = await ctx.modelRegistry.getApiKey(extractionModel);
+					const auth = await ctx.modelRegistry.getApiKeyAndHeaders(extractionModel);
+					const apiKey = auth.ok ? auth.apiKey : undefined;
 					const userMessage: UserMessage = {
 						role: "user",
 						content: [{ type: "text", text: lastAssistantText! }],

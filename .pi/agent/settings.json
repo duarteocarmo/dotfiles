@@ -1,9 +1,9 @@
 {
-  "lastChangelogVersion": "0.62.0",
+  "lastChangelogVersion": "0.64.0",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.3-codex",
   "defaultThinkingLevel": "medium",
   "hideThinkingBlock": false,
-  "theme": "modus-operandi",
+  "theme": "modus-vivendi",
   "packages": []
 }
