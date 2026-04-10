@@ -35,8 +35,8 @@ g.maplocalleader = " "
 local opts = { silent = true }
 local map = vim.keymap.set
 
-map({ "n", "v" }, "<leader>tt", "<cmd>lua require('FTerm').toggle()<cr>", opts)
-map({ "t" }, "<Esc>", "<C-\\><C-n><cmd>lua require('FTerm').toggle()<cr>", opts)
+
+require('vim._core.ui2').enable({})
 map("n", "<leader>y", function() -- copy relative filepath to clipboard
 	vim.fn.setreg("+", vim.fn.expand("%"))
 end)
@@ -71,7 +71,6 @@ local plugins = {
 	"mason-org/mason.nvim",
 	"nathangrigg/vim-beancount",
 	"neovim/nvim-lspconfig",
-	"numToStr/FTerm.nvim",
 	"nvim-mini/mini.nvim",
 	"nvim-treesitter/nvim-treesitter",
 	"rachartier/tiny-inline-diagnostic.nvim",
@@ -94,10 +93,6 @@ vim.pack.add(vim.tbl_map(function(repo)
 	return "https://github.com/" .. repo
 end, plugins))
 
-local has_extui, extui = pcall(require, "vim._extui")
-if has_extui then
-	extui.enable({}) -- https://github.com/neovim/neovim/pull/27855
-end
 require("diffview").setup({ use_icons = false })
 require("neoscroll").setup({ duration_multiplier = 0.3 })
 require("gitlinker").setup()
@@ -146,13 +141,6 @@ require("luasnip.loaders.from_vscode").lazy_load({
 
 require("tiny-inline-diagnostic").setup()
 require("nvim-treesitter").install({ "lua", "rust", "python", "beancount" })
-require("FTerm").setup({
-	border = "single",
-	dimensions = {
-		height = 0.9,
-		width = 0.9,
-	},
-})
 
 require("conform").setup({
 	formatters_by_ft = {
@@ -226,8 +214,6 @@ require("modus-themes").setup({
 })
 require("dark_notify").run({
 	schemes = {
-		-- light = { colorscheme = "rose-pine-dawn" },
-		-- dark = { colorscheme = "rose-pine" },
 		light = { colorscheme = "modus_operandi" },
 		dark = { colorscheme = "modus_vivendi" },
 	},
@@ -291,3 +277,4 @@ require("codeium").setup({
 		},
 	},
 })
+

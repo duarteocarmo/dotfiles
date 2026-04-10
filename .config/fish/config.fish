@@ -20,9 +20,8 @@ alias tn="tmux new -s "
 alias tl="tmux ls"
 alias ta="tmux attach-session -t "
 alias tk="tmux kill-server"
-set -gx NVIM_APPNAME nvim-minimal
-alias vi=nvim
 alias tree="tree -I __pycache__"
+alias vi="nvim"
 alias joplin="~/.joplin-bin/bin/joplin"
 alias vc="python -m venv .env"
 function va
@@ -66,6 +65,7 @@ set fish_greeting
 # Created by `pipx` on 2025-01-02 13:49:01
 set PATH $PATH /Users/duarteocarmo/.local/bin
 
+set -e NVIM_APPNAME
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 
@@ -111,29 +111,6 @@ ln -sf ~/.AGENTS.md ~/.codex/AGENTS.md # Codex
 ln -sf ~/.AGENTS.md ~/.claude/CLAUDE.md # Claude code
 ln -sf ~/.AGENTS.md ~/.config/opencode/AGENTS.md # OpenCode
 
-function git_refresh_rebase_squash
-    set current_branch (git branch --show-current)
-    if test "$current_branch" = main
-        echo "❌ You're on main. Switch to a feature branch first."
-        return 1
-    end
-
-    echo "🔄 Fetching latest main..."
-    git fetch origin main
-
-    echo "🌿 Rebasing $current_branch on top of main..."
-    git rebase origin/main || return 1
-
-    echo "🧹 Squashing all commits into one..."
-    git reset origin/main
-    git add -A
-
-    echo "✍️  Opening editor for commit message..."
-    git commit
-
-    echo "✅ Done. You can now push with:"
-    echo "   git push --force-with-lease"
-end
 
 # opencode
 fish_add_path /Users/duarteocarmo/.opencode/bin
