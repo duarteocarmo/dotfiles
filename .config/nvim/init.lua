@@ -35,8 +35,7 @@ g.maplocalleader = " "
 local opts = { silent = true }
 local map = vim.keymap.set
 
-
-require('vim._core.ui2').enable({})
+require("vim._core.ui2").enable({})
 map("n", "<leader>y", function() -- copy relative filepath to clipboard
 	vim.fn.setreg("+", vim.fn.expand("%"))
 end)
@@ -55,9 +54,6 @@ map({ "n", "v" }, "<leader>gu", "<cmd>GitLink<cr>", opts)
 map({ "n", "v" }, "<leader>go", function()
 	require("gitlinker").link({ action = require("gitlinker.actions").system })
 end, opts)
-map({ "n", "v" }, "<leader>pc", ":GpChatNew popup<CR>", opts)
-map({ "n", "v" }, "<leader>pr", ":GpRewrite<CR>", opts)
-map({ "n", "v" }, "<leader>pa", ":GpAppend<CR>", opts)
 map({ "n", "v" }, "<C-k>", function()
 	require("conform").format({ async = false, lsp_fallback = true })
 end, opts)
@@ -84,9 +80,6 @@ local plugins = {
 	"rose-pine/neovim",
 	"nvim-lua/plenary.nvim",
 	"Exafunction/windsurf.nvim",
-	-- "jnz/studio98",
-	-- "metalelf0/base16-black-metal-scheme",
-	-- "p00f/alabaster.nvim",
 }
 
 vim.pack.add(vim.tbl_map(function(repo)
@@ -277,4 +270,3 @@ require("codeium").setup({
 		},
 	},
 })
-
