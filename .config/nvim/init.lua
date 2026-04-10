@@ -27,6 +27,10 @@ o.smartcase = true
 o.swapfile = false
 o.foldmethod = "indent"
 o.foldlevelstart = 99
+o.shortmess:append("c") -- Prevents showing extra messages when using completion
+o.termguicolors = true -- Enables 24-bit RGB colors in the terminal
+o.smartindent = true -- Automatically inserts an extra level of indentation in some cases
+o.smarttab = true -- Makes <Tab> insert 'shiftwidth' number of spaces at the start of a line
 
 local g = vim.g
 g.mapleader = " "
@@ -36,9 +40,12 @@ local opts = { silent = true }
 local map = vim.keymap.set
 
 require("vim._core.ui2").enable({})
-map("n", "<leader>y", function() -- copy relative filepath to clipboard
-	vim.fn.setreg("+", vim.fn.expand("%"))
+
+-- copy absolute filepath to clipboard
+map("n", "<leader>y", function()
+	vim.fn.setreg("+", vim.fn.expand("%:p"))
 end)
+
 map("n", "<leader>ff", function()
 	local in_git = vim.fn.system("git rev-parse --is-inside-work-tree 2>/dev/null"):match("true")
 	if in_git then
@@ -134,7 +141,6 @@ require("luasnip.loaders.from_vscode").lazy_load({
 
 require("tiny-inline-diagnostic").setup()
 require("nvim-treesitter").install({ "lua", "rust", "python", "beancount" })
-
 require("conform").setup({
 	formatters_by_ft = {
 		python = function(bufnr)
@@ -199,7 +205,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 require("modus-themes").setup({
 	style = "auto",
-	variant = "default",
+	variants = "default",
 	styles = {
 		comments = { italic = true },
 		keywords = { bold = true },
@@ -211,8 +217,20 @@ require("dark_notify").run({
 		dark = { colorscheme = "modus_vivendi" },
 	},
 })
-
-vim.g.maplocalleader = " "
+require("codeium").setup({
+	enable_cmp_source = false,
+	virtual_text = {
+		enabled = true,
+		filetypes = {
+			beancount = false,
+		},
+		key_bindings = {
+			accept = "<C-j>",
+			next = "<M-]>",
+			prev = "<M-[>",
+		},
+	},
+})
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	callback = function()
@@ -255,18 +273,3 @@ end
 
 vim.keymap.set("n", "<leader>pc", pack_clean)
 vim.keymap.set("n", "<leader>pu", vim.pack.update)
-
-require("codeium").setup({
-	enable_cmp_source = false,
-	virtual_text = {
-		enabled = true,
-		filetypes = {
-			beancount = false,
-		},
-		key_bindings = {
-			accept = "<C-j>",
-			next = "<M-]>",
-			prev = "<M-[>",
-		},
-	},
-})
