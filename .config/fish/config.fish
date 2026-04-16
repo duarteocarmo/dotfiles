@@ -120,4 +120,14 @@ function drtv
     /Users/duarteocarmo/repos/drtv-downloader/dr_download.sh $argv
 end
 
+# Auto-rename zellij tab to the current directory's basename
+function __zellij_tab_rename --on-variable PWD
+    if set -q ZELLIJ
+        command zellij action rename-tab (basename $PWD) &>/dev/null
+    end
+end
+if status is-interactive
+    __zellij_tab_rename
+end
+
 source ~/.config/fish/secrets.fish
