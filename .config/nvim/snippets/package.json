@@ -1,0 +1,11 @@
+{
+  "name": "doc-custom-snippets",
+  "contributes": {
+    "snippets": [
+      {
+        "language": "beancount",
+        "path": "./beancount.json"
+      }
+    ]
+  }
+}

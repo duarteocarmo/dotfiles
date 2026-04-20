@@ -87,6 +87,7 @@ local plugins = {
 	"rose-pine/neovim",
 	"nvim-lua/plenary.nvim",
 	"Exafunction/windsurf.nvim",
+	"sindrets/diffview.nvim",
 }
 
 vim.pack.add(vim.tbl_map(function(repo)
