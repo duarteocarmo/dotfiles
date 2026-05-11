@@ -40,9 +40,28 @@ ensure_sudo() {
 apt_install_or_upgrade() {
   ensure_sudo
   sudo apt-get update -y
-  sudo apt-get install -y "${APT_PACKAGES[@]}"
+
+  local package
+  for package in "${APT_PACKAGES[@]}"; do
+    if sudo apt-get install -y "$package"; then
+      log "$package installed/upgraded."
+    else
+      log "Skipping $package (install failed)."
+    fi
+  done
+
   sudo apt-get clean
-  log "APT packages installed/upgraded."
+}
+
+run_step() {
+  local name="$1"
+  shift
+
+  if "$@"; then
+    return 0
+  fi
+
+  log "Skipping $name (failed)."
 }
 
 install_uv() {
@@ -73,15 +92,18 @@ install_glab() {
   local release_json
   release_json="$(curl -fsSL https://gitlab.com/api/v4/projects/34675721/releases)"
 
+  local glab_arch
+  case "$arch" in
+    x86_64) glab_arch="amd64" ;;
+    aarch64) glab_arch="arm64" ;;
+    *) glab_arch="$arch" ;;
+  esac
+
   local url
-  url="$(printf '%s' "$release_json" | jq -r --arg arch "$arch" '
+  url="$(printf '%s' "$release_json" | jq -r --arg glab_arch "$glab_arch" '
     .[0].assets.links[]
     | select(.name | endswith(".tar.gz"))
-    | select(
-        (.name | contains("linux_amd64")) and $arch == "x86_64" or
-        (.name | contains("linux_arm64")) and $arch == "aarch64" or
-        (.name | contains("linux_" + $arch))
-      )
+    | select(.name | contains("linux_" + $glab_arch))
     | .direct_asset_url
   ' | head -n 1)"
 
@@ -125,16 +147,38 @@ install_atuin() {
 }
 
 install_lazygit() {
-  if ! LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": *"v\K[^"]*'); then
+  local arch
+  arch="$(uname -m)"
+
+  local lazygit_arch
+  case "$arch" in
+    aarch64) lazygit_arch="arm64" ;;
+    *) lazygit_arch="$arch" ;;
+  esac
+
+  local release_json
+  if ! release_json="$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest)"; then
     log "Skipping lazygit (could not fetch latest version)."
     return 0
   fi
 
-  LAZYGIT_ARCH=$(uname -m | sed -e 's/aarch64/arm64/')
+  local url
+  url="$(printf '%s' "$release_json" | jq -r --arg lazygit_arch "$lazygit_arch" '
+    .assets[]
+    | select(.name | endswith(".tar.gz"))
+    | select(.name | contains("linux_" + $lazygit_arch))
+    | .browser_download_url
+  ' | head -n 1)"
+
+  if [[ -z "$url" ]]; then
+    log "Skipping lazygit (unsupported arch: $arch)."
+    return 0
+  fi
+
   local tmp_dir
   tmp_dir="$(mktemp -d)"
 
-  if ! curl -Lo "$tmp_dir/lazygit.tar.gz" "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_${LAZYGIT_ARCH}.tar.gz"; then
+  if ! curl -fsSL -o "$tmp_dir/lazygit.tar.gz" "$url"; then
     rm -rf "$tmp_dir"
     log "Skipping lazygit (download failed)."
     return 0
@@ -190,13 +234,13 @@ main() {
   export DEBIAN_FRONTEND=noninteractive
   export PATH="$HOME/.local/bin:$PATH"
 
-  apt_install_or_upgrade
-  install_uv
-  install_gh_cli
-  install_glab
-  install_atuin
-  install_lazygit
-  setup_aliases
+  run_step "APT packages" apt_install_or_upgrade
+  run_step "uv" install_uv
+  run_step "GitHub CLI" install_gh_cli
+  run_step "glab" install_glab
+  run_step "Atuin" install_atuin
+  run_step "lazygit" install_lazygit
+  run_step "aliases" setup_aliases
 
   log "Done."
 }
