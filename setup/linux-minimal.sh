@@ -53,12 +53,14 @@ install_uv() {
 
 install_gh_cli() {
   ensure_sudo
-  sudo mkdir -p /usr/share/keyrings
-  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-    | sudo tee /usr/share/keyrings/githubcli-archive-keyring.gpg >/dev/null
-  sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-    | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+  if ! grep -Rqs "https://cli.github.com/packages" /etc/apt/sources.list /etc/apt/sources.list.d; then
+    sudo mkdir -p /usr/share/keyrings
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+      | sudo tee /usr/share/keyrings/githubcli-archive-keyring.gpg >/dev/null
+    sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+      | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+  fi
   sudo apt-get update -y
   sudo apt-get install -y gh
   log "GitHub CLI installed/upgraded."
@@ -67,16 +69,25 @@ install_gh_cli() {
 install_glab() {
   local arch
   arch="$(uname -m)"
-  local glab_arch
-  case "$arch" in
-    x86_64) glab_arch="x86_64" ;;
-    aarch64) glab_arch="arm64" ;;
-    *) log "Skipping glab (unsupported arch: $arch)."; return 0 ;;
-  esac
 
-  local version
-  version="$(curl -fsSL https://gitlab.com/api/v4/projects/34675721/releases | jq -r '.[0].tag_name' | sed 's/^v//')"
-  local url="https://gitlab.com/gitlab-org/cli/-/releases/v${version}/downloads/glab_${version}_linux_${glab_arch}.tar.gz"
+  local release_json
+  release_json="$(curl -fsSL https://gitlab.com/api/v4/projects/34675721/releases)"
+
+  local url
+  url="$(printf '%s' "$release_json" | jq -r --arg arch "$arch" '
+    .[0].assets.links[].url
+    | select(endswith(".tar.gz"))
+    | select(
+        ($arch == "x86_64" and contains("linux_amd64")) or
+        ($arch == "aarch64" and contains("linux_arm64")) or
+        contains("linux_" + $arch)
+      )
+  ' | head -n 1)"
+
+  if [[ -z "$url" ]]; then
+    log "Skipping glab (unsupported arch: $arch)."
+    return 0
+  fi
 
   local tmp_dir
   tmp_dir="$(mktemp -d)"
