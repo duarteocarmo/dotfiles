@@ -2,20 +2,28 @@
 set -euo pipefail
 
 # Minimal Linux setup for coding with pi.
-# Installs: git, curl, tmux, ripgrep, direnv, uv, node, neovim, gh, glab, pi
+# Installs/upgrades only: nvim, gh, glab, tree, tmux, jq, direnv, unzip, curl, git, uv, atuin, lazygit
+# Also adds shell aliases for bash or zsh.
 #   bash setup/linux-minimal.sh
 
 APT_PACKAGES=(
-  ca-certificates
   curl
-  wget
-  unzip
   git
   tmux
-  ripgrep
+  tree
   jq
   direnv
-  build-essential
+  unzip
+  neovim
+)
+
+ALIASES=$(cat <<'ALIASES'
+alias gst='git status'
+alias gp='git push'
+alias ga='git add'
+alias gc='git commit'
+alias vi='nvim'
+ALIASES
 )
 
 log() { printf '%s\n' "$*"; }
@@ -29,88 +37,21 @@ ensure_sudo() {
   sudo -v
 }
 
-apt_install() {
+apt_install_or_upgrade() {
   ensure_sudo
   sudo apt-get update -y
   sudo apt-get install -y "${APT_PACKAGES[@]}"
   sudo apt-get clean
-  log "APT packages installed."
+  log "APT packages installed/upgraded."
 }
 
 install_uv() {
-  if need_cmd uv; then
-    log "uv already installed."
-    return 0
-  fi
   curl -LsSf https://astral.sh/uv/install.sh | sh
   export PATH="$HOME/.local/bin:$PATH"
-  log "uv installed."
-}
-
-install_node() {
-  if need_cmd node; then
-    log "Node already installed."
-    return 0
-  fi
-
-  local arch
-  arch="$(uname -m)"
-  local node_arch
-  case "$arch" in
-    x86_64)  node_arch="x64" ;;
-    aarch64) node_arch="arm64" ;;
-    *) log "Skipping node (unsupported arch: $arch)."; return 0 ;;
-  esac
-
-  local version="v22.20.0"
-  local tarball="node-${version}-linux-${node_arch}.tar.xz"
-  local url="https://nodejs.org/dist/${version}/${tarball}"
-
-  mkdir -p "$HOME/.local"
-  curl -fsSL "$url" | tar -xJ -C "$HOME/.local" --strip-components=1
-  log "Node ${version} installed."
-}
-
-install_neovim() {
-  if need_cmd nvim; then
-    log "Neovim already installed."
-    return 0
-  fi
-
-  local arch
-  arch="$(uname -m)"
-  local suffix
-  case "$arch" in
-    x86_64)  suffix="x86_64" ;;
-    aarch64) suffix="aarch64" ;;
-    *) log "Skipping neovim (unsupported arch: $arch)."; return 0 ;;
-  esac
-
-  local url="https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-${suffix}.appimage"
-  mkdir -p "$HOME/.local/bin"
-  curl -fsSL -o "$HOME/.local/bin/nvim" "$url"
-  chmod +x "$HOME/.local/bin/nvim"
-
-  # AppImage needs FUSE; extract if unavailable
-  if ! "$HOME/.local/bin/nvim" --version &>/dev/null; then
-    local tmp_dir
-    tmp_dir="$(mktemp -d)"
-    cd "$tmp_dir"
-    "$HOME/.local/bin/nvim" --appimage-extract >/dev/null 2>&1
-    mv squashfs-root/usr/bin/nvim "$HOME/.local/bin/nvim"
-    rm -rf "$tmp_dir"
-    cd -
-  fi
-
-  log "Neovim nightly installed."
+  log "uv installed/upgraded."
 }
 
 install_gh_cli() {
-  if need_cmd gh; then
-    log "GitHub CLI already installed."
-    return 0
-  fi
-
   ensure_sudo
   sudo mkdir -p /usr/share/keyrings
   curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
@@ -120,20 +61,15 @@ install_gh_cli() {
     | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
   sudo apt-get update -y
   sudo apt-get install -y gh
-  log "GitHub CLI installed."
+  log "GitHub CLI installed/upgraded."
 }
 
 install_glab() {
-  if need_cmd glab; then
-    log "glab already installed."
-    return 0
-  fi
-
   local arch
   arch="$(uname -m)"
   local glab_arch
   case "$arch" in
-    x86_64)  glab_arch="x86_64" ;;
+    x86_64) glab_arch="x86_64" ;;
     aarch64) glab_arch="arm64" ;;
     *) log "Skipping glab (unsupported arch: $arch)."; return 0 ;;
   esac
@@ -145,36 +81,101 @@ install_glab() {
   local tmp_dir
   tmp_dir="$(mktemp -d)"
   curl -fsSL "$url" | tar -xz -C "$tmp_dir"
+  mkdir -p "$HOME/.local/bin"
   mv "$tmp_dir/bin/glab" "$HOME/.local/bin/glab"
   chmod +x "$HOME/.local/bin/glab"
   rm -rf "$tmp_dir"
-  log "glab ${version} installed."
+  log "glab installed/upgraded."
 }
 
-install_pi() {
-  if need_cmd pi; then
-    log "pi already installed."
+install_atuin() {
+  if apt-cache show atuin >/dev/null 2>&1; then
+    ensure_sudo
+    sudo apt-get install -y atuin
+    log "Atuin installed/upgraded."
     return 0
   fi
-  npm install -g @mariozechner/pi-coding-agent
-  log "pi CLI installed."
+
+  curl -fsSL https://setup.atuin.sh | sh
+  export PATH="$HOME/.local/bin:$PATH"
+  log "Atuin installed/upgraded."
+}
+
+install_lazygit() {
+  if ! LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": *"v\K[^"]*'); then
+    log "Skipping lazygit (could not fetch latest version)."
+    return 0
+  fi
+
+  LAZYGIT_ARCH=$(uname -m | sed -e 's/aarch64/arm64/')
+  local tmp_dir
+  tmp_dir="$(mktemp -d)"
+
+  if ! curl -Lo "$tmp_dir/lazygit.tar.gz" "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_${LAZYGIT_ARCH}.tar.gz"; then
+    rm -rf "$tmp_dir"
+    log "Skipping lazygit (download failed)."
+    return 0
+  fi
+
+  if ! tar xf "$tmp_dir/lazygit.tar.gz" -C "$tmp_dir" lazygit; then
+    rm -rf "$tmp_dir"
+    log "Skipping lazygit (extract failed)."
+    return 0
+  fi
+
+  ensure_sudo
+  if ! sudo install "$tmp_dir/lazygit" -D -t /usr/local/bin/; then
+    rm -rf "$tmp_dir"
+    log "Skipping lazygit (install failed)."
+    return 0
+  fi
+
+  rm -rf "$tmp_dir"
+  log "lazygit installed/upgraded."
+}
+
+detect_shell_config() {
+  local shell_name
+  shell_name="$(basename "${SHELL:-}")"
+
+  case "$shell_name" in
+    bash) printf '%s\n' "$HOME/.bashrc" ;;
+    zsh) printf '%s\n' "$HOME/.zshrc" ;;
+    *) log "Skipping aliases (unsupported shell: ${SHELL:-unknown})."; return 1 ;;
+  esac
+}
+
+setup_aliases() {
+  local shell_config
+  shell_config="$(detect_shell_config)" || return 0
+  touch "$shell_config"
+
+  if grep -qF "alias gst='git status'" "$shell_config"; then
+    log "Aliases already configured."
+    return 0
+  fi
+
+  {
+    printf '\n# Minimal setup aliases\n'
+    printf '%s\n' "$ALIASES"
+  } >>"$shell_config"
+
+  log "Aliases added to $shell_config."
 }
 
 main() {
   export DEBIAN_FRONTEND=noninteractive
   export PATH="$HOME/.local/bin:$PATH"
 
-  apt_install
+  apt_install_or_upgrade
   install_uv
-  install_node
-  install_neovim
   install_gh_cli
   install_glab
-  install_pi
+  install_atuin
+  install_lazygit
+  setup_aliases
 
-  log ""
-  log "Done. Installed: git, curl, tmux, ripgrep, jq, direnv, uv, node, neovim, gh, glab, pi"
+  log "Done."
 }
 
 main "$@"
-
