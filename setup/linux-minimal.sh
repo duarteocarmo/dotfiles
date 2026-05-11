@@ -75,13 +75,14 @@ install_glab() {
 
   local url
   url="$(printf '%s' "$release_json" | jq -r --arg arch "$arch" '
-    .[0].assets.links[].url
-    | select(endswith(".tar.gz"))
+    .[0].assets.links[]
+    | select(.name | endswith(".tar.gz"))
     | select(
-        ($arch == "x86_64" and contains("linux_amd64")) or
-        ($arch == "aarch64" and contains("linux_arm64")) or
-        contains("linux_" + $arch)
+        (.name | contains("linux_amd64")) and $arch == "x86_64" or
+        (.name | contains("linux_arm64")) and $arch == "aarch64" or
+        (.name | contains("linux_" + $arch))
       )
+    | .direct_asset_url
   ' | head -n 1)"
 
   if [[ -z "$url" ]]; then
@@ -91,7 +92,18 @@ install_glab() {
 
   local tmp_dir
   tmp_dir="$(mktemp -d)"
-  curl -fsSL "$url" | tar -xz -C "$tmp_dir"
+  if ! curl -fsSL -o "$tmp_dir/glab.tar.gz" "$url"; then
+    rm -rf "$tmp_dir"
+    log "Skipping glab (download failed)."
+    return 0
+  fi
+
+  if ! tar -xz -C "$tmp_dir" -f "$tmp_dir/glab.tar.gz"; then
+    rm -rf "$tmp_dir"
+    log "Skipping glab (extract failed)."
+    return 0
+  fi
+
   mkdir -p "$HOME/.local/bin"
   mv "$tmp_dir/bin/glab" "$HOME/.local/bin/glab"
   chmod +x "$HOME/.local/bin/glab"
