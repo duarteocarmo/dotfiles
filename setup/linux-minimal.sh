@@ -2,11 +2,12 @@
 set -euo pipefail
 
 # Minimal Linux setup for coding with pi.
-# Installs/upgrades only: nvim, gh, glab, tree, tmux, jq, direnv, unzip, curl, git, uv, atuin, lazygit
+# Installs/upgrades only: nvim, gh, glab, tree, tmux, jq, direnv, unzip, curl, ca-certificates, git, uv, atuin, lazygit
 # Also adds shell aliases for bash or zsh.
 #   bash setup/linux-minimal.sh
 
 APT_PACKAGES=(
+  ca-certificates
   curl
   git
   tmux
