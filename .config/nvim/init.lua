@@ -79,6 +79,7 @@ local plugins = {
 	"rachartier/tiny-inline-diagnostic.nvim",
 	"saghen/blink.cmp",
 	"saghen/blink.compat",
+	"saghen/blink.lib",
 	"sindrets/diffview.nvim",
 	"stevearc/conform.nvim",
 	"linrongbin16/gitlinker.nvim",
@@ -86,6 +87,7 @@ local plugins = {
 	"miikanissi/modus-themes.nvim",
 	"rose-pine/neovim",
 	"nvim-lua/plenary.nvim",
+	"ldelossa/pi-ide.nvim",
 	"Exafunction/windsurf.nvim",
 	"sindrets/diffview.nvim",
 }
@@ -105,6 +107,16 @@ require("mini.pick").setup()
 require("mini.icons").setup()
 require("mini.statusline").setup({})
 require("mini.diff").setup()
+require("pi-ide").setup({
+	auto_start = true,
+	claude_code_compatibility = false,
+	log_level = "warn",
+	suggestion = {
+		auto_trigger = true,
+		default_keys = true,
+		model = nil,
+	},
+})
 
 require("blink.cmp").setup({
 	keymap = {
