@@ -20,3 +20,9 @@
 # Track pi themes
 !.pi/agent/themes/
 !.pi/agent/themes/**
+
+# Track lazygit config
+!Library/
+!Library/Application Support/
+!Library/Application Support/lazygit/
+!Library/Application Support/lazygit/config.yml

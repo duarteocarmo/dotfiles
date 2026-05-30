@@ -88,6 +88,7 @@ brew install cormacrelf/tap/dark-notify
 brew install curl
 brew install dark-notify
 brew install direnv
+brew install difftastic
 brew install dive
 brew install duckdb
 brew install eza

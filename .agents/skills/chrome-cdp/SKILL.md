@@ -32,7 +32,9 @@ Without `CDP_PORT_FILE`, the tool picks whichever `DevToolsActivePort` it finds 
 
 ## Commands
 
-All commands use `scripts/cdp.mjs`. The `<target>` is a **unique** targetId prefix from `list`; copy the full prefix shown in the `list` output (for example `6BE827FA`). The CLI rejects ambiguous prefixes.
+The CDP CLI lives at `/Users/duarteocarmo/.agents/skills/chrome-cdp/scripts/cdp.mjs`. Use this absolute path unless your current working directory is the skill directory. Do not assume `scripts/cdp.mjs` exists in the project/current directory.
+
+All commands use the CDP CLI. The `<target>` is a **unique** targetId prefix from `list`; copy the full prefix shown in the `list` output (for example `6BE827FA`). The CLI rejects ambiguous prefixes.
 
 ### List open pages
 
