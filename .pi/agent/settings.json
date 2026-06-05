@@ -1,13 +1,14 @@
 {
-  "lastChangelogVersion": "0.76.0",
+  "lastChangelogVersion": "0.78.1",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
   "defaultThinkingLevel": "high",
   "hideThinkingBlock": false,
-  "theme": "modus-operandi",
+  "theme": "modus-vivendi",
   "packages": [
     "git:github.com/earendil-works/pi-review",
-    "npm:pi-autoresearch"
+    "npm:pi-autoresearch",
+    "npm:@ldelossa/pi-ide"
   ],
   "enableSkillCommands": true,
   "terminal": {

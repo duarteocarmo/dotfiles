@@ -2,9 +2,12 @@
   "name": "pi-preview",
   "private": true,
   "dependencies": {
+    "highlight.js": "^11.11.1",
     "marked": "^15.0.0"
   },
   "pi": {
-    "extensions": ["./index.ts"]
+    "extensions": [
+      "./index.ts"
+    ]
   }
 }

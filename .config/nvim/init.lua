@@ -57,6 +57,7 @@ end)
 map("n", "<leader>fg", "<cmd>Pick grep_live<cr>")
 map("n", "<leader>rr", "<cmd>:restart<cr>")
 map("n", "<leader>gg", "<cmd>:LazyGit<cr>")
+map("n", "<leader>ps", "<cmd>PiStatus<cr>", opts)
 map({ "n", "v" }, "<leader>gu", "<cmd>GitLink<cr>", opts)
 map({ "n", "v" }, "<leader>go", function()
 	require("gitlinker").link({ action = require("gitlinker.actions").system })
@@ -64,6 +65,12 @@ end, opts)
 map({ "n", "v" }, "<C-k>", function()
 	require("conform").format({ async = false, lsp_fallback = true })
 end, opts)
+
+vim.api.nvim_create_user_command("ConfigReload", function()
+	vim.cmd.source(vim.env.MYVIMRC)
+	vim.notify("Config reloaded")
+end, { desc = "Reload Neovim config" })
+map("n", "<leader>cr", "<cmd>ConfigReload<cr>", opts)
 
 local plugins = {
 	"L3MON4D3/LuaSnip",
@@ -286,3 +293,4 @@ end
 
 vim.keymap.set("n", "<leader>pc", pack_clean)
 vim.keymap.set("n", "<leader>pu", vim.pack.update)
+

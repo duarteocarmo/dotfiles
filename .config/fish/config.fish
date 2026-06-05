@@ -112,8 +112,6 @@ ln -sf ~/.AGENTS.md ~/.claude/CLAUDE.md # Claude code
 ln -sf ~/.AGENTS.md ~/.config/opencode/AGENTS.md # OpenCode
 
 
-# opencode
-fish_add_path /Users/duarteocarmo/.opencode/bin
 
 # drtv downloader
 function drtv
