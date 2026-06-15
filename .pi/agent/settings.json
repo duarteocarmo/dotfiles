@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.78.1",
+  "lastChangelogVersion": "0.79.4",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
   "defaultThinkingLevel": "high",
@@ -8,7 +8,8 @@
   "packages": [
     "git:github.com/earendil-works/pi-review",
     "npm:pi-autoresearch",
-    "npm:@ldelossa/pi-ide"
+    "npm:@narumitw/pi-goal",
+    "npm:pi-simplify"
   ],
   "enableSkillCommands": true,
   "terminal": {

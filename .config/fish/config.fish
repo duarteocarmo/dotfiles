@@ -119,3 +119,6 @@ function drtv
 end
 
 source ~/.config/fish/secrets.fish
+
+# Added by Verda CLI installer
+set -gx PATH /Users/duarteocarmo/.verda/bin $PATH

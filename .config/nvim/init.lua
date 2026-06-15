@@ -3,7 +3,7 @@
   Single file. Just because.
   ======================
 ]]
-local vim = vim -- suppress lsp warnings
+local vim = vim -- suppress lsp warnings [ignore: undefined-global]
 local o = vim.opt
 
 o.number = true
@@ -57,11 +57,13 @@ end)
 map("n", "<leader>fg", "<cmd>Pick grep_live<cr>")
 map("n", "<leader>rr", "<cmd>:restart<cr>")
 map("n", "<leader>gg", "<cmd>:LazyGit<cr>")
-map("n", "<leader>ps", "<cmd>PiStatus<cr>", opts)
 map({ "n", "v" }, "<leader>gu", "<cmd>GitLink<cr>", opts)
 map({ "n", "v" }, "<leader>go", function()
 	require("gitlinker").link({ action = require("gitlinker.actions").system })
 end, opts)
+map({ "n", "v" }, "<leader>pc", ":PrtChatNew popup<CR>", opts)
+map({ "n", "v" }, "<leader>pr", ":PrtRewrite<CR>", opts)
+map({ "n", "v" }, "<leader>pa", ":PrtAppend<CR>", opts)
 map({ "n", "v" }, "<C-k>", function()
 	require("conform").format({ async = false, lsp_fallback = true })
 end, opts)
@@ -75,7 +77,7 @@ map("n", "<leader>cr", "<cmd>ConfigReload<cr>", opts)
 local plugins = {
 	"L3MON4D3/LuaSnip",
 	"cormacrelf/dark-notify",
-	"crispgm/cmp-beancount",
+	"hxueh/beancount.nvim",
 	"kdheepak/lazygit.nvim",
 	"mason-org/mason-lspconfig.nvim",
 	"mason-org/mason.nvim",
@@ -85,7 +87,6 @@ local plugins = {
 	"nvim-treesitter/nvim-treesitter",
 	"rachartier/tiny-inline-diagnostic.nvim",
 	"saghen/blink.cmp",
-	"saghen/blink.compat",
 	"saghen/blink.lib",
 	"sindrets/diffview.nvim",
 	"stevearc/conform.nvim",
@@ -94,7 +95,7 @@ local plugins = {
 	"miikanissi/modus-themes.nvim",
 	"rose-pine/neovim",
 	"nvim-lua/plenary.nvim",
-	"ldelossa/pi-ide.nvim",
+	"frankroeder/parrot.nvim",
 	"Exafunction/windsurf.nvim",
 	"sindrets/diffview.nvim",
 }
@@ -114,16 +115,59 @@ require("mini.pick").setup()
 require("mini.icons").setup()
 require("mini.statusline").setup({})
 require("mini.diff").setup()
+local parrot_models = {
+	"deepseek/deepseek-v4-flash",
+	"minimax/minimax-m3",
+}
+require("parrot").setup({
+	providers = {
+		openrouter = {
+			name = "openrouter",
+			api_key = function()
+				return vim.trim(vim.fn.system({ "fish", "-lc", 'printf %s "$OPENROUTER_API_KEY"' }))
+			end,
+			endpoint = "https://openrouter.ai/api/v1/chat/completions",
+			params = {
+				chat = { temperature = 0.0, top_p = 1 },
+				command = { temperature = 0.0, top_p = 1 },
+			},
+			topic = {
+				model = parrot_models[1],
+				params = { max_completion_tokens = 64 },
+			},
+			models = parrot_models,
+		},
+	},
+	toggle_target = "popup",
+	enable_preview_mode = false,
+})
+--[[ pi-ide disabled
+plugin: "ldelossa/pi-ide.nvim"
+map("n", "<leader>ps", "<cmd>PiStatus<cr>", opts)
+
 require("pi-ide").setup({
 	auto_start = true,
 	claude_code_compatibility = false,
 	log_level = "warn",
 	suggestion = {
 		auto_trigger = true,
-		default_keys = true,
+		default_keys = false,
 		model = nil,
 	},
 })
+
+-- <Tab>: accept ghost text if present, else a real <Tab>
+local pi_suggest = require("pi-ide.suggestion")
+map("i", "<Tab>", function()
+	if pi_suggest.has_active_suggestion() then
+		pi_suggest.accept_all()
+		return ""
+	end
+	return "<Tab>"
+end, { expr = true, silent = true })
+map("i", "<M-\\>", pi_suggest.trigger, opts)
+map("i", "<C-]>", pi_suggest.dismiss, opts)
+]]
 
 require("blink.cmp").setup({
 	keymap = {
@@ -143,9 +187,10 @@ require("blink.cmp").setup({
 		providers = {
 			beancount = {
 				name = "beancount",
-				module = "blink.compat.source",
+				module = "beancount.completion.blink",
+				score_offset = 100,
 				opts = {
-					account = "/Users/duarteocarmo/Repos/accounting/duarte.beancount",
+					trigger_characters = { ":", "#", "^", '"', " " },
 				},
 			},
 		},
@@ -155,11 +200,22 @@ require("blink.cmp").setup({
 	signature = { enabled = true },
 })
 
+require("beancount").setup({
+	main_bean_file = "/Users/duarteocarmo/Repos/accounting/duarte.beancount",
+	python_path = "/Users/duarteocarmo/Repos/accounting/.venv/bin/python",
+	auto_format_on_save = false, -- conform owns formatting
+	ui = { virtual_text = false }, -- let tiny-inline-diagnostic render (wrapped)
+})
+
 require("luasnip.loaders.from_vscode").lazy_load({
 	paths = { vim.fn.stdpath("config") .. "/snippets" },
 })
 
-require("tiny-inline-diagnostic").setup()
+require("tiny-inline-diagnostic").setup({
+	-- attach on buffer open too, not only LspAttach, so non-LSP
+	-- filetypes (beancount) still get inline messages
+	options = { overwrite_events = { "LspAttach", "BufWinEnter" } },
+})
 require("nvim-treesitter").install({ "lua", "rust", "python", "beancount" })
 require("conform").setup({
 	formatters_by_ft = {
@@ -180,19 +236,6 @@ require("conform").setup({
 		yaml = { "prettier" },
 	},
 })
-local beancount_journal = "/Users/duarteocarmo/Repos/accounting/duarte.beancount"
-
-vim.lsp.config.beancount = {
-	init_options = {
-		journal_file = beancount_journal,
-		formatting = {
-			prefix_width = 30,
-			currency_column = 60,
-			number_currency_spacing = 1,
-		},
-	},
-}
-vim.lsp.enable("beancount")
 
 -- LSP stuff
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -291,6 +334,5 @@ local function pack_clean()
 	end
 end
 
-vim.keymap.set("n", "<leader>pc", pack_clean)
+vim.keymap.set("n", "<leader>pC", pack_clean)
 vim.keymap.set("n", "<leader>pu", vim.pack.update)
-

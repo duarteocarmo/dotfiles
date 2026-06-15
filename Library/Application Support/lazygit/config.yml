@@ -1,5 +1,1 @@
-os:
-  edit: "nvim {{filename}}"
-git:
-  pagers:
-    - externalDiffCommand: difft --color=always
+/Users/duarteocarmo/.config/lazygit/config.yml

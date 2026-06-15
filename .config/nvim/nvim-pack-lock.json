@@ -4,8 +4,12 @@
       "rev": "0abc8f390b278c3b4aabc4c004ac8a088b65cf24",
       "src": "https://github.com/L3MON4D3/LuaSnip"
     },
+    "beancount.nvim": {
+      "rev": "5a45ae7f1e704c413599416842d2fd821f0b9bc1",
+      "src": "https://github.com/hxueh/beancount.nvim"
+    },
     "blink.cmp": {
-      "rev": "1b8809dcbb20f023b7cc69ec560e927ae858f9b2",
+      "rev": "b02ac65634bdb8af2dcc4eb6c807c060e1e15ae6",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.compat": {
@@ -13,7 +17,7 @@
       "src": "https://github.com/saghen/blink.compat"
     },
     "blink.lib": {
-      "rev": "2cb62890cee636fe46722d03b7b2331e54fb3755",
+      "rev": "b127d48bf8e9ac9cf41f6e0fbead317503f76558",
       "src": "https://github.com/saghen/blink.lib"
     },
     "cmp-beancount": {
@@ -33,7 +37,7 @@
       "src": "https://github.com/sindrets/diffview.nvim"
     },
     "gitlinker.nvim": {
-      "rev": "5e8d9f0deb34b079baf84ffe0abbe0475a6b5372",
+      "rev": "a1b74070bbd5e50128190c85b09f1431ea5fbd83",
       "src": "https://github.com/linrongbin16/gitlinker.nvim"
     },
     "lazygit.nvim": {
@@ -41,15 +45,15 @@
       "src": "https://github.com/kdheepak/lazygit.nvim"
     },
     "mason-lspconfig.nvim": {
-      "rev": "7b01e2974a47d489bb92f47a41e4c0088ea8f86e",
+      "rev": "0a695750d747db1e7e70bcf0267ef8951c95fc83",
       "src": "https://github.com/mason-org/mason-lspconfig.nvim"
     },
     "mason.nvim": {
-      "rev": "bb639d4bf385a4d89f478b83af4d770be05ab7eb",
+      "rev": "16ba83bfc8a25f52bb545134f5bee082b195c460",
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.nvim": {
-      "rev": "9d0b9b7188d5c24b5a87f0d8b383ec8bda7a0de4",
+      "rev": "ff8b3580935818ef2f21bdd651f057a2ae071eab",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "modus-themes.nvim": {
@@ -65,15 +69,19 @@
       "src": "https://github.com/rose-pine/neovim"
     },
     "nvim-lspconfig": {
-      "rev": "9573948c38bfabeec353ae7dd7d3ffec4c506a6b",
+      "rev": "ed19590a3a9792901553c388d1aadafce012f80d",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
       "rev": "4916d6592ede8c07973490d9322f187e07dfefac",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
+    "parrot.nvim": {
+      "rev": "964675ca588efae2a50bef35b01729acc36cb3d5",
+      "src": "https://github.com/frankroeder/parrot.nvim"
+    },
     "pi-ide.nvim": {
-      "rev": "b73ca082989ae1bd6ef0779931a646e6fb1beb5c",
+      "rev": "4552109763cd2bf006b4fc753b8c5aa4b1a10d14",
       "src": "https://github.com/ldelossa/pi-ide.nvim"
     },
     "plenary.nvim": {
@@ -81,7 +89,7 @@
       "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "tiny-inline-diagnostic.nvim": {
-      "rev": "680762989e8b05a72e90769959d0fb9a557e6917",
+      "rev": "e930d0a46031645040d5492595b46cdf6ab3514f",
       "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
     },
     "vim-beancount": {
