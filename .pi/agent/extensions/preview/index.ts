@@ -61,8 +61,8 @@ const HTML_TEMPLATE = (body: string) => `<!DOCTYPE html>
   --syntax-number: #8a4f17;
   --syntax-title: #1f5f7a;
   --syntax-meta: #6f5795;
-  --measure: 66ch;
-  --wide: 1120px;
+  --measure: 100%;
+  --wide: 100%;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -100,7 +100,7 @@ body {
 
 main {
   width: 100%;
-  padding: clamp(1.5rem, 5vw, 5rem) clamp(1.1rem, 7vw, 8rem) clamp(3rem, 8vw, 7rem);
+  padding: clamp(1.25rem, 4vw, 4rem) clamp(1rem, 4vw, 4rem) clamp(3rem, 6vw, 6rem);
 }
 
 main > :where(h1, h2, h3, h4, p, ul, ol, blockquote, hr, table) {
@@ -123,7 +123,7 @@ h1 {
   margin-top: 0;
   margin-bottom: 1.35rem;
   font-size: clamp(2.8rem, 7vw, 5.8rem);
-  max-width: var(--measure);
+  max-width: 100%;
 }
 
 h2 {
@@ -196,9 +196,9 @@ code {
 
 pre {
   overflow: auto;
-  width: fit-content;
-  min-width: min(100%, var(--measure));
-  max-width: min(var(--wide), 100%);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   margin: 1.35rem auto 1.8rem 0;
   padding: 1.05rem 1.15rem;
   border: 0;
@@ -249,7 +249,7 @@ pre code {
 .hljs-strong { font-weight: 600; }
 
 table {
-  width: min(100%, var(--measure));
+  width: 100%;
   border-collapse: collapse;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
@@ -267,15 +267,15 @@ th { font-weight: 600; }
 
 img {
   display: block;
-  max-width: min(100%, var(--wide));
+  max-width: 100%;
   height: auto;
   margin: 1.8rem auto 1.8rem 0;
 }
 
 .mermaid {
   overflow: auto;
-  width: min(100%, var(--measure));
-  max-width: min(100%, var(--measure));
+  width: 100%;
+  max-width: 100%;
   margin: 1.8rem auto 1.8rem 0;
   padding: 1rem;
   border: 1px solid var(--rule);

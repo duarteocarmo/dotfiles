@@ -1,7 +1,7 @@
 {
-  "lastChangelogVersion": "0.79.4",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.5",
+  "lastChangelogVersion": "0.79.9",
+  "defaultProvider": "opencode-go",
+  "defaultModel": "glm-5.2",
   "defaultThinkingLevel": "high",
   "hideThinkingBlock": false,
   "theme": "modus-vivendi",
