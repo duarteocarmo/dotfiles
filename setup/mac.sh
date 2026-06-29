@@ -101,7 +101,6 @@ FORMULAE=(
 CASKS=(
   bitwarden
   chatgpt
-  chatwise
   codex
   codex-app
   cursor
@@ -109,7 +108,6 @@ CASKS=(
   daisydisk
   db-browser-for-sqlite
   discord
-  dockdoor
   element
   epk/epk/font-sf-mono-nerd-font
   font-comic-mono
@@ -135,8 +133,7 @@ CASKS=(
   google-chrome
   grandperspective
   handy
-  helium
-  hermes
+  helium-browser
   iina
   imageoptim
   itsycal
