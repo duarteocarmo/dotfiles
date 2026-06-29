@@ -1,15 +1,15 @@
 {
-  "lastChangelogVersion": "0.79.9",
+  "lastChangelogVersion": "0.80.2",
   "defaultProvider": "opencode-go",
   "defaultModel": "glm-5.2",
   "defaultThinkingLevel": "high",
   "hideThinkingBlock": false,
-  "theme": "modus-vivendi",
+  "theme": "modus-operandi",
   "packages": [
     "git:github.com/earendil-works/pi-review",
-    "npm:pi-autoresearch",
     "npm:@narumitw/pi-goal",
-    "npm:pi-simplify"
+    "npm:pi-simplify",
+    "npm:pi-autoresearch"
   ],
   "enableSkillCommands": true,
   "terminal": {
