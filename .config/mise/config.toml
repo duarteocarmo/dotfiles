@@ -1,0 +1,10 @@
+[tools]
+bun = "latest"
+go = "1.22.4"
+node = "22.20.0"
+rust = "latest"
+uv = "latest"
+"npm:@earendil-works/pi-coding-agent" = "latest"
+"npm:hunkdiff" = "latest"
+"npm:opencode-ai" = "latest"
+"pipx:hf" = "latest"

@@ -21,6 +21,11 @@
 !.pi/agent/themes/
 !.pi/agent/themes/**
 
+# Track mise config
+!.config/
+!.config/mise/
+!.config/mise/config.toml
+
 # Track lazygit config
 !Library/
 !Library/Application Support/

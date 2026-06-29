@@ -1,149 +1,348 @@
-#     ____   ____   _____ _  _____   __  __          _____ 
-#    |  _ \ / __ \ / ____( )/ ____| |  \/  |   /\   / ____|
-#    | | | | |  | | |    |/| (___   | \  / |  /  \ | |     
-#    | | | | |  | | |       \___ \  | |\/| | / /\ \| |     
-#    | |__| | |__| | |____   ____) | | |  | |/ ____ \ |____ 
-#    |_____/ \____/ \_____| |_____/  |_|  |_/_/    \_\_____|
-#
-# setup rosetta
-/usr/sbin/softwareupdate --install-rosetta --agree-to-license
+#!/usr/bin/env bash
+set -euo pipefail
 
-# install homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-export PATH="/opt/homebrew/bin:$PATH"
+DOTFILES_REPO="${DOTFILES_REPO:-git@github.com:duarteocarmo/dotfiles.git}"
+DOTFILES_HTTPS_REPO="${DOTFILES_HTTPS_REPO:-https://github.com/duarteocarmo/dotfiles.git}"
+DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
+
+TAPS=(
+  anomalyco/tap
+  charmbracelet/tap
+  cormacrelf/tap
+  epk/epk
+  fastrepl/fastrepl
+  gitpod-io/tap
+  localstack/tap
+  nikitabobko/tap
+  popcorn-official/popcorn-desktop
+  saihgupr/notificli
+  steipete/tap
+  xykong/tap
+  zackriya-solutions/meetily
+)
+
+FORMULAE=(
+  act
+  aria2
+  ast-grep
+  atuin
+  awscli
+  awscurl
+  bat
+  biome
+  btop
+  cdk8s
+  cmake
+  cocoapods
+  container
+  coreutils
+  curl
+  difftastic
+  direnv
+  dive
+  duckdb
+  duti
+  elixir
+  emscripten
+  espeak-ng
+  eza
+  fastlane
+  ffmpeg
+  ffuf
+  fish
+  fzf
+  git
+  git-filter-repo
+  git-lfs
+  git-xet
+  glab
+  grip
+  jq
+  lazygit
+  luarocks
+  lychee
+  markdownlint-cli2
+  mosh
+  murex
+  mysql
+  neovim
+  openfst
+  openjdk
+  pandoc
+  php
+  pipx
+  pnpm
+  portaudio
+  postgresql@14
+  postgresql@17
+  prettierd
+  rclone
+  ripgrep
+  rsync
+  sshuttle
+  stunnel
+  stylua
+  swiftformat
+  taplo
+  telnet
+  tesseract
+  tmux
+  trash
+  tree
+  wget
+  yt-dlp
+  zig
+  zoxide
+)
+
+CASKS=(
+  bitwarden
+  chatgpt
+  chatwise
+  codex
+  codex-app
+  cursor
+  cyberduck
+  daisydisk
+  db-browser-for-sqlite
+  discord
+  dockdoor
+  element
+  epk/epk/font-sf-mono-nerd-font
+  font-comic-mono
+  font-commit-mono-nerd-font
+  font-departure-mono-nerd-font
+  font-fira-code
+  font-geist-mono
+  font-geist-mono-nerd-font
+  font-hack-nerd-font
+  font-ia-writer-duo
+  font-ia-writer-mono
+  font-ia-writer-quattro
+  font-ibm-plex-mono
+  font-inter
+  font-iosevka
+  font-iosevka-nerd-font
+  font-jetbrains-mono
+  font-lora
+  font-noto-nerd-font
+  font-noto-sans-mono
+  font-sf-pro
+  gcloud-cli
+  google-chrome
+  grandperspective
+  handy
+  helium
+  hermes
+  iina
+  imageoptim
+  itsycal
+  kitty
+  languagetool-desktop
+  mactex
+  macwhisper
+  menubar-countdown
+  mimestream
+  netnewswire
+  nextcloud
+  nordvpn
+  notion
+  notion-calendar
+  obsidian
+  onyx
+  orbstack
+  pika
+  pingid
+  raycast
+  shortcat
+  shottr
+  slack
+  spotify
+  stats
+  tailscale-app
+  telegram
+  ticktick
+  transmit
+  webtorrent
+  zed
+)
 
 
-# install fish shell and update
-echo /opt/homebrew/bin/fish | sudo tee -a /etc/shells
-chsh -s /opt/homebrew/bin/fish
-fish_add_path /opt/homebrew/bin
-fish_update_completions
+log() { printf '\n==> %s\n' "$*"; }
+need_cmd() { command -v "$1" >/dev/null 2>&1; }
 
+run_optional() {
+  local name="$1"
+  shift
 
-# install homebrew casks
-brew install --cask appcleaner
-brew install --cask arc
-brew install --cask arc
-brew install --cask bitwarden
-brew install --cask caffeine
-brew install --cask cap
-brew install --cask cursor
-brew install --cask cyberduck
-brew install --cask db-browser-for-sqlite
-brew install --cask discord
-brew install --cask docker
-brew install --cask firefox
-brew install --cask font-commit-mono-nerd-font
-brew install --cask font-iosevka
-brew install --cask font-jetbrains-mono
-brew install --cask github
-brew install --cask google-chrome
-brew install --cask handbrake
-brew install --cask iina
-brew install --cask imageoptim
-brew install --cask itsycal
-brew install --cask jordanbaird-ice
-brew install --cask languagetool
-brew install --cask logitech-g-hub
-brew install --cask logitech-options
-brew install --cask maestral
-brew install --cask meetingbar
-brew install --cask menubar-countdown
-brew install --cask mimestream
-brew install --cask mullvadvpn
-brew install --cask ngrok
-brew install --cask nordvpn
-brew install --cask notion
-brew install --cask notion-calendar
-brew install --cask olama
-brew install --cask ollama
-brew install --cask pika
-brew install --cask raycast
-brew install --cask reader
-brew install --cask rectangle
-brew install --cask shottr
-brew install --cask slack
-brew install --cask spotify
-brew install --cask stats
-brew install --cask tableplus
-brew install --cask telegram
-brew install --cask the-unarchiver
-brew install --cask ticktick
-brew install --cask visual-studio-code
-brew install --cask vlc
-brew install --cask webtorrent
-brew install --cask wezterm
-brew install --cask whatsapp
-brew install --cask zed
-brew install --cask zettlr
+  if "$@"; then
+    log "$name done."
+    return 0
+  fi
 
-# non brews
-brew install asdf
-brew install atuin
-brew install awscurl
-brew install bat
-brew install cmake
-brew install coreutils 
-brew install cormacrelf/tap/dark-notify
-brew install curl
-brew install dark-notify
-brew install direnv
-brew install difftastic
-brew install dive
-brew install duckdb
-brew install eza
-brew install ffmpeg
-brew install fish
-brew install fzf
-brew install gcc
-brew install gh
-brew install ghostty
-brew install git
-brew install git-lfs
-brew install graphviz
-brew install htop
-brew install jordanbaird-ice
-brew install jq
-brew install just
-brew install lazygit
-brew install litestream
-brew install lpeg
-brew install lua
-brew install luajit
-brew install luarocks
-brew install mysql
-brew install neovim
-brew install php
-brew install pipx
-brew install prettierd
-brew install rclone
-brew install ripgrep
-brew install sqlite
-brew install stripe
-brew install tesseract
-brew install thefuck
-brew install tmux
-brew install tree
-brew install uv
-brew install wget
-brew install zig
+  log "$name skipped or failed."
+}
 
-# uv
-echo 'uvx --generate-shell-completion fish | source' >> ~/.config/fish/config.fish
+setup_xcode_tools() {
+  if xcode-select -p >/dev/null 2>&1; then
+    return 0
+  fi
 
-# asdf 
-echo -e "\nsource "(brew --prefix asdf)"/libexec/asdf.fish" >> ~/.config/fish/config.fish
-asdf plugin-add python
-asdf plugin add golang https://github.com/asdf-community/asdf-golang.git
-asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-asdf install python latest
-asdf install golang latest
-asdf install nodejs latest
-fish_update_completions
+  xcode-select --install || true
+  log "Command Line Tools installer opened. Re-run this script after it finishes if Homebrew fails."
+}
 
-# fisher 
-curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
-fisher install jethrokuan/z
+install_rosetta() {
+  if [[ "$(uname -m)" != "arm64" ]]; then
+    return 0
+  fi
 
-# rust and cargo 
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  /usr/bin/pgrep oahd >/dev/null 2>&1 && return 0
+  sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license || true
+}
+
+setup_homebrew_path() {
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+}
+
+install_homebrew() {
+  setup_homebrew_path
+  if need_cmd brew; then
+    return 0
+  fi
+
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  setup_homebrew_path
+}
+
+install_taps() {
+  local tap
+  for tap in "${TAPS[@]}"; do
+    brew tap "$tap" || true
+  done
+}
+
+install_formulae() {
+  brew update
+
+  local formula
+  for formula in "${FORMULAE[@]}"; do
+    brew install "$formula" || true
+  done
+}
+
+install_casks() {
+  local cask
+  for cask in "${CASKS[@]}"; do
+    brew install --cask "$cask" || true
+  done
+}
+
+clone_dotfiles() {
+  if git -C "$HOME" remote get-url origin 2>/dev/null | grep -q "duarteocarmo/dotfiles"; then
+    log "Dotfiles already checked out in $HOME."
+    return 0
+  fi
+
+  if [[ ! -d "$DOTFILES_DIR/.git" ]]; then
+    git clone "$DOTFILES_REPO" "$DOTFILES_DIR" || git clone "$DOTFILES_HTTPS_REPO" "$DOTFILES_DIR"
+  fi
+
+  rsync -a --exclude '.git' --exclude '.DS_Store' "$DOTFILES_DIR/" "$HOME/"
+}
+
+install_mise() {
+  export PATH="$HOME/.local/bin:$PATH"
+
+  if ! need_cmd mise; then
+    curl https://mise.run | sh
+    export PATH="$HOME/.local/bin:$PATH"
+  fi
+
+  if [[ ! -f "$HOME/.config/mise/config.toml" ]]; then
+    log "No mise config found at ~/.config/mise/config.toml; skipping mise tools."
+    return 0
+  fi
+
+  mise trust "$HOME/.config/mise/config.toml" || true
+  mise install -y
+}
+
+setup_fish() {
+  mkdir -p "$HOME/.config/fish" "$HOME/.codex" "$HOME/.claude" "$HOME/.config/opencode"
+  touch "$HOME/.config/fish/secrets.fish"
+  chmod 600 "$HOME/.config/fish/secrets.fish"
+
+  local fish_path
+  fish_path="$(command -v fish)"
+
+  if ! grep -qF "$fish_path" /etc/shells; then
+    echo "$fish_path" | sudo tee -a /etc/shells >/dev/null
+  fi
+
+  if [[ "${SHELL:-}" != "$fish_path" ]]; then
+    chsh -s "$fish_path" "$USER" || true
+  fi
+
+  fish -c 'fish_add_path /opt/homebrew/bin ~/.local/bin ~/.local/share/mise/shims; fish_update_completions' || true
+
+  if [[ -f "$HOME/.config/fish/fish_plugins" ]]; then
+    fish -c 'if not type -q fisher; curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source; end; fisher update' || true
+  fi
+}
+
+setup_atuin_history() {
+  mkdir -p "$HOME/.local/share/atuin"
+
+  if [[ -f "$HOME/Nextcloud/dots/atuin_key" && ! -f "$HOME/.local/share/atuin/key" ]]; then
+    cp "$HOME/Nextcloud/dots/atuin_key" "$HOME/.local/share/atuin/key"
+    chmod 600 "$HOME/.local/share/atuin/key"
+  fi
+
+  [[ -f "$HOME/.zsh_history" ]] && atuin import zsh || true
+  [[ -f "$HOME/.bash_history" ]] && atuin import bash || true
+  [[ -d "$HOME/.local/share/fish" || -f "$HOME/.local/share/fish/fish_history" ]] && atuin import fish || true
+
+  atuin sync || true
+  atuin status || true
+}
+
+setup_git() {
+  git lfs install || true
+}
+
+main() {
+  setup_xcode_tools
+  run_optional "Rosetta" install_rosetta
+  install_homebrew
+  log "Homebrew ready."
+
+  install_taps
+  log "Homebrew taps ready."
+
+  install_formulae
+  log "Homebrew formulae ready."
+
+  install_casks
+  log "Homebrew casks ready."
+
+  clone_dotfiles
+  log "Dotfiles ready."
+
+  install_mise
+  log "mise and mise tools ready."
+
+  run_optional "fish" setup_fish
+  run_optional "Atuin history" setup_atuin_history
+  run_optional "git" setup_git
+
+  brew cleanup || true
+
+  log "Done. Open a new terminal. If Atuin did not sync, run: atuin login && atuin sync"
+}
+
+main "$@"
