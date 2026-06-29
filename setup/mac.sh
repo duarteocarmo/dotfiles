@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+export NONINTERACTIVE=1
+export HOMEBREW_NO_ENV_HINTS=1
+
 DOTFILES_REPO="${DOTFILES_REPO:-git@github.com:duarteocarmo/dotfiles.git}"
 DOTFILES_HTTPS_REPO="${DOTFILES_HTTPS_REPO:-https://github.com/duarteocarmo/dotfiles.git}"
 DOTFILES_BRANCH="${DOTFILES_BRANCH:-master}"
@@ -315,7 +318,7 @@ setup_atuin_history() {
   [[ -f "$HOME/.bash_history" ]] && atuin import bash || true
   [[ -d "$HOME/.local/share/fish" || -f "$HOME/.local/share/fish/fish_history" ]] && atuin import fish || true
 
-  atuin sync || true
+  atuin sync -f || true
   atuin status || true
 }
 
@@ -350,7 +353,7 @@ main() {
 
   brew cleanup || true
 
-  log "Done. Open a new terminal. If Atuin did not sync, run: atuin login && atuin sync"
+  log "Done. Open a new terminal. If Atuin did not sync, run: atuin login -u <username> && atuin sync -f"
 }
 
 main "$@"
