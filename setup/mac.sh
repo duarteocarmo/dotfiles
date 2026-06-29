@@ -234,14 +234,14 @@ install_formulae() {
 
   local formula
   for formula in "${FORMULAE[@]}"; do
-    brew install "$formula" || true
+    brew install --yes "$formula" || true
   done
 }
 
 install_casks() {
   local cask
   for cask in "${CASKS[@]}"; do
-    brew install --cask "$cask" || true
+    brew install --cask --yes "$cask" || true
   done
 }
 
