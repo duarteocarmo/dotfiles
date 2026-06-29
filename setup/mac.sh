@@ -3,7 +3,7 @@ set -euo pipefail
 
 DOTFILES_REPO="${DOTFILES_REPO:-git@github.com:duarteocarmo/dotfiles.git}"
 DOTFILES_HTTPS_REPO="${DOTFILES_HTTPS_REPO:-https://github.com/duarteocarmo/dotfiles.git}"
-DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
+DOTFILES_BRANCH="${DOTFILES_BRANCH:-master}"
 
 TAPS=(
   anomalyco/tap
@@ -244,15 +244,23 @@ install_casks() {
 
 clone_dotfiles() {
   if git -C "$HOME" remote get-url origin 2>/dev/null | grep -q "duarteocarmo/dotfiles"; then
-    log "Dotfiles already checked out in $HOME."
+    git -C "$HOME" pull --ff-only || true
+    log "Dotfiles ready in $HOME."
     return 0
   fi
 
-  if [[ ! -d "$DOTFILES_DIR/.git" ]]; then
-    git clone "$DOTFILES_REPO" "$DOTFILES_DIR" || git clone "$DOTFILES_HTTPS_REPO" "$DOTFILES_DIR"
+  if [[ -d "$HOME/.git" ]]; then
+    log "$HOME already has a different git repo; skipping dotfiles clone."
+    return 1
   fi
 
-  rsync -a --exclude '.git' --exclude '.DS_Store' "$DOTFILES_DIR/" "$HOME/"
+  git -C "$HOME" init
+  git -C "$HOME" remote add origin "$DOTFILES_REPO" || git -C "$HOME" remote set-url origin "$DOTFILES_HTTPS_REPO"
+  if ! git -C "$HOME" fetch origin "$DOTFILES_BRANCH"; then
+    git -C "$HOME" remote set-url origin "$DOTFILES_HTTPS_REPO"
+    git -C "$HOME" fetch origin "$DOTFILES_BRANCH"
+  fi
+  git -C "$HOME" checkout -B "$DOTFILES_BRANCH" "origin/$DOTFILES_BRANCH"
 }
 
 install_mise() {
