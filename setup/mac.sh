@@ -7,6 +7,8 @@ export HOMEBREW_NO_ENV_HINTS=1
 DOTFILES_REPO="${DOTFILES_REPO:-git@github.com:duarteocarmo/dotfiles.git}"
 DOTFILES_HTTPS_REPO="${DOTFILES_HTTPS_REPO:-https://github.com/duarteocarmo/dotfiles.git}"
 DOTFILES_BRANCH="${DOTFILES_BRANCH:-master}"
+RESET_DOTFILES=0
+RESET_MISE=0
 
 TAPS=(
   anomalyco/tap
@@ -170,6 +172,30 @@ CASKS=(
 log() { printf '\n==> %s\n' "$*"; }
 need_cmd() { command -v "$1" >/dev/null 2>&1; }
 
+usage() {
+  cat <<'EOF'
+Usage: setup/mac.sh [options]
+
+Options:
+  --reset-dotfiles  Force $HOME to match origin/master for tracked dotfiles.
+                    Also removes untracked, non-ignored files inside the repo.
+  --reset-mise      Remove mise installs/cache before reinstalling from dots config.
+  -h, --help        Show this help.
+EOF
+}
+
+parse_args() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --reset-dotfiles) RESET_DOTFILES=1 ;;
+      --reset-mise) RESET_MISE=1 ;;
+      -h|--help) usage; exit 0 ;;
+      *) log "Unknown option: $1"; usage; exit 1 ;;
+    esac
+    shift
+  done
+}
+
 run_optional() {
   local name="$1"
   shift
@@ -241,9 +267,22 @@ install_casks() {
   done
 }
 
+fetch_dotfiles() {
+  if ! git -C "$HOME" fetch origin "$DOTFILES_BRANCH"; then
+    git -C "$HOME" remote set-url origin "$DOTFILES_HTTPS_REPO"
+    git -C "$HOME" fetch origin "$DOTFILES_BRANCH"
+  fi
+}
+
 clone_dotfiles() {
   if git -C "$HOME" remote get-url origin 2>/dev/null | grep -q "duarteocarmo/dotfiles"; then
-    git -C "$HOME" pull --ff-only || true
+    fetch_dotfiles
+    if [[ "$RESET_DOTFILES" == "1" ]]; then
+      git -C "$HOME" reset --hard "origin/$DOTFILES_BRANCH"
+      git -C "$HOME" clean -fd
+    else
+      git -C "$HOME" pull --ff-only || true
+    fi
     log "Dotfiles ready in $HOME."
     return 0
   fi
@@ -255,15 +294,16 @@ clone_dotfiles() {
 
   git -C "$HOME" init
   git -C "$HOME" remote add origin "$DOTFILES_REPO" || git -C "$HOME" remote set-url origin "$DOTFILES_HTTPS_REPO"
-  if ! git -C "$HOME" fetch origin "$DOTFILES_BRANCH"; then
-    git -C "$HOME" remote set-url origin "$DOTFILES_HTTPS_REPO"
-    git -C "$HOME" fetch origin "$DOTFILES_BRANCH"
-  fi
+  fetch_dotfiles
   git -C "$HOME" checkout -B "$DOTFILES_BRANCH" "origin/$DOTFILES_BRANCH"
 }
 
 install_mise() {
   export PATH="$HOME/.local/bin:$PATH"
+
+  if [[ "$RESET_MISE" == "1" ]]; then
+    rm -rf "$HOME/.local/share/mise" "$HOME/.cache/mise"
+  fi
 
   if ! need_cmd mise; then
     curl https://mise.run | sh
@@ -323,6 +363,8 @@ setup_git() {
 }
 
 main() {
+  parse_args "$@"
+
   setup_xcode_tools
   run_optional "Rosetta" install_rosetta
   install_homebrew
