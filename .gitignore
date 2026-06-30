@@ -26,6 +26,11 @@
 !.config/mise/
 !.config/mise/config.toml
 
+# Track kitty config
+!.config/kitty/
+!.config/kitty/*.conf
+.config/kitty/*.bak.*
+
 # Track lazygit config
 !Library/
 !Library/Application Support/

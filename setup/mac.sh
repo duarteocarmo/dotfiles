@@ -160,7 +160,6 @@ CASKS=(
   spotify
   stats
   tailscale-app
-  telegram
   ticktick
   transmit
   webtorrent
@@ -292,8 +291,8 @@ setup_fish() {
     echo "$fish_path" | sudo tee -a /etc/shells >/dev/null
   fi
 
-  if [[ "${SHELL:-}" != "$fish_path" ]]; then
-    chsh -s "$fish_path" "$USER" || true
+  if ! dscl . -read "/Users/$USER" UserShell 2>/dev/null | grep -qF "$fish_path"; then
+    sudo dscl . -create "/Users/$USER" UserShell "$fish_path"
   fi
 
   fish -c 'fish_add_path /opt/homebrew/bin ~/.local/bin ~/.local/share/mise/shims; fish_update_completions' || true

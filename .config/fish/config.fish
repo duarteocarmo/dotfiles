@@ -50,8 +50,6 @@ alias pd="exit"
 alias psh="poetry shell"
 
 set PATH /usr/local/bin $PATH
-thefuck --alias | source
-
 set -gx ATUIN_NOBIND true
 atuin init fish | source
 
