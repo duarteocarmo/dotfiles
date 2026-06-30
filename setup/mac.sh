@@ -10,22 +10,6 @@ DOTFILES_BRANCH="${DOTFILES_BRANCH:-master}"
 RESET_DOTFILES=0
 RESET_MISE=0
 
-TAPS=(
-  anomalyco/tap
-  charmbracelet/tap
-  cormacrelf/tap
-  epk/epk
-  fastrepl/fastrepl
-  gitpod-io/tap
-  localstack/tap
-  nikitabobko/tap
-  popcorn-official/popcorn-desktop
-  saihgupr/notificli
-  steipete/tap
-  xykong/tap
-  zackriya-solutions/meetily
-)
-
 FORMULAE=(
   act
   aria2
@@ -128,6 +112,7 @@ CASKS=(
   font-iosevka-nerd-font
   font-jetbrains-mono
   font-lora
+  font-maple-mono-nf
   font-noto-nerd-font
   font-noto-sans-mono
   font-sf-pro
@@ -242,13 +227,6 @@ install_homebrew() {
 
   NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   setup_homebrew_path
-}
-
-install_taps() {
-  local tap
-  for tap in "${TAPS[@]}"; do
-    brew tap "$tap" || true
-  done
 }
 
 install_formulae() {

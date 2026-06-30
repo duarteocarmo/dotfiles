@@ -4,7 +4,7 @@
   "defaultModel": "gpt-5.5",
   "defaultThinkingLevel": "high",
   "hideThinkingBlock": false,
-  "theme": "modus-vivendi",
+  "theme": "modus-operandi",
   "packages": [
     "git:github.com/earendil-works/pi-review",
     "npm:@narumitw/pi-goal",
