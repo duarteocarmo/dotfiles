@@ -26,6 +26,7 @@ FORMULAE=(
   container
   coreutils
   curl
+  cormacrelf/tap/dark-notify
   difftastic
   direnv
   dive
