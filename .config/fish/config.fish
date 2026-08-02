@@ -20,6 +20,29 @@ alias tn="tmux new -s "
 alias tl="tmux ls"
 alias ta="tmux attach-session -t "
 alias tk="tmux kill-server"
+
+function __tmux_window_name --argument-names command
+    if not set -q TMUX
+        return
+    end
+
+    set -l directory_name (basename (pwd))
+    if test -z "$command"
+        tmux rename-window "$directory_name"
+        return
+    end
+
+    set -l program_name (string split --max 1 " " -- $command)[1]
+    tmux rename-window "$directory_name:"(basename "$program_name")
+end
+
+function __tmux_window_name_prompt --on-event fish_prompt
+    __tmux_window_name
+end
+
+function __tmux_window_name_preexec --on-event fish_preexec
+    __tmux_window_name $argv[1]
+end
 alias tree="tree -I __pycache__"
 alias vi="nvim"
 alias joplin="~/.joplin-bin/bin/joplin"
