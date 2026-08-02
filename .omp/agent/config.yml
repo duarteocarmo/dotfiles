@@ -1,0 +1,21 @@
+symbolPreset: nerd
+theme: 
+  dark: titanium
+  light: light
+setupVersion: 1
+modelRoles: 
+  default: opencode-go/kimi-k3
+hideThinkingBlock: false
+statusLine: 
+  preset: default
+colorBlindMode: false
+tui: 
+  textSizing: false
+display: 
+  showTokenUsage: true
+  cacheMissMarker: false
+tools: 
+  {}
+defaultThinkingLevel: auto
+web_search: 
+  enabled: true

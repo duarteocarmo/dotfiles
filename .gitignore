@@ -21,6 +21,11 @@
 !.pi/agent/themes/
 !.pi/agent/themes/**
 
+# Track OMP config
+!.omp/
+!.omp/agent/
+!.omp/agent/config.yml
+
 # Track mise config
 !.config/
 !.config/mise/
