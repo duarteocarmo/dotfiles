@@ -1,6 +1,6 @@
 [tools]
 bun = "latest"
-go = "1.22.4"
+go = "1.21"
 node = "22.20.0"
 rust = "latest"
 uv = "latest"
@@ -8,3 +8,4 @@ uv = "latest"
 "npm:hunkdiff" = "latest"
 "npm:opencode-ai" = "latest"
 "pipx:hf" = "latest"
+"npm:@openai/codex-security" = "latest"
