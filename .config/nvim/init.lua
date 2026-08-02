@@ -56,7 +56,13 @@ map("n", "<leader>ff", function()
 end)
 map("n", "<leader>fg", "<cmd>Pick grep_live<cr>")
 map("n", "<leader>rr", "<cmd>:restart<cr>")
-map("n", "<leader>gg", "<cmd>:LazyGit<cr>")
+-- map("n", "<leader>gg", "<cmd>:LazyGit<cr>")
+-- map("n", "<leader>gg", "<cmd>Neogit<cr>")
+map("n", "<leader>dd", "<cmd>CodeDiff<cr>")
+map({ "n", "v" }, "<Tab>", ":tabnext<CR>", opts)
+map({ "n", "v" }, "<S-Tab>", ":tabprev<CR>", opts)
+map({ "n", "v" }, "<leader>tx", ":tabclose<CR>", opts)
+map({ "n", "v" }, "<leader>gu", "<cmd>GitLink<cr>", opts)
 map({ "n", "v" }, "<leader>gu", "<cmd>GitLink<cr>", opts)
 map({ "n", "v" }, "<leader>go", function()
 	require("gitlinker").link({ action = require("gitlinker.actions").system })
@@ -78,7 +84,6 @@ local plugins = {
 	"L3MON4D3/LuaSnip",
 	"cormacrelf/dark-notify",
 	"hxueh/beancount.nvim",
-	"kdheepak/lazygit.nvim",
 	"mason-org/mason-lspconfig.nvim",
 	"mason-org/mason.nvim",
 	"nathangrigg/vim-beancount",
@@ -99,6 +104,8 @@ local plugins = {
 	"Exafunction/windsurf.nvim",
 	"sindrets/diffview.nvim",
 	"dmtrKovalenko/fff.nvim",
+	"esmuellert/codediff.nvim",
+	"folke/which-key.nvim",
 }
 
 vim.pack.add(vim.tbl_map(function(repo)

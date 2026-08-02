@@ -24,6 +24,10 @@
       "rev": "86ad0f85d9497ae0c01fe2f604d17a400963af95",
       "src": "https://github.com/crispgm/cmp-beancount"
     },
+    "codediff.nvim": {
+      "rev": "7608f3b436ce1f84a4888f75e53079caa981a2e9",
+      "src": "https://github.com/esmuellert/codediff.nvim"
+    },
     "conform.nvim": {
       "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
       "src": "https://github.com/stevearc/conform.nvim"
@@ -31,6 +35,10 @@
     "dark-notify": {
       "rev": "65a27ed5bfadeb224a888e3897e43c840c87ce83",
       "src": "https://github.com/cormacrelf/dark-notify"
+    },
+    "diffs.nvim": {
+      "rev": "7ab445c39224160203ae692d3c883e2f51f2d442",
+      "src": "https://github.com/barrettruth/diffs.nvim"
     },
     "diffview.nvim": {
       "rev": "4516612fe98ff56ae0415a259ff6361a89419b0a",
@@ -63,6 +71,10 @@
     "modus-themes.nvim": {
       "rev": "17a64464c27c1be605adca13dbe48f2f402fe107",
       "src": "https://github.com/miikanissi/modus-themes.nvim"
+    },
+    "neogit": {
+      "rev": "43ea1a0854052e583f647e0b35879f0158a70a78",
+      "src": "https://github.com/NeogitOrg/neogit"
     },
     "neoscroll.nvim": {
       "rev": "c8d29979cb0cb3a2437a8e0ae683fd82f340d3b8",
@@ -99,6 +111,10 @@
     "vim-beancount": {
       "rev": "589a4f06f3b2fd7cd2356c2ef1dafadf6b7a97cf",
       "src": "https://github.com/nathangrigg/vim-beancount"
+    },
+    "which-key.nvim": {
+      "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",
+      "src": "https://github.com/folke/which-key.nvim"
     },
     "windsurf.nvim": {
       "rev": "821b570b526dbb05b57aa4ded578b709a704a38a",
