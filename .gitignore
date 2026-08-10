@@ -36,6 +36,10 @@
 !.config/kitty/*.conf
 .config/kitty/*.bak.*
 
+# Track Herdr config
+!.config/herdr/
+!.config/herdr/config.toml
+
 # Track lazygit config
 !Library/
 !Library/Application Support/

@@ -1,13 +1,18 @@
 symbolPreset: nerd
 theme: 
   dark: titanium
-  light: light
+  light: light-haze
 setupVersion: 1
 modelRoles: 
-  default: opencode-go/kimi-k3
+  default: openai-codex/gpt-5.6-sol:high
 hideThinkingBlock: false
 statusLine: 
   preset: default
+  separator: powerline-thin
+  sessionAccent: true
+  transparent: true
+  compactThinkingLevel: false
+  showHookStatus: true
 colorBlindMode: false
 tui: 
   textSizing: false
@@ -18,4 +23,6 @@ tools:
   {}
 defaultThinkingLevel: auto
 web_search: 
+  enabled: true
+bash: 
   enabled: true
