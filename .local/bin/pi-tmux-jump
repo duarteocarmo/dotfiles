@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -euo pipefail
+
+TMUX_BIN=/opt/homebrew/bin/tmux
+GHOSTTY=/Applications/Ghostty.app
+pane=${1:-}
+
+if [[ ! $pane =~ ^%[0-9]+$ ]]; then
+	exit 1
+fi
+
+session=$($TMUX_BIN display-message -p -t "$pane" '#{session_name}')
+client=$($TMUX_BIN list-clients -F '#{client_activity}|#{client_name}' | sort -t '|' -k1,1nr | head -n 1 | cut -d '|' -f 2-)
+
+$TMUX_BIN select-window -t "$pane"
+$TMUX_BIN select-pane -t "$pane"
+
+if [[ -n $client ]]; then
+	$TMUX_BIN switch-client -c "$client" -t "$session"
+	open -a "$GHOSTTY"
+fi
