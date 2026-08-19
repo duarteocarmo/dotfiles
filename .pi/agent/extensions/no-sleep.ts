@@ -1,93 +1,110 @@
-import { FooterComponent, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+import {
+	CustomEditor,
+	type EditorFactory,
+	type ExtensionAPI,
+	type ExtensionContext,
+} from "@earendil-works/pi-coding-agent";
+import { sliceByColumn, stripTerminalSequences, visibleWidth } from "@earendil-works/pi-tui";
 import { spawn, type ChildProcess } from "node:child_process";
 
-let caffeinate: ChildProcess | undefined;
-let enabled = false;
-
-function stop(): void {
-	const child = caffeinate;
-	caffeinate = undefined;
-	if (child && child.exitCode === null && !child.killed) {
-		child.kill("SIGTERM");
-	}
-}
-
-function start(ctx: ExtensionContext): void {
-	if (process.platform !== "darwin") {
-		ctx.ui.notify("No Sleep requires macOS.", "error");
-		return;
-	}
-	if (caffeinate) return;
-
-	const child = spawn("caffeinate", ["-d", "-w", String(process.pid)], {
-		stdio: "ignore",
-	});
-	child.unref();
-	caffeinate = child;
-
-	child.once("error", (error) => {
-		if (caffeinate !== child) return;
-		caffeinate = undefined;
-		enabled = false;
-		ctx.ui.notify(`No Sleep failed: ${error.message}`, "error");
-	});
-
-	child.once("exit", (code, signal) => {
-		if (caffeinate !== child) return;
-		caffeinate = undefined;
-		enabled = false;
-		ctx.ui.notify(`No Sleep stopped unexpectedly (${code ?? signal}).`, "warning");
-	});
-}
-
 export default function noSleepExtension(pi: ExtensionAPI): void {
-	const originalFooterRender = FooterComponent.prototype.render;
-	const renderFooter = function (this: FooterComponent, width: number): string[] {
-		const lines = originalFooterRender.call(this, width);
-		if (!caffeinate) return lines;
+	let caffeinate: ChildProcess | undefined;
+	let editorFactory: EditorFactory | undefined;
+	let previousEditorFactory: EditorFactory | undefined;
+	let requestEditorRender: (() => void) | undefined;
 
-		const lineIndex = lines.findIndex((line) => line.includes("(auto)"));
-		if (lineIndex === -1) return lines;
-
-		const marker = "(auto)";
-		const indicator = " ☕";
-		const markerEnd = lines[lineIndex].indexOf(marker) + marker.length;
-		let line = `${lines[lineIndex].slice(0, markerEnd)}${indicator}${lines[lineIndex].slice(markerEnd)}`;
-		const overflow = visibleWidth(line) - width;
-		if (overflow > 0) {
-			const suffixStart = markerEnd + indicator.length;
-			const suffix = line.slice(suffixStart);
-			const padding = suffix.match(/ +/);
-			if (padding && padding[0].length > overflow) {
-				const paddingStart = suffixStart + (padding.index ?? 0);
-				line = `${line.slice(0, paddingStart)}${padding[0].slice(overflow)}${line.slice(paddingStart + padding[0].length)}`;
-			}
+	function stop(): void {
+		const child = caffeinate;
+		caffeinate = undefined;
+		requestEditorRender?.();
+		if (child && child.exitCode === null && child.signalCode === null) {
+			child.kill();
 		}
-		lines[lineIndex] = truncateToWidth(line, width, "");
-		return lines;
-	};
-	FooterComponent.prototype.render = renderFooter;
+	}
 
-	process.once("exit", () => stop());
+	function start({ ctx }: { ctx: ExtensionContext }): void {
+		if (process.platform !== "darwin") {
+			ctx.ui.notify("No Sleep requires macOS.", "error");
+			return;
+		}
 
-	pi.on("session_shutdown", () => {
+		const child = spawn("caffeinate", ["-d", "-w", String(process.pid)], {
+			stdio: "ignore",
+		});
+		child.unref();
+		caffeinate = child;
+
+		child.once("spawn", () => {
+			if (caffeinate !== child) return;
+			requestEditorRender?.();
+			ctx.ui.notify("No Sleep on ☕.", "info");
+		});
+
+		child.once("error", (error) => {
+			if (caffeinate !== child) return;
+			caffeinate = undefined;
+			requestEditorRender?.();
+			ctx.ui.notify(`No Sleep failed: ${error.message}`, "error");
+		});
+
+		child.once("exit", (code, signal) => {
+			if (caffeinate !== child) return;
+			caffeinate = undefined;
+			requestEditorRender?.();
+			ctx.ui.notify(`No Sleep stopped unexpectedly (${code ?? signal ?? "unknown"}).`, "warning");
+		});
+	}
+
+	pi.on("session_start", (_event, ctx) => {
+		ctx.ui.setStatus("no-sleep", undefined);
+		previousEditorFactory = ctx.ui.getEditorComponent();
+		editorFactory = (tui, theme, keybindings) => {
+			const editor = previousEditorFactory?.(tui, theme, keybindings) ?? new CustomEditor(tui, theme, keybindings);
+			const render = editor.render.bind(editor);
+			const borderColor =
+				(editor as { borderColor?: (text: string) => string }).borderColor ?? theme.borderColor;
+			requestEditorRender = () => tui.requestRender();
+
+			editor.render = (width) => {
+				const lines = render(width);
+				if (!caffeinate || lines.length === 0) return lines;
+
+				const topBorder = stripTerminalSequences(lines[0] ?? "");
+				const trailingBorder = topBorder.match(/─+$/)?.[0];
+				if (!trailingBorder) return lines;
+
+				const label = width >= 20 ? " ☕ no sleep " : " ☕ ";
+				const contentWidth = Math.max(2, visibleWidth(topBorder) - trailingBorder.length);
+				const left = sliceByColumn(lines[0] ?? "", 0, contentWidth, true);
+				const remaining = width - visibleWidth(left) - visibleWidth(label);
+				if (remaining < 1) return lines;
+
+				lines[0] = left + ctx.ui.theme.fg("dim", label) + borderColor("─".repeat(remaining));
+				return lines;
+			};
+			return editor;
+		};
+		ctx.ui.setEditorComponent(editorFactory);
+	});
+
+	pi.on("session_shutdown", (_event, ctx) => {
 		stop();
-		if (FooterComponent.prototype.render === renderFooter) {
-			FooterComponent.prototype.render = originalFooterRender;
+		if (ctx.ui.getEditorComponent() === editorFactory) {
+			ctx.ui.setEditorComponent(previousEditorFactory);
 		}
+		requestEditorRender = undefined;
 	});
 
 	pi.registerCommand("no-sleep", {
 		description: "Toggle macOS display sleep prevention",
-		handler: async (_args, ctx) => {
-			enabled = !enabled;
-			if (enabled) {
-				start(ctx);
-			} else {
-				stop();
+		handler: (_args, ctx) => {
+			if (!caffeinate) {
+				start({ ctx });
+				return;
 			}
-			ctx.ui.notify(`No Sleep ${enabled ? "on ☕" : "off"}.`, "info");
+
+			stop();
+			ctx.ui.notify("No Sleep off.", "info");
 		},
 	});
 }

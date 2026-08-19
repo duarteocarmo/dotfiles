@@ -10,15 +10,25 @@ navigate_pane_down = "shift+j"
 
 [ui]
 prompt_new_tab_name = false
-pane_gaps = false
-pane_borders = true
+pane_gaps = true
+pane_borders = false
 tab_bar_position = "bottom"
-
-agent_panel_sort = "priority"
+hide_tab_bar_when_single_tab = true
+sidebar_start_collapsed = true
+sidebar_collapsed_mode = "compact"
+agent_panel_sort = "spaces"
+redraw_on_focus_gained = false
 show_agent_labels_on_pane_borders = false
+
+[ui.sidebar.agents]
+row_gap = 0
+rows = [["state_icon", "workspace", "tab"], ["agent"]]
+
 [ui.sound]
 enabled = false
 
 [theme]
-name = "catppuccin"
-auto_switch = false
+name = "tokyo-night"
+auto_switch = true
+light_name = "tokyo-night-day"
+dark_name = "tokyo-night"

@@ -1,0 +1,9 @@
+theme = dark:Modus Vivendi Tinted,light:Modus Operandi Tinted
+confirm-close-surface = false
+copy-on-select = clipboard
+cursor-style = block
+cursor-style-blink = true
+font-family = TX-02
+keybind = shift+enter=text:\n
+macos-titlebar-style = tabs
+shell-integration-features = no-cursor

@@ -15,7 +15,7 @@ statusLine:
   showHookStatus: true
 colorBlindMode: false
 tui: 
-  textSizing: false
+  textSizing: true
 display: 
   showTokenUsage: true
   cacheMissMarker: false
@@ -26,3 +26,5 @@ web_search:
   enabled: true
 bash: 
   enabled: true
+externalThinking: false
+showHardwareCursor: true

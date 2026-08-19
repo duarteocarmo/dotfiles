@@ -1,5 +1,5 @@
 {
-	"$schema": "https://raw.githubusercontent.com/badlogic/pi-mono/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json",
+	"$schema": "https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json",
 	"name": "modus-operandi",
 	"vars": {
 		"fgMain": "#000000",
@@ -43,19 +43,22 @@
 		"warning": "yellowCooler",
 		"muted": "fgDim",
 		"dim": "border",
-		"text": "",
+		"text": "fgMain",
 		"thinkingText": "fgDim",
 
 		"selectedBg": "bgHlLine",
+		"scrollbarThumb": "bgActive",
+		"searchMatchBg": "bgHlLine",
+		"searchMatchText": "fgMain",
 		"userMessageBg": "bgDim",
-		"userMessageText": "",
+		"userMessageText": "fgMain",
 		"customMessageBg": "bgBlueNuanced",
-		"customMessageText": "",
+		"customMessageText": "fgMain",
 		"customMessageLabel": "magentaCooler",
-		"toolPendingBg": "bgDim",
+		"toolPendingBg": "bgActive",
 		"toolSuccessBg": "bgAdded",
 		"toolErrorBg": "bgRemoved",
-		"toolTitle": "",
+		"toolTitle": "fgAlt",
 		"toolOutput": "fgDim",
 
 		"mdHeading": "yellowWarmer",
@@ -89,6 +92,7 @@
 		"thinkingMedium": "cyan",
 		"thinkingHigh": "magentaCooler",
 		"thinkingXhigh": "magentaWarmer",
+		"thinkingMax": "redCooler",
 
 		"bashMode": "green"
 	},
