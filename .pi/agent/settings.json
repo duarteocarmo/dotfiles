@@ -7,12 +7,12 @@
   "theme": "modus-vivendi",
   "packages": [
     "git:github.com/earendil-works/pi-review",
-    "npm:@narumitw/pi-goal",
     "npm:pi-simplify",
     "npm:@juicesharp/rpiv-ask-user-question",
     "git:github.com/huggingface/pi-llama",
     "ssh://git@github.com/earendil-works/pi-transcribe",
-    "npm:pi-autoresearch"
+    "npm:pi-autoresearch",
+    "npm:@juicesharp/rpiv-todo"
   ],
   "enableSkillCommands": true,
   "terminal": {

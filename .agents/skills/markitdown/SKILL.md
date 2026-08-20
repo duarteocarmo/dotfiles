@@ -1,19 +1,21 @@
 ---
 name: markitdown
-description: "Convert files and URLs to Markdown using Microsoft's markitdown. Use for web pages, web PDFs, or local files — supports: PDF, PowerPoint, Word, Excel, Images (EXIF + OCR), Audio (transcription), HTML, CSV/JSON/XML, ZIP files, YouTube URLs, EPubs, and more. Do NOT use for GitHub URLs — convert to raw.githubusercontent.com and fetch directly instead. Runs via uvx with no install needed. You only need this when you need Markdown! For some links, curl/wget is fine!"
+description: "Convert URLs and local documents to Markdown. Use when Markdown conversion is the goal, especially for PDFs, Office files, images, audio, archives, CSV, JSON, XML, YouTube, or EPUB. For an ordinary known web page, try curl first. Do not use for web search, browser interaction, or GitHub blob URLs; fetch GitHub files from raw.githubusercontent.com."
 ---
 
 # MarkItDown
 
 Convert files and web pages to Markdown using [Microsoft MarkItDown](https://github.com/microsoft/markitdown). Runs instantly via `uvx` — no installation or venv required.
 
-## Read a Web Page
+## Convert a Web Page
+
+For an ordinary known page, try `curl -L` first. Use markitdown when you need cleaner Markdown output:
 
 ```bash
 uvx markitdown https://example.com
 ```
 
-Fetches the URL and extracts readable content as Markdown. Works well on JS-heavy sites where simpler extractors fail.
+Markitdown converts fetched content. It does not replace a browser for pages that require interaction or client-side rendering.
 
 ## Convert Local Files
 
@@ -76,10 +78,10 @@ Replace `VIDEO_ID` with the ID from the URL (e.g., `2JjKn7uhKqY` from `https://w
 
 ## When to Use
 
-- Reading web pages (especially JS-heavy sites that simpler extractors fail on)
+- Converting a web page to clean Markdown after direct retrieval is insufficient
 - Converting PDFs, Office documents, or other files to Markdown for analysis
 - Extracting text from images, audio, or YouTube videos
-- Any task where you need file content as clean Markdown
+- Any task where Markdown conversion is the goal
 
 ## When NOT to Use
 

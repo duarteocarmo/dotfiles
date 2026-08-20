@@ -1,11 +1,11 @@
 ---
 name: brave-search
-description: Primary web search and content extraction via the Brave Search API. Use by default for current information, documentation, facts, and finding or reading web content. Lightweight, no browser required.
+description: Web search and source discovery through the Brave Search API. Use for current information or finding relevant pages. For a known public URL, try curl first. Use agent-browser only when interaction or a real browser is required, and use markitdown when conversion to Markdown is the goal.
 ---
 
 # Brave Search
 
-Web search and content extraction using the official Brave Search API. No browser required.
+Web search and source discovery using the official Brave Search API. No browser required.
 
 ## Setup
 
@@ -48,13 +48,13 @@ Requires a Brave Search API account with a free subscription. A credit card is r
   - `py` - Past year
   - `YYYY-MM-DDtoYYYY-MM-DD` - Custom date range
 
-## Extract Page Content
+## Known URLs
+
+For a known public URL, try `curl -L` first. Use the content helper only when curl returns noisy HTML and readable Markdown would help:
 
 ```bash
 {baseDir}/content.js https://example.com/article
 ```
-
-Fetches a URL and extracts readable content as markdown.
 
 ## Output Format
 
@@ -75,5 +75,5 @@ Content: (if --content flag used)
 
 - Searching for documentation or API references
 - Looking up facts or current information
-- Fetching content from specific URLs
+- Finding and comparing relevant sources
 - Any task requiring web search without interactive browsing
