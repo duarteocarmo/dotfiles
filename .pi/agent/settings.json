@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.84.2",
+  "lastChangelogVersion": "0.84.3",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.6-sol",
   "defaultThinkingLevel": "high",
@@ -12,7 +12,13 @@
     "git:github.com/huggingface/pi-llama",
     "ssh://git@github.com/earendil-works/pi-transcribe",
     "npm:pi-autoresearch",
-    "npm:@juicesharp/rpiv-todo"
+    "npm:@juicesharp/rpiv-todo",
+    "npm:@llblab/pi-telegram",
+    "../../Repos/pi-tools/packages/pi-jumper",
+    "../../Repos/pi-tools/packages/pi-modus-themes",
+    "../../Repos/pi-tools/packages/pi-no-sleep",
+    "../../Repos/pi-tools/packages/pi-preview",
+    "../../Repos/pi-tools/packages/pi-subagents"
   ],
   "enableSkillCommands": true,
   "terminal": {

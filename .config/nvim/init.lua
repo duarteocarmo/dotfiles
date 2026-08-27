@@ -14,7 +14,7 @@ o.tabstop = 2
 o.shiftwidth = 2
 o.softtabstop = 2
 o.expandtab = true
-o.wrap = false
+o.wrap = true
 o.autoread = true
 o.backspace = "indent,eol,start"
 o.shell = "/opt/homebrew/bin/fish"
@@ -86,6 +86,7 @@ local plugins = {
 	"hxueh/beancount.nvim",
 	"mason-org/mason-lspconfig.nvim",
 	"mason-org/mason.nvim",
+	"MeanderingProgrammer/render-markdown.nvim",
 	"nathangrigg/vim-beancount",
 	"neovim/nvim-lspconfig",
 	"nvim-mini/mini.nvim",
@@ -115,6 +116,7 @@ end, plugins))
 require("diffview").setup({ use_icons = false })
 require("neoscroll").setup({ duration_multiplier = 0.3 })
 require("gitlinker").setup()
+require("render-markdown").setup({ preset = "obsidian" })
 require("mason").setup()
 require("mason-lspconfig").setup({
 	ensure_installed = { "lua_ls", "rust_analyzer", "pyright" },
