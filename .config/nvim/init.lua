@@ -296,6 +296,7 @@ require("codeium").setup({
 		enabled = true,
 		filetypes = {
 			beancount = false,
+			markdown = false,
 		},
 		key_bindings = {
 			accept = "<C-j>",

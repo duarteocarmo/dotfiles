@@ -8,10 +8,16 @@ navigate_workspace_down = "j"
 navigate_pane_up = "shift+k"
 navigate_pane_down = "shift+j"
 
+[[keys.command]]
+key = "prefix+alt+g"
+type = "popup"
+command = "lazygit"
+width = "80%"
+height = "80%"
+
 [ui]
 prompt_new_tab_name = false
-pane_gaps = true
-pane_borders = false
+pane_gaps = false
 tab_bar_position = "bottom"
 hide_tab_bar_when_single_tab = true
 sidebar_start_collapsed = true
@@ -20,6 +26,11 @@ agent_panel_sort = "spaces"
 redraw_on_focus_gained = false
 show_agent_labels_on_pane_borders = false
 
+status_indicators = "symbols"
+tab_bar_right = [
+  { type = "datetime", format = "%a %d %b %H:%M" },
+  { type = "command", command = "pmset -g batt | grep -oE '[0-9]+%' | head -1", interval_seconds = 60, timeout_seconds = 5 },
+]
 [ui.sidebar.agents]
 row_gap = 0
 rows = [["state_icon", "workspace", "tab"], ["agent"]]
@@ -28,7 +39,10 @@ rows = [["state_icon", "workspace", "tab"], ["agent"]]
 enabled = false
 
 [theme]
-name = "tokyo-night"
-auto_switch = true
+name = "vesper"
+auto_switch = false
 light_name = "tokyo-night-day"
 dark_name = "tokyo-night"
+
+[ui.toast]
+delivery = "herdr"
