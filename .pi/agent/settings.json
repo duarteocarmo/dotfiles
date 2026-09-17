@@ -16,7 +16,8 @@
     "../../Repos/pi-tools/packages/pi-modus-themes",
     "../../Repos/pi-tools/packages/pi-no-sleep",
     "../../Repos/pi-tools/packages/pi-preview",
-    "../../Repos/pi-tools/packages/pi-subagents"
+    "../../Repos/pi-tools/packages/pi-subagents",
+    "npm:pi-mcp-adapter"
   ],
   "enableSkillCommands": true,
   "terminal": {

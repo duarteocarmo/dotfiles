@@ -7,6 +7,7 @@ navigate_workspace_up = "k"
 navigate_workspace_down = "j"
 navigate_pane_up = "shift+k"
 navigate_pane_down = "shift+j"
+goto = ["prefix+g", "prefix+a"]
 
 [[keys.command]]
 key = "prefix+alt+g"
@@ -39,10 +40,13 @@ rows = [["state_icon", "workspace", "tab"], ["agent"]]
 enabled = false
 
 [theme]
-name = "vesper"
+name = "catppuccin"
 auto_switch = false
 light_name = "tokyo-night-day"
 dark_name = "tokyo-night"
 
 [ui.toast]
-delivery = "herdr"
+delivery = "terminal"
+
+[update]
+channel = "preview"
