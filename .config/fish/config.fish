@@ -146,3 +146,6 @@ set -gx PATH /Users/duarteocarmo/.verda/bin $PATH
 
 # Added by the Hunk installer (https://hunk.dev)
 fish_add_path '/Users/duarteocarmo/.hunk/bin'
+
+# Pi
+fish_add_path "$HOME/.local/bin"

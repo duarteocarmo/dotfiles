@@ -49,4 +49,4 @@ dark_name = "tokyo-night"
 delivery = "terminal"
 
 [update]
-channel = "preview"
+channel = "stable"

@@ -1,10 +1,13 @@
 {
-  "lastChangelogVersion": "0.85.1",
+  "lastChangelogVersion": "1.2.0",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.6-sol",
+  "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "high",
+  "defaultTools": [
+    "+codemode"
+  ],
   "hideThinkingBlock": false,
-  "theme": "modus-vivendi",
+  "theme": "modus-operandi/modus-vivendi",
   "packages": [
     "git:github.com/earendil-works/pi-review",
     "npm:pi-simplify",
@@ -12,12 +15,12 @@
     "git:github.com/huggingface/pi-llama",
     "npm:pi-autoresearch",
     "npm:@juicesharp/rpiv-todo",
-    "npm:@llblab/pi-telegram",
     "../../Repos/pi-tools/packages/pi-modus-themes",
     "../../Repos/pi-tools/packages/pi-no-sleep",
     "../../Repos/pi-tools/packages/pi-preview",
     "../../Repos/pi-tools/packages/pi-subagents",
-    "npm:pi-mcp-adapter"
+    "npm:pi-cursor-sdk",
+    "npm:@narumitw/pi-usage"
   ],
   "enableSkillCommands": true,
   "terminal": {
@@ -26,5 +29,17 @@
   "enableInstallTelemetry": false,
   "treeFilterMode": "default",
   "tuiMode": "regular",
-  "outputPad": 1
+  "outputPad": 1,
+  "enabledModels": [
+    "openai-codex/gpt-6.1-sol",
+    "openai-codex/gpt-6-astra",
+    "openai-codex/gpt-6-luna",
+    "opencode-go/glm-5.3",
+    "opencode-go/glm-5.3-flash",
+    "opencode-go/mimo-v2.6-pro",
+    "llama-cpp/ggml-org/MiMo-V2.6-Distill-Qwen-9B-GGUF:Q8_0",
+    "github-copilot/claude-sonnet-5.5",
+    "github-copilot/claude-opus-5.5",
+    "cursor/opus-5.5@1m"
+  ]
 }

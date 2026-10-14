@@ -33,6 +33,8 @@ o.smartindent = true -- Automatically inserts an extra level of indentation in s
 o.smarttab = true -- Makes <Tab> insert 'shiftwidth' number of spaces at the start of a line
 
 local g = vim.g
+g.loaded_netrw = 1
+g.loaded_netrwPlugin = 1
 g.mapleader = " "
 g.maplocalleader = " "
 
@@ -55,6 +57,7 @@ map("n", "<leader>ff", function()
 	end
 end)
 map("n", "<leader>fg", "<cmd>Pick grep_live<cr>")
+map("n", "<leader>b", "<cmd>NvimTreeToggle<cr>", { silent = true, desc = "Toggle file browser" })
 map("n", "<leader>rr", "<cmd>:restart<cr>")
 -- map("n", "<leader>gg", "<cmd>:LazyGit<cr>")
 -- map("n", "<leader>gg", "<cmd>Neogit<cr>")
@@ -90,6 +93,8 @@ local plugins = {
 	"nathangrigg/vim-beancount",
 	"neovim/nvim-lspconfig",
 	"nvim-mini/mini.nvim",
+	"nvim-tree/nvim-tree.lua",
+	"nvim-tree/nvim-web-devicons",
 	"nvim-treesitter/nvim-treesitter",
 	"rachartier/tiny-inline-diagnostic.nvim",
 	"saghen/blink.cmp",
@@ -113,6 +118,11 @@ vim.pack.add(vim.tbl_map(function(repo)
 	return "https://github.com/" .. repo
 end, plugins))
 
+require("nvim-tree").setup({
+	view = { side = "left", width = 35 },
+	renderer = { group_empty = true },
+	update_focused_file = { enable = true },
+})
 require("diffview").setup({ use_icons = false })
 require("neoscroll").setup({ duration_multiplier = 0.3 })
 require("gitlinker").setup()

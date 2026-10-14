@@ -1,9 +1,11 @@
 os:
   edit: "nvim {{filename}}"
+gui:
+  screenMode: normal
+  sidePanelWidth: 0.2
+  showCommandLog: false
+  showFileTree: true
 git:
-  pagers:
-    - externalDiffCommand: difft --color=always
-# git:
-#   pagers:
-#     - colorArg: always
-#       pager: hunk pager
+  diffRenderers:
+    - command: difft --color=always
+      type: extDiff
