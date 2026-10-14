@@ -125,7 +125,6 @@ CASKS=(
   iina
   imageoptim
   itsycal
-  kitty
   languagetool-desktop
   mactex
   macwhisper

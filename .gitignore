@@ -8,6 +8,8 @@
 .agents/skills/**/node_modules/
 .agents/skills/**/package-lock.json
 .agents/skills/ro*
+.agents/skills/gh-stack/
+.agents/skills/verda-cloud/
 
 # Track pi extensions
 !.pi/
@@ -21,20 +23,10 @@
 !.pi/agent/themes/
 !.pi/agent/themes/**
 
-# Track OMP config
-!.omp/
-!.omp/agent/
-!.omp/agent/config.yml
-
 # Track mise config
 !.config/
 !.config/mise/
 !.config/mise/config.toml
-
-# Track kitty config
-!.config/kitty/
-!.config/kitty/*.conf
-.config/kitty/*.bak.*
 
 # Track Herdr config
 !.config/herdr/
