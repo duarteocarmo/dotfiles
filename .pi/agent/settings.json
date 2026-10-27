@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "1.2.0",
+  "lastChangelogVersion": "1.4.0",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "high",
@@ -9,18 +9,12 @@
   "hideThinkingBlock": false,
   "theme": "modus-operandi/modus-vivendi",
   "packages": [
-    "git:github.com/earendil-works/pi-review",
-    "npm:pi-simplify",
     "npm:@juicesharp/rpiv-ask-user-question",
     "git:github.com/huggingface/pi-llama",
     "npm:pi-autoresearch",
     "npm:@juicesharp/rpiv-todo",
-    "../../Repos/pi-tools/packages/pi-modus-themes",
-    "../../Repos/pi-tools/packages/pi-no-sleep",
-    "../../Repos/pi-tools/packages/pi-preview",
-    "../../Repos/pi-tools/packages/pi-subagents",
-    "npm:pi-cursor-sdk",
-    "npm:@narumitw/pi-usage"
+    "npm:@narumitw/pi-usage",
+    "npm:pi-schedule-prompt"
   ],
   "enableSkillCommands": true,
   "terminal": {
@@ -39,7 +33,6 @@
     "opencode-go/mimo-v2.6-pro",
     "llama-cpp/ggml-org/MiMo-V2.6-Distill-Qwen-9B-GGUF:Q8_0",
     "github-copilot/claude-sonnet-5.5",
-    "github-copilot/claude-opus-5.5",
-    "cursor/opus-5.5@1m"
+    "github-copilot/claude-opus-5.5"
   ]
 }

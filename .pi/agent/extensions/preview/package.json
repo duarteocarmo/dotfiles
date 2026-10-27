@@ -1,0 +1,7 @@
+{
+  "name": "preview",
+  "private": true,
+  "type": "module",
+  "pi": { "extensions": ["./index.ts"] },
+  "dependencies": {"highlight.js":"^11.11.1","marked":"^15.0.0"}
+}

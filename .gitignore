@@ -1,16 +1,5 @@
 *
 
-# Track all skills
-!.agents/
-!.agents/skills/
-!.agents/skills/**/
-!.agents/skills/**/*
-.agents/skills/**/node_modules/
-.agents/skills/**/package-lock.json
-.agents/skills/ro*
-.agents/skills/gh-stack/
-.agents/skills/verda-cloud/
-
 # Track pi extensions
 !.pi/
 !.pi/agent/
@@ -18,6 +7,9 @@
 !.pi/agent/extensions/**/
 !.pi/agent/extensions/**/*
 .pi/agent/extensions/**/node_modules/
+
+# Track pi MCP servers (URLs only; tokens live in the ignored mcp-auth.json)
+!.pi/agent/mcp.json
 
 # Track pi themes
 !.pi/agent/themes/

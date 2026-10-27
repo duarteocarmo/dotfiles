@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "executor": {
+      "url": "https://executor.duarteocarmo.com/mcp",
+      "exposure": "codemode",
+      "description": "Access my self-hosted Executor apps, integrations, and skills."
+    }
+  }
+}
