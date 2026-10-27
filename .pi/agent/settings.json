@@ -33,6 +33,7 @@
     "opencode-go/mimo-v2.6-pro",
     "llama-cpp/ggml-org/MiMo-V2.6-Distill-Qwen-9B-GGUF:Q8_0",
     "github-copilot/claude-sonnet-5.5",
-    "github-copilot/claude-opus-5.5"
+    "github-copilot/claude-opus-5.5",
+    "xai/grok-4.7"
   ]
 }
