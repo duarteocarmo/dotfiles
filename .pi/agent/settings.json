@@ -10,7 +10,6 @@
   "theme": "modus-operandi/modus-vivendi",
   "packages": [
     "npm:@juicesharp/rpiv-ask-user-question",
-    "git:github.com/huggingface/pi-llama",
     "npm:pi-autoresearch",
     "npm:@juicesharp/rpiv-todo",
     "npm:@narumitw/pi-usage",
