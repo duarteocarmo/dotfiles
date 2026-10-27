@@ -13,7 +13,8 @@
     "npm:pi-autoresearch",
     "npm:@juicesharp/rpiv-todo",
     "npm:@narumitw/pi-usage",
-    "npm:pi-schedule-prompt"
+    "npm:pi-schedule-prompt",
+    "npm:pi-web-access"
   ],
   "enableSkillCommands": true,
   "terminal": {
