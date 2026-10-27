@@ -1,12 +1,14 @@
 import { getAgentDir, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { chmod, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, join, resolve, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const SERVER_NAME = process.env.PI_EXECUTOR_SKILLS_SERVER ?? "executor";
 const APP_SLUG = process.env.PI_EXECUTOR_SKILLS_APP ?? "duarte-s-skills";
 const SYNC_TIMEOUT_MS = 10_000;
 const CACHE_DIR = join(getAgentDir(), "executor-skills");
 const SKILLS_DIR = join(CACHE_DIR, "skills");
+const OWN_SKILLS_DIR = join(dirname(fileURLToPath(import.meta.url)), "skills");
 const META_FILE = join(CACHE_DIR, "meta.json");
 
 type Bundle = { skills: { name: string; files: { path: string; content: string }[] }[] };
@@ -167,7 +169,7 @@ function report(ctx: ExtensionContext, result: SyncResult, verbose: boolean): vo
 export default function executorSkillsExtension(pi: ExtensionAPI): void {
   pi.on("resources_discover", async (_event, ctx) => {
     report(ctx, await syncSkills(), false);
-    return { skillPaths: [SKILLS_DIR] };
+    return { skillPaths: [SKILLS_DIR, OWN_SKILLS_DIR] };
   });
 
   pi.registerCommand("executor-skills", {

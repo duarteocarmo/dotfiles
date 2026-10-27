@@ -6,6 +6,7 @@ Loads skills from an [Executor](https://executor.sh) app when Pi starts, so ever
 - It caches the skills in `~/.pi/agent/executor-skills/` and registers them.
 - If Executor is unreachable or the token has expired, it uses the cache.
 - `/executor-skills` syncs on demand and reloads Pi if anything changed.
+- It also ships the `executor-skills` skill, which tells agents how to add, edit, or remove a skill in the Executor app.
 
 Environment overrides: `PI_EXECUTOR_SKILLS_SERVER` (default `executor`) and `PI_EXECUTOR_SKILLS_APP` (default `duarte-s-skills`).
 
