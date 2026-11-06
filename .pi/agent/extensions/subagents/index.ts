@@ -1,8 +1,13 @@
-import type { AssistantMessage, Usage } from "@earendil-works/pi-ai";
+import { StringEnum, type AssistantMessage, type Usage } from "@earendil-works/pi-ai";
 import {
   createAgentSession,
+  createCodemodeExtension,
+  createMcpExtension,
+  createToolSearchExtension,
+  DefaultResourceLoader,
   type AgentSession,
   type ExtensionAPI,
+  getAgentDir,
   getMarkdownTheme,
   keyHint,
   SessionManager,
@@ -11,25 +16,32 @@ import {
 } from "@earendil-works/pi-coding-agent";
 import { Container, Markdown, Spacer, Text } from "@earendil-works/pi-tui";
 import { Type } from "typebox";
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 
-const CONFIG_PATH = fileURLToPath(new URL("./config.json", import.meta.url));
+const MODEL = { provider: "openai-codex", id: "gpt-6.1-terra" } as const;
+const THINKING_LEVELS = ["low", "medium", "high"] as const;
+const DEFAULT_THINKING_LEVEL = "medium";
+const TOOL_DESCRIPTION =
+  "Use this tool to delegate a task to an isolated subagent. Running independent tasks in parallel across subagents can speed up the work. Subagents should report promptly without sleeping, polling, or waiting for external changes.";
+const PROMPT_SNIPPET = "Delegate any work that can run independently in parallel";
+const PROMPT_GUIDELINES = [
+  "Use subagent when the user asks to use subagents. Proactively delegate any nontrivial work that can run independently in parallel. Do not delegate when the user forbids it.",
+  "Use subagent to keep verbose investigations, logs, and intermediate results out of the main context. Request concise findings.",
+  "Start independent subagent calls in parallel. Work on a separate task without duplicating their work.",
+  "Use subagent for independent review of nontrivial code changes before finishing.",
+  "Choose subagent reasoning by task difficulty. Use low for routine inspections, medium for typical work, and high for difficult debugging or review.",
+  "Give each subagent full context and a clear deliverable. Assign non-overlapping files to parallel implementations.",
+  "Give each subagent one current task. Never delegate sleeping, polling, waiting for external changes, or monitoring. Handle follow-up checks yourself.",
+];
+
 const RESULT_MAX_BYTES = 16 * 1024;
-const EXCLUDED_TOOLS = new Set(["subagent", "ask_user", "ask_question"]);
-const THINKING_LEVELS = ["off", "minimal", "low", "medium", "high", "xhigh", "max"] as const;
+const EXCLUDED_TOOLS = new Set(["subagent", "ask_user", "ask_question", "ask_user_question"]);
 const TIMELINE_LIMIT = 60;
 const CHILD_POLICY =
-  "Perform one current inspection or task and report promptly. Do not sleep, poll, or wait for external changes; this policy overrides any delegated request to monitor for a long period.";
+  "Complete one task and report promptly. Do not sleep, poll, or wait for external changes.";
 
 type ThinkingLevel = (typeof THINKING_LEVELS)[number];
 type RunStatus = "running" | "done" | "error";
 type TimelineStatus = "running" | "done" | "error";
-
-interface Config {
-  model: string;
-  thinkingLevel: ThinkingLevel;
-}
 
 interface TimelineEvent {
   type: "tool" | "assistant";
@@ -42,6 +54,7 @@ interface RunState {
   title: string;
   prompt: string;
   model: string;
+  thinkingLevel: ThinkingLevel;
   tools: string[];
   status: RunStatus;
   activity: string;
@@ -64,6 +77,7 @@ interface SubagentDetails {
   title: string;
   prompt: string;
   model: string;
+  thinkingLevel: ThinkingLevel;
   tools: string[];
   activity: string;
   output: string;
@@ -106,17 +120,6 @@ function addUsage(total: Usage, next: Usage) {
 
 function copyUsage(usage: Usage): Usage {
   return { ...usage, cost: { ...usage.cost } };
-}
-
-function readConfig(): Config {
-  const value = JSON.parse(readFileSync(CONFIG_PATH, "utf8")) as Partial<Config>;
-  if (!value.model?.includes("/")) {
-    throw new Error(`Invalid subagent model in ${CONFIG_PATH}. Use provider/model-id.`);
-  }
-  if (!value.thinkingLevel || !THINKING_LEVELS.includes(value.thinkingLevel)) {
-    throw new Error(`Invalid subagent thinkingLevel in ${CONFIG_PATH}.`);
-  }
-  return { model: value.model, thinkingLevel: value.thinkingLevel };
 }
 
 function assistantText(message: AssistantMessage) {
@@ -202,6 +205,7 @@ function detailsFor(run: RunState): SubagentDetails {
     title: run.title,
     prompt: run.prompt,
     model: run.model,
+    thinkingLevel: run.thinkingLevel,
     tools: [...run.tools],
     activity: run.activity,
     output: run.latestText,
@@ -284,7 +288,8 @@ function renderSubagentResult(
     return new Text(content?.type === "text" ? (content.text ?? "(no output)") : "(no output)", 0, 0);
   }
 
-  const header = `${statusIcon(details, theme)} ${theme.fg("toolTitle", theme.bold(details.title))} ${theme.fg("muted", `(${details.model})`)} ${theme.fg("dim", `· ${formatStats(details)}`)}`;
+  const modelLabel = details.thinkingLevel ? `${details.model} · ${details.thinkingLevel}` : details.model;
+  const header = `${statusIcon(details, theme)} ${theme.fg("toolTitle", theme.bold(details.title))} ${theme.fg("muted", `(${modelLabel})`)} ${theme.fg("dim", `· ${formatStats(details)}`)}`;
   if (!expanded) {
     const activity =
       details.status === "running"
@@ -343,45 +348,31 @@ export default function subagentsExtension(pi: ExtensionAPI) {
   pi.registerTool({
     name: "subagent",
     label: "Subagent",
-    description:
-      "Run one bounded, isolated subagent using the configured model. The child performs one current inspection or task and reports promptly; it must not sleep, poll, or wait for external changes. The child cannot see the parent conversation, so provide a complete prompt. Omit tools to inherit the parent's active tools, or provide a smaller subset. Call this tool multiple times in one response to run subagents in parallel.",
-    promptSnippet: "Delegate one self-contained task to an isolated subagent",
-    promptGuidelines: [
-      "Use subagent for independent tasks that benefit from a separate context window.",
-      "Give subagent a complete prompt because it cannot see the parent conversation.",
-      "Call subagent multiple times in the same response when independent tasks can run in parallel.",
-      "Delegate one current inspection or task only; never delegate sleeping, polling, waiting for external state, or long-running monitoring. Handle follow-up checks in the parent.",
-    ],
+    description: TOOL_DESCRIPTION,
+    promptSnippet: PROMPT_SNIPPET,
+    promptGuidelines: PROMPT_GUIDELINES,
     parameters: Type.Object({
       title: Type.String({ minLength: 1, maxLength: 80, description: "Short title shown in live progress" }),
       prompt: Type.String({ minLength: 1, description: "Complete, self-contained task for the subagent" }),
-      tools: Type.Optional(
-        Type.Array(Type.String(), {
-          minItems: 1,
-          maxItems: 32,
-          description: "Optional subset of the parent's active tools. Omit to inherit all compatible parent tools.",
+      thinkingLevel: Type.Optional(
+        StringEnum(THINKING_LEVELS, {
+          description: `Reasoning effort: ${THINKING_LEVELS.join(", ")}. Defaults to ${DEFAULT_THINKING_LEVEL}.`,
+          default: DEFAULT_THINKING_LEVEL,
         }),
       ),
-    }),
+    }, { additionalProperties: false }),
 
     async execute(_toolCallId, params, signal, onUpdate, ctx) {
-      const config = readConfig();
-      const separator = config.model.indexOf("/");
-      const model = ctx.modelRegistry.find(config.model.slice(0, separator), config.model.slice(separator + 1));
-      if (!model) throw new Error(`Subagent model is not available: ${config.model}`);
-
-      const parentTools = pi.getActiveTools();
-      const requestedTools = params.tools ?? parentTools;
-      const unknownTools = requestedTools.filter((name) => !parentTools.includes(name));
-      if (unknownTools.length > 0) throw new Error(`Subagent requested inactive tools: ${unknownTools.join(", ")}`);
-      const blockedTools = requestedTools.filter((name) => EXCLUDED_TOOLS.has(name));
-      if (params.tools && blockedTools.length > 0) throw new Error(`Subagents cannot use: ${blockedTools.join(", ")}`);
-      const tools = [...new Set(requestedTools.filter((name) => !EXCLUDED_TOOLS.has(name)))];
+      const model = ctx.modelRegistry.find(MODEL.provider, MODEL.id);
+      if (!model) throw new Error(`Subagent model is not available: ${MODEL.provider}/${MODEL.id}`);
+      const thinkingLevel = params.thinkingLevel ?? DEFAULT_THINKING_LEVEL;
+      const tools = [...new Set(pi.getActiveTools().filter((name) => !EXCLUDED_TOOLS.has(name)))];
 
       const run: RunState = {
         title: params.title.trim(),
         prompt: params.prompt,
         model: `${model.provider}/${model.id}`,
+        thinkingLevel,
         tools,
         status: "running",
         activity: "starting",
@@ -413,10 +404,21 @@ export default function subagentsExtension(pi: ExtensionAPI) {
 
       try {
         if (signal?.aborted) throw new Error("Subagent was aborted.");
+        const resourceLoader = new DefaultResourceLoader({
+          cwd: ctx.cwd,
+          agentDir: getAgentDir(),
+          extensionFactories: [
+            createCodemodeExtension({ mode: "on" }),
+            createToolSearchExtension(),
+            createMcpExtension(),
+          ],
+        });
+        await resourceLoader.reload();
         const created = await createAgentSession({
           cwd: ctx.cwd,
           model,
-          thinkingLevel: config.thinkingLevel,
+          thinkingLevel,
+          resourceLoader,
           tools,
           excludeTools: [...EXCLUDED_TOOLS],
           sessionManager: SessionManager.inMemory(ctx.cwd),
@@ -539,14 +541,9 @@ export default function subagentsExtension(pi: ExtensionAPI) {
     },
 
     renderCall(args, theme) {
-      let model = "configured model";
-      try {
-        model = readConfig().model;
-      } catch {
-        // The execute error reports invalid configuration.
-      }
+      const thinkingLevel = args.thinkingLevel ?? DEFAULT_THINKING_LEVEL;
       return new Text(
-        `${theme.fg("toolTitle", theme.bold("subagent "))}${theme.fg("accent", args.title || "...")} ${theme.fg("muted", `(${model})`)}`,
+        `${theme.fg("toolTitle", theme.bold("subagent "))}${theme.fg("accent", args.title || "...")} ${theme.fg("muted", `(${MODEL.provider}/${MODEL.id} · ${thinkingLevel})`)}`,
         0,
         0,
       );
