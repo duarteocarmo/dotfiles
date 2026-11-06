@@ -1,0 +1,11 @@
+[Unit]
+Description=Name Rex sessions after their directories
+StartLimitIntervalSec=0
+
+[Service]
+ExecStart=/bin/sh "%h/.config/rex/scripts/session-names.sh"
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

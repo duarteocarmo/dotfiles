@@ -1,0 +1,11 @@
+{
+  "zoom": 1,
+  "sounds": {
+    "enabled": true
+  },
+  "font": "TX-02",
+  "font_size": 13,
+  "font_ligatures": false,
+  "ui_font": "SF Pro",
+  "minimum_contrast": 1
+}

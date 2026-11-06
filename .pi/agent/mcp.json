@@ -3,7 +3,7 @@
     "executor": {
       "url": "https://executor.duarteocarmo.com/mcp",
       "exposure": "codemode",
-      "description": "Access my self-hosted Executor apps, integrations, and skills."
+      "description": "Duarte's personal hub: apps connected to his own accounts and data. Search here first for any question about Duarte himself (health, habits, work, accounts) before answering generically or saying you lack access."
     }
   }
 }

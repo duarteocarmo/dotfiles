@@ -57,7 +57,6 @@ map("n", "<leader>ff", function()
 	end
 end)
 map("n", "<leader>fg", "<cmd>Pick grep_live<cr>")
-map("n", "<leader>b", "<cmd>NvimTreeToggle<cr>", { silent = true, desc = "Toggle file browser" })
 map("n", "<leader>rr", "<cmd>:restart<cr>")
 -- map("n", "<leader>gg", "<cmd>:LazyGit<cr>")
 -- map("n", "<leader>gg", "<cmd>Neogit<cr>")
@@ -93,7 +92,6 @@ local plugins = {
 	"nathangrigg/vim-beancount",
 	"neovim/nvim-lspconfig",
 	"nvim-mini/mini.nvim",
-	"nvim-tree/nvim-tree.lua",
 	"nvim-tree/nvim-web-devicons",
 	"nvim-treesitter/nvim-treesitter",
 	"rachartier/tiny-inline-diagnostic.nvim",
@@ -107,7 +105,6 @@ local plugins = {
 	"rose-pine/neovim",
 	"nvim-lua/plenary.nvim",
 	"frankroeder/parrot.nvim",
-	"Exafunction/windsurf.nvim",
 	"sindrets/diffview.nvim",
 	"dmtrKovalenko/fff.nvim",
 	"esmuellert/codediff.nvim",
@@ -118,11 +115,6 @@ vim.pack.add(vim.tbl_map(function(repo)
 	return "https://github.com/" .. repo
 end, plugins))
 
-require("nvim-tree").setup({
-	view = { side = "left", width = 35 },
-	renderer = { group_empty = true },
-	update_focused_file = { enable = true },
-})
 require("diffview").setup({ use_icons = false })
 require("neoscroll").setup({ duration_multiplier = 0.3 })
 require("gitlinker").setup()
@@ -298,21 +290,6 @@ require("dark_notify").run({
 	schemes = {
 		light = { colorscheme = "modus_operandi" },
 		dark = { colorscheme = "modus_vivendi" },
-	},
-})
-require("codeium").setup({
-	enable_cmp_source = false,
-	virtual_text = {
-		enabled = true,
-		filetypes = {
-			beancount = false,
-			markdown = false,
-		},
-		key_bindings = {
-			accept = "<C-j>",
-			next = "<M-]>",
-			prev = "<M-[>",
-		},
 	},
 })
 

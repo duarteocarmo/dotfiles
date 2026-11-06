@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "1.4.0",
+  "lastChangelogVersion": "1.5.0",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "high",
@@ -22,7 +22,7 @@
   },
   "enableInstallTelemetry": false,
   "treeFilterMode": "default",
-  "tuiMode": "regular",
+  "tuiMode": "fullscreen",
   "outputPad": 1,
   "enabledModels": [
     "openai-codex/gpt-6.1-sol",
@@ -34,5 +34,11 @@
     "github-copilot/claude-sonnet-5.5",
     "github-copilot/claude-opus-5.5",
     "xai/grok-4.7"
-  ]
+  ],
+  "extensionChangelogVersions": {
+    "{\"source\":\"npm:pi-autoresearch\",\"scope\":\"user\"}": "1.9.0",
+    "{\"source\":\"npm:pi-schedule-prompt\",\"scope\":\"user\"}": "0.4.1",
+    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.47.0",
+    "{\"source\":\"npm:@narumitw/pi-usage\",\"scope\":\"user\"}": "0.69.2"
+  }
 }

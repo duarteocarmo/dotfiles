@@ -20,12 +20,28 @@
 !.config/mise/
 !.config/mise/config.toml
 
+# Track Rex config, extensions, and scripts
+!.config/rex/
+!.config/rex/**
+
 # Track Herdr config
 !.config/herdr/
 !.config/herdr/config.toml
+
+# Track Herdr app settings and keybindings
+!.config/herdr-app/
+!.config/herdr-app/settings.json
+!.config/herdr-app/keys.json
 
 # Track lazygit config
 !Library/
 !Library/Application Support/
 !Library/Application Support/lazygit/
 !Library/Application Support/lazygit/config.yml
+
+# Track my launch agents
+!Library/LaunchAgents/
+!Library/LaunchAgents/com.duarteocarmo.*.plist
+
+# Generated from the portable Rex service template
+Library/LaunchAgents/com.duarteocarmo.rex-session-names.plist
