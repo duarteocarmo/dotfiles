@@ -20,7 +20,7 @@ local bindings = {
 	{ "shift+h", "client.tab.previous" },
 
 	{ "shift+n", "session.new" },
-	{ "s", "session.switch" },
+	{ "s", "pane.go_to" },
 	{ "shift+4", "session.rename" },
 	{ "shift+0", "session.next" },
 	{ "shift+9", "session.previous" },

@@ -19,7 +19,6 @@ o.autoread = true
 o.backspace = "indent,eol,start"
 o.shell = "/opt/homebrew/bin/fish"
 o.wildmode = { "lastused", "full" }
-o.pumheight = 15
 o.winborder = "rounded"
 o.undofile = true
 o.ignorecase = true
@@ -27,7 +26,6 @@ o.smartcase = true
 o.swapfile = false
 o.foldmethod = "indent"
 o.foldlevelstart = 99
-o.shortmess:append("c") -- Prevents showing extra messages when using completion
 o.termguicolors = true -- Enables 24-bit RGB colors in the terminal
 o.smartindent = true -- Automatically inserts an extra level of indentation in some cases
 o.smarttab = true -- Makes <Tab> insert 'shiftwidth' number of spaces at the start of a line
@@ -49,22 +47,16 @@ map("n", "<leader>y", function()
 end)
 
 map("n", "<leader>ff", function()
-	local in_git = vim.fn.system("git rev-parse --is-inside-work-tree 2>/dev/null"):match("true")
-	if in_git then
-		require("mini.pick").builtin.files({ tool = "git" })
-	else
-		require("mini.pick").builtin.files({ tool = "rg" }) -- or 'fd'
-	end
-end)
-map("n", "<leader>fg", "<cmd>Pick grep_live<cr>")
+	require("fff").find_files()
+end, { desc = "Find files" })
+map("n", "<leader>fg", function()
+	require("fff").live_grep()
+end, { desc = "Search project text" })
 map("n", "<leader>rr", "<cmd>:restart<cr>")
--- map("n", "<leader>gg", "<cmd>:LazyGit<cr>")
--- map("n", "<leader>gg", "<cmd>Neogit<cr>")
 map("n", "<leader>dd", "<cmd>CodeDiff<cr>")
 map({ "n", "v" }, "<Tab>", ":tabnext<CR>", opts)
 map({ "n", "v" }, "<S-Tab>", ":tabprev<CR>", opts)
 map({ "n", "v" }, "<leader>tx", ":tabclose<CR>", opts)
-map({ "n", "v" }, "<leader>gu", "<cmd>GitLink<cr>", opts)
 map({ "n", "v" }, "<leader>gu", "<cmd>GitLink<cr>", opts)
 map({ "n", "v" }, "<leader>go", function()
 	require("gitlinker").link({ action = require("gitlinker.actions").system })
@@ -83,7 +75,6 @@ end, { desc = "Reload Neovim config" })
 map("n", "<leader>cr", "<cmd>ConfigReload<cr>", opts)
 
 local plugins = {
-	"L3MON4D3/LuaSnip",
 	"cormacrelf/dark-notify",
 	"hxueh/beancount.nvim",
 	"mason-org/mason-lspconfig.nvim",
@@ -91,12 +82,10 @@ local plugins = {
 	"MeanderingProgrammer/render-markdown.nvim",
 	"nathangrigg/vim-beancount",
 	"neovim/nvim-lspconfig",
-	"nvim-mini/mini.nvim",
 	"nvim-tree/nvim-web-devicons",
+	"nvim-lualine/lualine.nvim",
 	"nvim-treesitter/nvim-treesitter",
 	"rachartier/tiny-inline-diagnostic.nvim",
-	"saghen/blink.cmp",
-	"saghen/blink.lib",
 	"sindrets/diffview.nvim",
 	"stevearc/conform.nvim",
 	"linrongbin16/gitlinker.nvim",
@@ -105,28 +94,83 @@ local plugins = {
 	"rose-pine/neovim",
 	"nvim-lua/plenary.nvim",
 	"frankroeder/parrot.nvim",
-	"sindrets/diffview.nvim",
 	"dmtrKovalenko/fff.nvim",
 	"esmuellert/codediff.nvim",
 	"folke/which-key.nvim",
 }
 
+vim.g.fff = { lazy_sync = true }
+vim.api.nvim_create_autocmd("PackChanged", {
+	callback = function(ev)
+		local name, kind = ev.data.spec.name, ev.data.kind
+		if name == "fff.nvim" and (kind == "install" or kind == "update") then
+			if not ev.data.active then
+				vim.cmd.packadd("fff.nvim")
+			end
+			require("fff.download").download_or_build_binary()
+		end
+	end,
+})
+
 vim.pack.add(vim.tbl_map(function(repo)
 	return "https://github.com/" .. repo
 end, plugins))
+
+require("lualine").setup({
+	options = {
+		theme = "auto",
+		icons_enabled = false,
+		component_separators = "",
+		section_separators = "",
+		globalstatus = true,
+	},
+	sections = {
+		lualine_a = {
+			function()
+				return ""
+			end,
+			"mode",
+		},
+		lualine_b = {},
+		lualine_c = { { "filename", path = 1 } },
+		lualine_x = { "filetype" },
+		lualine_y = {},
+		lualine_z = { "location" },
+	},
+})
 
 require("diffview").setup({ use_icons = false })
 require("neoscroll").setup({ duration_multiplier = 0.3 })
 require("gitlinker").setup()
 require("render-markdown").setup({ preset = "obsidian" })
+vim.lsp.config("pyright", {
+	root_markers = {
+		{
+			"pyrightconfig.json",
+			"pyproject.toml",
+			"setup.py",
+			"setup.cfg",
+			"requirements.txt",
+			"Pipfile",
+			".venv",
+			"venv",
+		},
+		".git",
+	},
+	before_init = function(_, config)
+		for _, directory in ipairs({ ".venv", "venv" }) do
+			local python = vim.fs.joinpath(config.root_dir or vim.fn.getcwd(), directory, "bin", "python")
+			if vim.fn.executable(python) == 1 then
+				config.settings.python.pythonPath = python
+				break
+			end
+		end
+	end,
+})
 require("mason").setup()
 require("mason-lspconfig").setup({
 	ensure_installed = { "lua_ls", "rust_analyzer", "pyright" },
 })
-require("mini.pick").setup()
-require("mini.icons").setup()
-require("mini.statusline").setup({})
-require("mini.diff").setup()
 local parrot_models = {
 	"deepseek/deepseek-v4-flash",
 	"minimax/minimax-m3",
@@ -153,65 +197,6 @@ require("parrot").setup({
 	toggle_target = "popup",
 	enable_preview_mode = false,
 })
---[[ pi-ide disabled
-plugin: "ldelossa/pi-ide.nvim"
-map("n", "<leader>ps", "<cmd>PiStatus<cr>", opts)
-
-require("pi-ide").setup({
-	auto_start = true,
-	claude_code_compatibility = false,
-	log_level = "warn",
-	suggestion = {
-		auto_trigger = true,
-		default_keys = false,
-		model = nil,
-	},
-})
-
--- <Tab>: accept ghost text if present, else a real <Tab>
-local pi_suggest = require("pi-ide.suggestion")
-map("i", "<Tab>", function()
-	if pi_suggest.has_active_suggestion() then
-		pi_suggest.accept_all()
-		return ""
-	end
-	return "<Tab>"
-end, { expr = true, silent = true })
-map("i", "<M-\\>", pi_suggest.trigger, opts)
-map("i", "<C-]>", pi_suggest.dismiss, opts)
-]]
-
-require("blink.cmp").setup({
-	keymap = {
-		preset = "default",
-		["<Tab>"] = { "select_next", "fallback" },
-		["<S-Tab>"] = { "select_prev", "fallback" },
-		["<CR>"] = { "accept", "fallback" },
-	},
-	appearance = {
-		nerd_font_variant = "mono",
-	},
-	completion = {
-		documentation = { auto_show = false, auto_show_delay_ms = 500 },
-	},
-	sources = {
-		default = { "lsp", "path", "snippets", "beancount" },
-		providers = {
-			beancount = {
-				name = "beancount",
-				module = "beancount.completion.blink",
-				score_offset = 100,
-				opts = {
-					trigger_characters = { ":", "#", "^", '"', " " },
-				},
-			},
-		},
-	},
-	snippets = { preset = "luasnip" },
-	fuzzy = { implementation = "lua" },
-	signature = { enabled = true },
-})
-
 require("beancount").setup({
 	main_bean_file = "/Users/duarteocarmo/Repos/accounting/duarte.beancount",
 	python_path = "/Users/duarteocarmo/Repos/accounting/.venv/bin/python",
@@ -219,16 +204,12 @@ require("beancount").setup({
 	ui = { virtual_text = false }, -- let tiny-inline-diagnostic render (wrapped)
 })
 
-require("luasnip.loaders.from_vscode").lazy_load({
-	paths = { vim.fn.stdpath("config") .. "/snippets" },
-})
-
 require("tiny-inline-diagnostic").setup({
 	-- attach on buffer open too, not only LspAttach, so non-LSP
 	-- filetypes (beancount) still get inline messages
 	options = { overwrite_events = { "LspAttach", "BufWinEnter" } },
 })
-require("nvim-treesitter").install({ "lua", "rust", "python", "beancount" })
+require("nvim-treesitter").install({ "lua", "rust", "python", "beancount", "markdown", "markdown_inline" })
 require("conform").setup({
 	formatters_by_ft = {
 		python = function(bufnr)
@@ -334,24 +315,3 @@ end
 
 vim.keymap.set("n", "<leader>pC", pack_clean)
 vim.keymap.set("n", "<leader>pu", vim.pack.update)
-
-vim.api.nvim_create_autocmd("PackChanged", {
-	callback = function(ev)
-		local name, kind = ev.data.spec.name, ev.data.kind
-		if name == "fff.nvim" and (kind == "install" or kind == "update") then
-			if not ev.data.active then
-				vim.cmd.packadd("fff.nvim")
-			end
-			require("fff.download").download_or_build_binary()
-		end
-	end,
-})
-
-vim.g.fff = {
-	lazy_sync = true,
-	debug = { enabled = true, show_scores = true },
-}
-
-vim.keymap.set("n", "ff", function()
-	require("fff").find_files()
-end, { desc = "FFFind files" })

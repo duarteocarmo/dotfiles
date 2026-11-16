@@ -41,3 +41,11 @@ uv run ~/.config/rex/tests/session-names.py
 ```
 
 The test starts an isolated watcher and creates temporary sessions and a real Git repository. It checks directory changes with and without terminal directory reports, repository names, the first tab, manual names, restarts, and state cleanup. It does not change existing sessions.
+
+# Agent orchestration
+
+The `rex-orchestrator` skill uses these scripts to start and watch pi agents on any host:
+
+- [scripts/agent-launch](scripts/agent-launch) starts an agent or adopts one that is already running, and records it in `~/.local/state/rex/orchestrator.json`. Run `agent-launch --help` for the commands.
+- [scripts/agent-watch.lua](scripts/agent-watch.lua) polls every recorded agent through `rex.server()` and pings the orchestrator pane when one stops working. `agent-launch` starts it in the background, and it stops when the orchestrator session closes. Its log is `~/.local/state/rex/agent-watch.log`.
+- [scripts/agent-rules.md](scripts/agent-rules.md) holds the working rules added to every agent brief.

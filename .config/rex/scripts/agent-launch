@@ -1,0 +1,179 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.12"
+# ///
+"""Start pi agents in Rex sessions on any host and watch them from this pane.
+
+agent-launch start --host GB10 --name duplexio-tests --dir ~/Repos/duplexio --brief /tmp/brief.md
+agent-launch watch --host GB10 --session SESSION_ID --block BLOCK_ID --name duplexio-tests
+agent-launch list
+agent-launch stop --name duplexio-tests
+
+Run it from the orchestrator pane: pings go to $REX_SESSION / $REX_BLOCK on $REX_SERVER.
+agent-watch.lua runs in the background and watches every agent in the state file.
+"""
+
+import argparse
+import json
+import os
+import signal
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+SSH_TARGETS = {
+    "local": None,
+    "GB10": "promaxgb10-3504.tail054039.ts.net",
+    "Beaster": "beaster",
+    "AIR": "duartecarmo@air.tail054039.ts.net",
+}
+SCRIPTS_DIR = Path(__file__).resolve().parent
+WATCH_SCRIPT = SCRIPTS_DIR / "agent-watch.lua"
+RULES_FILE = SCRIPTS_DIR / "agent-rules.md"
+STATE_DIR = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "rex"
+STATE_FILE = STATE_DIR / "orchestrator.json"
+WATCH_LOG = STATE_DIR / "agent-watch.log"
+
+
+def rex_command(host: str, *parts: str) -> list[str]:
+    return ["rex", *([] if host == "local" else ["-S", host]), *parts]
+
+
+def run(command: list[str]) -> str:
+    return subprocess.run(command, check=True, capture_output=True, text=True).stdout
+
+
+def load_state() -> dict:
+    return json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {"agents": {}}
+
+
+def save_state(state: dict) -> None:
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    temporary = STATE_FILE.with_suffix(".tmp")
+    temporary.write_text(json.dumps(state, indent=2))
+    temporary.replace(STATE_FILE)
+
+
+def notify_target() -> dict:
+    missing = [name for name in ("REX_SESSION", "REX_BLOCK", "REX_SERVER") if not os.environ.get(name)]
+    if missing:
+        sys.exit(f"run this inside the orchestrator Rex pane (missing {', '.join(missing)})")
+    return {"session": os.environ["REX_SESSION"], "block": os.environ["REX_BLOCK"], "server": os.environ["REX_SERVER"]}
+
+
+def watcher_running(state: dict) -> bool:
+    pid = state.get("watcher", {}).get("pid")
+    if not pid:
+        return False
+    command = subprocess.run(["ps", "-p", str(pid), "-o", "command="], capture_output=True, text=True).stdout
+    return str(WATCH_SCRIPT) in command
+
+
+def ensure_watcher(state: dict) -> None:
+    """Run one agent-watch.lua in the background, bound to the current orchestrator session."""
+    state["notify"] = notify_target()
+    watcher = state.get("watcher", {})
+    if watcher_running(state):
+        if watcher["session"] == state["notify"]["session"]:
+            return
+        os.killpg(watcher["pid"], signal.SIGTERM)
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    process = subprocess.Popen(
+        ["rex", "do", "-s", state["notify"]["session"], str(WATCH_SCRIPT)],
+        stdout=WATCH_LOG.open("a"), stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, start_new_session=True,
+    )
+    state["watcher"] = {"session": state["notify"]["session"], "pid": process.pid}
+    print(f"started agent-watch (pid {process.pid}, log {WATCH_LOG})")
+
+
+def add_agent(host: str, session_id: str, block_id: str, name: str, purpose: str = "") -> None:
+    state = load_state()
+    previous = state["agents"].get(name, {})
+    state["agents"][name] = {
+        "host": host, "session": session_id, "block": block_id,
+        "purpose": purpose or previous.get("purpose", ""), "started": previous.get("started", time.strftime("%Y-%m-%d %H:%M")),
+    }
+    save_state(state)
+    ensure_watcher(state)
+    save_state(state)
+    print(f"watching {host}/{name}")
+
+
+def start_agent(host: str, name: str, directory: str, brief: Path, model: str | None) -> None:
+    notify_target()
+    if host not in SSH_TARGETS:
+        sys.exit(f"unknown host {host}; known: {', '.join(SSH_TARGETS)}")
+    brief_text = brief.read_text().rstrip() + "\n\n" + RULES_FILE.read_text()
+    local_copy = Path(f"/tmp/agent-brief-{name}.md")
+    local_copy.write_text(brief_text)
+    if SSH_TARGETS[host]:
+        run(["scp", "-q", str(local_copy), f"{SSH_TARGETS[host]}:{local_copy}"])
+    model_flags = []
+    if model:
+        provider, model_id = model.split("/", 1)
+        model_flags = ["--provider", provider, "--model", model_id]
+    created = json.loads(run(rex_command(
+        host, "new", name, "-c", directory, "--interactive", "--keep-open", "--json", "--",
+        "pi", *model_flags, f"@{local_copy}",
+    )))
+    session_id = created["session_id"]
+    block_id = created["initial_windows"][0]["block_ids"][0]
+    time.sleep(2)
+    run(rex_command(host, "session", "rename", session_id, name))
+    print(f"started {host}/{name}: session {session_id}, block {block_id}, model {model or 'pi default'}")
+    add_agent(host=host, session_id=session_id, block_id=block_id, name=name, purpose=brief.name)
+
+
+def list_agents() -> None:
+    state = load_state()
+    print(f"watcher: {'running' if watcher_running(state) else 'NOT running'} (log {WATCH_LOG})")
+    for name, agent in state["agents"].items():
+        status = subprocess.run(rex_command(agent["host"], "block", "call", "-s", agent["session"], "-b", agent["block"],
+                                            "program_status"), capture_output=True, text=True)
+        try:
+            records = json.loads(status.stdout)["records"]
+            agent_state = next((record["state"] for record in records if not record.get("id")), "no status")
+        except (json.JSONDecodeError, KeyError):
+            agent_state = "unreachable or closed"
+        print(f"{agent['host']:8} {name:28} {agent_state:22} since {agent['started']}")
+
+
+def stop_agent(name: str) -> None:
+    state = load_state()
+    agent = state["agents"].pop(name, None)
+    if agent is None:
+        sys.exit(f"no agent named {name}")
+    save_state(state)
+    print(f"stopped watching {agent['host']}/{name}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    commands = parser.add_subparsers(dest="command", required=True)
+    start = commands.add_parser("start", help="start pi in a new Rex session and watch it")
+    start.add_argument("--host", required=True)
+    start.add_argument("--name", required=True)
+    start.add_argument("--dir", required=True)
+    start.add_argument("--brief", required=True, type=Path)
+    start.add_argument("--model", help="provider/model; omit to use pi's default on that host")
+    watch = commands.add_parser("watch", help="watch an agent that is already running")
+    for flag in ("--host", "--session", "--block", "--name"):
+        watch.add_argument(flag, required=True)
+    commands.add_parser("list", help="show watched agents and their state")
+    stop = commands.add_parser("stop", help="stop watching an agent and forget it")
+    stop.add_argument("--name", required=True)
+    args = parser.parse_args()
+
+    if args.command == "start":
+        start_agent(host=args.host, name=args.name, directory=args.dir, brief=args.brief, model=args.model)
+    elif args.command == "watch":
+        add_agent(host=args.host, session_id=args.session, block_id=args.block, name=args.name)
+    elif args.command == "list":
+        list_agents()
+    elif args.command == "stop":
+        stop_agent(name=args.name)
+
+
+if __name__ == "__main__":
+    main()
