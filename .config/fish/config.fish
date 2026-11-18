@@ -73,12 +73,14 @@ alias psh="poetry shell"
 
 set PATH /usr/local/bin $PATH
 set -gx ATUIN_NOBIND true
-atuin init fish | source
+command -q atuin; and atuin init fish | source
 
 # bind to ctrl-r in normal and insert mode, add any other bindings you want here too
-bind \cr _atuin_search
-bind -M insert \cr _atuin_search
-uvx --generate-shell-completion fish | source
+if command -q atuin
+    bind \cr _atuin_search
+    bind -M insert \cr _atuin_search
+end
+command -q uvx; and uvx --generate-shell-completion fish | source
 
 set fish_greeting
 
@@ -114,7 +116,7 @@ if test -f '/opt/homebrew/share/google-cloud-sdk/path.fish.inc'
     source '/opt/homebrew/share/google-cloud-sdk/path.fish.inc'
 end
 
-zoxide init fish | source
+command -q zoxide; and zoxide init fish | source
 
 ~/.local/bin/mise activate fish | source
 
@@ -127,9 +129,9 @@ function claude-z
 end
 
 # Everything should points to a single AGENTS.md file
-ln -sf ~/.AGENTS.md ~/.codex/AGENTS.md # Codex
-ln -sf ~/.AGENTS.md ~/.claude/CLAUDE.md # Claude code
-ln -sf ~/.AGENTS.md ~/.config/opencode/AGENTS.md # OpenCode
+for dest in ~/.codex/AGENTS.md ~/.claude/CLAUDE.md ~/.config/opencode/AGENTS.md
+    test -d (dirname $dest); and ln -sf ~/.AGENTS.md $dest
+end
 
 
 
@@ -138,13 +140,15 @@ function drtv
     /Users/duarteocarmo/repos/drtv-downloader/dr_download.sh $argv
 end
 
-source ~/.config/fish/secrets.fish
+test -e ~/.config/fish/secrets.fish; and source ~/.config/fish/secrets.fish
 
 # Added by Verda CLI installer
 set -gx PATH /Users/duarteocarmo/.verda/bin $PATH
 
 # Added by the Hunk installer (https://hunk.dev)
-fish_add_path '/Users/duarteocarmo/.hunk/bin'
+fish_add_path ~/.hunk/bin
 
 # Pi
 fish_add_path "$HOME/.local/bin"
+
+command -q direnv; and direnv hook fish | source

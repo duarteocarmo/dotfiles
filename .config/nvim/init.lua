@@ -17,7 +17,9 @@ o.expandtab = true
 o.wrap = true
 o.autoread = true
 o.backspace = "indent,eol,start"
-o.shell = "/opt/homebrew/bin/fish"
+if vim.fn.executable("fish") == 1 then
+	o.shell = vim.fn.exepath("fish")
+end
 o.wildmode = { "lastused", "full" }
 o.winborder = "rounded"
 o.undofile = true
@@ -75,7 +77,6 @@ end, { desc = "Reload Neovim config" })
 map("n", "<leader>cr", "<cmd>ConfigReload<cr>", opts)
 
 local plugins = {
-	"cormacrelf/dark-notify",
 	"hxueh/beancount.nvim",
 	"mason-org/mason-lspconfig.nvim",
 	"mason-org/mason.nvim",
@@ -98,6 +99,9 @@ local plugins = {
 	"esmuellert/codediff.nvim",
 	"folke/which-key.nvim",
 }
+if vim.fn.has("macunix") == 1 then
+	table.insert(plugins, "cormacrelf/dark-notify")
+end
 
 vim.g.fff = { lazy_sync = true }
 vim.api.nvim_create_autocmd("PackChanged", {
@@ -197,12 +201,15 @@ require("parrot").setup({
 	toggle_target = "popup",
 	enable_preview_mode = false,
 })
-require("beancount").setup({
-	main_bean_file = "/Users/duarteocarmo/Repos/accounting/duarte.beancount",
-	python_path = "/Users/duarteocarmo/Repos/accounting/.venv/bin/python",
-	auto_format_on_save = false, -- conform owns formatting
-	ui = { virtual_text = false }, -- let tiny-inline-diagnostic render (wrapped)
-})
+local bean_file = vim.fn.expand("~/Repos/accounting/duarte.beancount")
+if vim.fn.filereadable(bean_file) == 1 then
+	require("beancount").setup({
+		main_bean_file = bean_file,
+		python_path = vim.fn.expand("~/Repos/accounting/.venv/bin/python"),
+		auto_format_on_save = false, -- conform owns formatting
+		ui = { virtual_text = false }, -- let tiny-inline-diagnostic render (wrapped)
+	})
+end
 
 require("tiny-inline-diagnostic").setup({
 	-- attach on buffer open too, not only LspAttach, so non-LSP
@@ -267,12 +274,17 @@ require("modus-themes").setup({
 		keywords = { bold = true },
 	},
 })
-require("dark_notify").run({
-	schemes = {
-		light = { colorscheme = "modus_operandi" },
-		dark = { colorscheme = "modus_vivendi" },
-	},
-})
+-- dark-notify needs macOS
+if vim.fn.has("macunix") == 1 then
+	require("dark_notify").run({
+		schemes = {
+			light = { colorscheme = "modus_operandi" },
+			dark = { colorscheme = "modus_vivendi" },
+		},
+	})
+else
+	vim.cmd.colorscheme(vim.o.background == "light" and "modus_operandi" or "modus_vivendi")
+end
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	callback = function()
