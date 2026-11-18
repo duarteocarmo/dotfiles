@@ -1,7 +1,7 @@
 {
   "lastChangelogVersion": "1.5.2",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-6.1-sol",
+  "defaultModel": "gpt-6.2-sol",
   "defaultThinkingLevel": "high",
   "defaultTools": [
     "+codemode"
@@ -14,7 +14,8 @@
     "npm:@juicesharp/rpiv-todo",
     "npm:@narumitw/pi-usage",
     "npm:pi-schedule-prompt",
-    "npm:pi-web-access"
+    "npm:pi-web-access",
+    "https://github.com/earendil-works/pi-claude-code"
   ],
   "enableSkillCommands": true,
   "terminal": {
@@ -25,20 +26,20 @@
   "tuiMode": "fullscreen",
   "outputPad": 1,
   "enabledModels": [
-    "openai-codex/gpt-6.1-sol",
-    "openai-codex/gpt-6-astra",
+    "claude-code/claude-opus-5-5",
+    "claude-code/claude-sonnet-5-5",
+    "openai-codex/gpt-6.2-sol",
+    "openai-codex/gpt-6.2-astra",
     "openai-codex/gpt-6-luna",
-    "opencode-go/glm-5.3",
-    "opencode-go/glm-5.3-flash",
-    "opencode-go/mimo-v2.6-pro",
+    "openai-codex/gpt-6.1-terra",
     "github-copilot/claude-sonnet-5.5",
     "github-copilot/claude-opus-5.5",
     "xai/grok-4.7"
   ],
   "extensionChangelogVersions": {
     "{\"source\":\"npm:pi-autoresearch\",\"scope\":\"user\"}": "1.9.0",
-    "{\"source\":\"npm:pi-schedule-prompt\",\"scope\":\"user\"}": "0.4.1",
-    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.47.0",
+    "{\"source\":\"npm:pi-schedule-prompt\",\"scope\":\"user\"}": "0.5.1",
+    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.48.0",
     "{\"source\":\"npm:@narumitw/pi-usage\",\"scope\":\"user\"}": "0.69.3"
   }
 }
