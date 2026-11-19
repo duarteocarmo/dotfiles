@@ -54,6 +54,36 @@ end, { desc = "Find files" })
 map("n", "<leader>fg", function()
 	require("fff").live_grep()
 end, { desc = "Search project text" })
+-- fff only shows tracked files, so untracked and gitignored files go through fzf
+map("n", "<leader>fu", function()
+	local skip = [[(^|/)(\.venv[^/]*|venv|node_modules|__pycache__|\.ruff_cache|\.pytest_cache|\.mypy_cache)/|\.DS_Store$]]
+	local list = "git ls-files --others | grep -v -E '" .. skip .. "'"
+	if vim.fn.executable("fzf") == 0 or vim.fn.systemlist("git rev-parse --is-inside-work-tree")[1] ~= "true" then
+		return vim.notify("Untracked search needs fzf and a git repo", vim.log.levels.WARN)
+	end
+	local out = vim.fn.tempname()
+	local buf = vim.api.nvim_create_buf(false, true)
+	local width, height = math.floor(vim.o.columns * 0.8), math.floor(vim.o.lines * 0.7)
+	local win = vim.api.nvim_open_win(buf, true, {
+		relative = "editor",
+		width = width,
+		height = height,
+		row = math.floor((vim.o.lines - height) / 2),
+		col = math.floor((vim.o.columns - width) / 2),
+		title = " Untracked files ",
+	})
+	vim.fn.jobstart(list .. " | fzf --preview 'head -200 {}' > " .. out, {
+		term = true,
+		on_exit = function()
+			vim.api.nvim_win_close(win, true)
+			local picked = vim.fn.filereadable(out) == 1 and vim.fn.readfile(out)[1]
+			if picked and picked ~= "" then
+				vim.cmd.edit(vim.fn.fnameescape(picked))
+			end
+		end,
+	})
+	vim.cmd.startinsert()
+end, { desc = "Find untracked and ignored files" })
 map("n", "<leader>rr", "<cmd>:restart<cr>")
 map("n", "<leader>dd", "<cmd>CodeDiff<cr>")
 map({ "n", "v" }, "<Tab>", ":tabnext<CR>", opts)
