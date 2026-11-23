@@ -128,6 +128,7 @@ local plugins = {
 	"dmtrKovalenko/fff.nvim",
 	"esmuellert/codediff.nvim",
 	"folke/which-key.nvim",
+	"lewis6991/gitsigns.nvim",
 }
 if vim.fn.has("macunix") == 1 then
 	table.insert(plugins, "cormacrelf/dark-notify")
@@ -176,6 +177,26 @@ require("lualine").setup({
 require("diffview").setup({ use_icons = false })
 require("neoscroll").setup({ duration_multiplier = 0.3 })
 require("gitlinker").setup()
+require("gitsigns").setup({
+	linehl = true,
+	word_diff = true,
+	on_attach = function(bufnr)
+		local gitsigns = require("gitsigns")
+		local function bmap(lhs, rhs, desc)
+			vim.keymap.set("n", lhs, rhs, { buffer = bufnr, desc = desc })
+		end
+		bmap("]h", function() gitsigns.nav_hunk("next") end, "Next hunk")
+		bmap("[h", function() gitsigns.nav_hunk("prev") end, "Prev hunk")
+		bmap("<leader>hp", gitsigns.preview_hunk, "Preview hunk")
+		bmap("<leader>hr", gitsigns.reset_hunk, "Reset hunk")
+		bmap("<leader>hb", gitsigns.blame_line, "Blame line")
+		bmap("<leader>hd", gitsigns.preview_hunk_inline, "Show deleted lines inline")
+		bmap("<leader>ht", function()
+			local enabled = gitsigns.toggle_linehl()
+			gitsigns.toggle_word_diff(enabled)
+		end, "Toggle line and word highlights")
+	end,
+})
 require("render-markdown").setup({ preset = "obsidian" })
 vim.lsp.config("pyright", {
 	root_markers = {
@@ -313,7 +334,8 @@ if vim.fn.has("macunix") == 1 then
 		},
 	})
 else
-	vim.cmd.colorscheme(vim.o.background == "light" and "modus_operandi" or "modus_vivendi")
+	vim.o.background = "dark"
+	vim.cmd.colorscheme("modus_vivendi")
 end
 
 vim.api.nvim_create_autocmd("TextYankPost", {
