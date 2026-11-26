@@ -9,8 +9,9 @@ The tool's prompt guidance encourages delegation for exploration, research, debu
 - `title` is the progress label.
 - `prompt` supplies complete context and the expected result.
 - `thinkingLevel` optionally selects `low`, `medium`, or `high` reasoning. Omit it for the default in `index.ts`.
+- `model` optionally selects any registered model as `provider/model-id`. Omit it for the default in `index.ts`. Unknown models fail the call.
 
-The model and default reasoning level are constants in `index.ts`. There is no config file. Children inherit all compatible active parent tools, including codemode and MCP support. Subagent delegation and user questions are excluded. The progress display shows the model and reasoning level.
+The default model and reasoning level are constants in `index.ts`. There is no config file. Children inherit all compatible active parent tools, including codemode and MCP support. Subagent delegation and user questions are excluded. The progress display shows the model and reasoning level.
 
 Children must perform one current task without sleeping, polling, or monitoring. Parallel coding tasks should have non-overlapping file ownership.
 

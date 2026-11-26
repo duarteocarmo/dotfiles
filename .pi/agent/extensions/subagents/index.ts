@@ -17,7 +17,7 @@ import {
 import { Container, Markdown, Spacer, Text } from "@earendil-works/pi-tui";
 import { Type } from "typebox";
 
-const MODEL = { provider: "openai-codex", id: "gpt-6.1-terra" } as const;
+const DEFAULT_MODEL = "openai-codex/gpt-6.1-terra";
 const THINKING_LEVELS = ["low", "medium", "high"] as const;
 const DEFAULT_THINKING_LEVEL = "medium";
 const TOOL_DESCRIPTION =
@@ -360,11 +360,22 @@ export default function subagentsExtension(pi: ExtensionAPI) {
           default: DEFAULT_THINKING_LEVEL,
         }),
       ),
+      model: Type.Optional(
+        Type.String({
+          minLength: 1,
+          description: `Model as provider/model-id. Defaults to ${DEFAULT_MODEL}. Omit unless the user asks for a specific model. To find valid IDs, run \`pi --list-models [search]\` in bash and join the provider and model columns with a slash (e.g. provider "openai-codex" + model "gpt-6.1-terra" -> "openai-codex/gpt-6.1-terra"). Never guess IDs.`,
+          default: DEFAULT_MODEL,
+        }),
+      ),
     }, { additionalProperties: false }),
 
     async execute(_toolCallId, params, signal, onUpdate, ctx) {
-      const model = ctx.modelRegistry.find(MODEL.provider, MODEL.id);
-      if (!model) throw new Error(`Subagent model is not available: ${MODEL.provider}/${MODEL.id}`);
+      const modelRef = params.model?.trim() || DEFAULT_MODEL;
+      const slashIndex = modelRef.indexOf("/");
+      const model = slashIndex > 0
+        ? ctx.modelRegistry.find(modelRef.slice(0, slashIndex), modelRef.slice(slashIndex + 1))
+        : undefined;
+      if (!model) throw new Error(`Subagent model is not available: ${modelRef}. Use provider/model-id.`);
       const thinkingLevel = params.thinkingLevel ?? DEFAULT_THINKING_LEVEL;
       const tools = [...new Set(pi.getActiveTools().filter((name) => !EXCLUDED_TOOLS.has(name)))];
 
@@ -543,7 +554,7 @@ export default function subagentsExtension(pi: ExtensionAPI) {
     renderCall(args, theme) {
       const thinkingLevel = args.thinkingLevel ?? DEFAULT_THINKING_LEVEL;
       return new Text(
-        `${theme.fg("toolTitle", theme.bold("subagent "))}${theme.fg("accent", args.title || "...")} ${theme.fg("muted", `(${MODEL.provider}/${MODEL.id} · ${thinkingLevel})`)}`,
+        `${theme.fg("toolTitle", theme.bold("subagent "))}${theme.fg("accent", args.title || "...")} ${theme.fg("muted", `(${args.model || DEFAULT_MODEL} · ${thinkingLevel})`)}`,
         0,
         0,
       );

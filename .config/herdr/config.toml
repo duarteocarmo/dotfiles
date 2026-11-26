@@ -41,7 +41,7 @@ enabled = false
 
 [theme]
 name = "catppuccin"
-auto_switch = false
+auto_switch = true
 light_name = "tokyo-night-day"
 dark_name = "tokyo-night"
 

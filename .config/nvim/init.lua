@@ -114,6 +114,7 @@ local plugins = {
 	"nathangrigg/vim-beancount",
 	"neovim/nvim-lspconfig",
 	"nvim-tree/nvim-web-devicons",
+	"nvim-tree/nvim-tree.lua",
 	"nvim-lualine/lualine.nvim",
 	"nvim-treesitter/nvim-treesitter",
 	"rachartier/tiny-inline-diagnostic.nvim",
@@ -173,6 +174,23 @@ require("lualine").setup({
 		lualine_z = { "location" },
 	},
 })
+
+require("nvim-tree").setup({
+	view = { width = 32 },
+	hijack_directories = { enable = false },
+	filters = {
+		git_ignored = true,
+		custom = { "^\\.git$", "^\\.venv$", "^node_modules$", "^__pycache__$", "^\\.DS_Store$" },
+	},
+	renderer = {
+		group_empty = true,
+		indent_markers = { enable = true },
+		icons = { show = { git = false } },
+	},
+	update_focused_file = { enable = true },
+})
+map("n", "<leader>e", "<cmd>NvimTreeToggle<cr>", { desc = "Explorer toggle" })
+map("n", "<leader>E", "<cmd>NvimTreeFindFile<cr>", { desc = "Explorer at current file" })
 
 require("diffview").setup({ use_icons = false })
 require("neoscroll").setup({ duration_multiplier = 0.3 })
@@ -338,6 +356,12 @@ else
 	vim.cmd.colorscheme("modus_vivendi")
 end
 
+map("n", "<leader>st", function()
+	local light = require("modus-themes.config").is_light()
+	vim.o.background = light and "dark" or "light"
+	vim.cmd.colorscheme(light and "modus_vivendi" or "modus_operandi")
+end, { desc = "Switch light/dark theme" })
+
 vim.api.nvim_create_autocmd("TextYankPost", {
 	callback = function()
 		vim.highlight.on_yank()
@@ -351,6 +375,15 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermLeave", "BufEnter", "CursorHol
 		end
 	end,
 })
+
+if vim.g.external_edit_timer then
+	vim.fn.timer_stop(vim.g.external_edit_timer)
+end
+vim.g.external_edit_timer = vim.fn.timer_start(1000, function()
+	if vim.api.nvim_get_mode().mode == "n" and vim.fn.getcmdwintype() == "" then
+		vim.cmd("checktime")
+	end
+end, { ["repeat"] = -1 })
 
 local function pack_clean()
 	local active_plugins = {}
